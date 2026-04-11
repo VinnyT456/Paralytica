@@ -1,50 +1,183 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
-import { Sparkles, Loader2 } from 'lucide-react';
-import BackButton from '../components/BackButton';
+import { Sparkles, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 function Questionnaire({ bgTheme }) {
   const navigate = useNavigate();
   const { setHeuristicProfile } = useAppContext();
   const isLight = bgTheme === 'light';
   const [isLoading, setIsLoading] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState(1);
+  const [fadeIn, setFadeIn] = useState(true);
 
   // Form state
   const [formData, setFormData] = useState({
-    name: '',
-    vibe: '',
+    role: '',
+    personality: [],
     stabilityVsGrowth: 50,
     successValues: [],
     superpower: '',
-    workIdentity: 50
+    workIdentity: 50,
+    explorationPaths: 50,
+    responsibilityImpact: 50,
+    futureSuccess: 50,
+    workConnection: 50
   });
 
-  // Calculate progress
-  const calculateProgress = () => {
-    let filled = 0;
-    if (formData.name.trim()) filled++;
-    if (formData.vibe.trim()) filled++;
-    filled++; // stabilityVsGrowth always has a value
-    if (formData.successValues.length === 2) filled++;
-    if (formData.superpower) filled++;
-    filled++; // workIdentity always has a value
-    return Math.round((filled / 6) * 100);
+  const totalQuestions = 10;
+
+  // Navigate to next question with animation
+  const goToNext = () => {
+    if (currentQuestion < totalQuestions) {
+      setFadeIn(false);
+      setTimeout(() => {
+        setCurrentQuestion(currentQuestion + 1);
+        setFadeIn(true);
+      }, 200);
+    }
   };
 
-  const progress = calculateProgress();
+  // Navigate to previous question with animation
+  const goToPrevious = () => {
+    if (currentQuestion > 1) {
+      setFadeIn(false);
+      setTimeout(() => {
+        setCurrentQuestion(currentQuestion - 1);
+        setFadeIn(true);
+      }, 200);
+    }
+  };
 
-  // Handle value selection (max 2)
+  // Check if current question can proceed
+  const canProceed = () => {
+    switch (currentQuestion) {
+      case 1: return formData.role !== '';
+      case 2: return formData.personality.length === 3;
+      case 3: return true; // stabilityVsGrowth always has a value
+      case 4: return formData.successValues.length === 2;
+      case 5: return formData.superpower !== '';
+      case 6: return true; // workIdentity always has a value
+      case 7: return true; // explorationPaths always has a value
+      case 8: return true; // responsibilityImpact always has a value
+      case 9: return true; // futureSuccess always has a value
+      case 10: return true; // workConnection always has a value
+      default: return false;
+    }
+  };
+
+  // Progress by current step (goes up/down when navigating, not by how many fields are filled)
+  const progress = Math.round((currentQuestion / totalQuestions) * 100);
+
+  const isFormComplete =
+    formData.role !== '' &&
+    formData.personality.length === 3 &&
+    formData.successValues.length === 2 &&
+    formData.superpower !== '';
+
+  // Role options
+  const roleOptions = [
+    { value: 'student', label: 'Student' },
+    { value: 'educator', label: 'Educator' },
+    { value: 'professional', label: 'Professional' }
+  ];
+
+  // Personality options
+  const personalityOptions = [
+    { value: 'curious', label: 'Curious' },
+    { value: 'resilient', label: 'Resilient' },
+    { value: 'charismatic', label: 'Charismatic' },
+    { value: 'analytical', label: 'Analytical' },
+    { value: 'compassionate', label: 'Compassionate' },
+    { value: 'impulsive', label: 'Impulsive' },
+    { value: 'reserved', label: 'Reserved' },
+    { value: 'optimistic', label: 'Optimistic' },
+    { value: 'meticulous', label: 'Meticulous' }
+  ];
+
+  // Success value options
+  const successOptions = [
+    { value: 'wealth', label: 'Wealth', description: 'Financial prosperity and abundance' },
+    { value: 'autonomy', label: 'Autonomy', description: 'Freedom and independence' },
+    { value: 'impact', label: 'Impact', description: 'Creative influence and legacy' },
+    { value: 'connection', label: 'Connection', description: 'Relationships and community' },
+    { value: 'security', label: 'Security', description: 'Stability and peace of mind' }
+  ];
+
+  // Superpower options
+  const superpowerOptions = [
+    { value: 'technical', label: 'Technical Execution'},
+    { value: 'intuitive', label: 'Intuitive/Gut Feeling'},
+    { value: 'emotional', label: 'Emotional Intelligence'},
+    { value: 'analytical', label: 'Deep Analysis'}
+  ];
+
+  // Handle personality selection with auto-advance
+  const togglePersonality = (value) => {
+    setFormData(prev => {
+      const current = prev.personality;
+      let newPersonality;
+      if (current.includes(value)) {
+        newPersonality = current.filter(v => v !== value);
+      } else if (current.length < 3) {
+        newPersonality = [...current, value];
+
+        // Auto-advance if we just selected the 3rd item
+        if (newPersonality.length === 3) {
+          setTimeout(() => {
+            goToNext();
+          }, 400);
+        }
+      } else {
+        return prev;
+      }
+
+      return { ...prev, personality: newPersonality };
+    });
+  };
+
+  // Handle success value selection with auto-advance
   const toggleSuccessValue = (value) => {
     setFormData(prev => {
       const current = prev.successValues;
+      let newValues;
       if (current.includes(value)) {
-        return { ...prev, successValues: current.filter(v => v !== value) };
+        newValues = current.filter(v => v !== value);
       } else if (current.length < 2) {
-        return { ...prev, successValues: [...current, value] };
+        newValues = [...current, value];
+
+        // Auto-advance if we just selected the 2nd item
+        if (newValues.length === 2) {
+          setTimeout(() => {
+            goToNext();
+          }, 400);
+        }
+      } else {
+        return prev;
       }
-      return prev;
+
+      return { ...prev, successValues: newValues };
     });
+  };
+
+  // Handle scale selection (Q3 and Q6) with auto-advance
+  const handleScaleSelect = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+
+    // Auto-advance after selection with a short delay
+    setTimeout(() => {
+      goToNext();
+    }, 400);
+  };
+
+  // Handle superpower selection with auto-advance
+  const handleSuperpowerSelect = (value) => {
+    setFormData(prev => ({ ...prev, superpower: value }));
+
+    // Auto-advance after selection
+    setTimeout(() => {
+      goToNext();
+    }, 400);
   };
 
   // Handle form submission
@@ -52,7 +185,7 @@ function Questionnaire({ bgTheme }) {
     e.preventDefault();
 
     // Validation
-    if (!formData.name.trim() || !formData.vibe.trim() || formData.successValues.length !== 2 || !formData.superpower) {
+    if (!formData.role || formData.personality.length !== 3 || formData.successValues.length !== 2 || !formData.superpower) {
       alert('Please complete all required fields');
       return;
     }
@@ -62,26 +195,14 @@ function Questionnaire({ bgTheme }) {
     // Simulate processing
     setTimeout(() => {
       // Save to context
-      setHeuristicProfile(formData);
+      setHeuristicProfile({
+        ...formData,
+        personality: formData.personality.join(', ')
+      });
       // Navigate to simulate page
       navigate('/simulate');
     }, 3000);
   };
-
-  const successOptions = [
-    'Wealth',
-    'Autonomy',
-    'Creative Impact',
-    'Social Connection',
-    'Security'
-  ];
-
-  const superpowerOptions = [
-    { value: 'technical', label: 'Technical Execution', icon: '⚙️' },
-    { value: 'intuitive', label: 'Intuitive/Gut Feeling', icon: '✨' },
-    { value: 'emotional', label: 'Emotional Intelligence', icon: '❤️' },
-    { value: 'analytical', label: 'Deep Analysis', icon: '🧠' }
-  ];
 
   if (isLoading) {
     return (
@@ -103,7 +224,7 @@ function Questionnaire({ bgTheme }) {
           </h2>
           <p className="text-slate-400 text-lg mb-2">Analyzing heuristic profile</p>
           <p className="text-slate-500 text-sm font-mono">
-            ID: {formData.name.toUpperCase()} • VIBE: {formData.vibe.split(',')[0].trim()}
+            ROLE: {formData.role.toUpperCase()} • TRAIT: {formData.personality[0]}
           </p>
         </div>
       </div>
@@ -111,232 +232,518 @@ function Questionnaire({ bgTheme }) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 pt-24">
-      <BackButton to="/" bgTheme={bgTheme} />
-      <div className="w-full max-w-3xl">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Sparkles className="text-sky-500" size={36} />
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-sky-400 to-purple-400 bg-clip-text text-transparent">
-              Identity Initialization
-            </h1>
-          </div>
-          <p className={`text-lg ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-            Configure your Digital Twin parameters
-          </p>
-        </div>
+    <div className="min-h-screen flex flex-col relative">
+      {/* Main Content - Centered */}
+      <div className="flex-1 flex items-center justify-center p-6 pt-32 pb-32">
+        <div className="w-full max-w-2xl">
 
-        {/* Progress Bar */}
-        <div className="top-20 z-40 mb-8 pb-6">
-          <div className="flex justify-between text-sm mb-2">
-            <span className={isLight ? 'text-slate-600' : 'text-slate-400'}>Initialization Progress</span>
-            <span className="text-sky-400 font-semibold">{progress}%</span>
+          {/* Header - Outside Card */}
+          <div className="text-center mb-8">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <Sparkles className="text-sky-500" size={32} />
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-sky-400 to-purple-400 bg-clip-text text-transparent">
+                Identity Assessment
+              </h1>
+            </div>
+
+            {/* Progress Bar - Below Identity Assessment */}
+            <div className="max-w-md mx-auto">
+              <div className="flex justify-between text-xs mb-2">
+                <span className={isLight ? 'text-slate-600 font-medium' : 'text-slate-400 font-medium'}>
+                  Progress
+                </span>
+                <span className="text-sky-400 font-bold">{progress}%</span>
+              </div>
+              <div className={`w-full rounded-full h-1.5 overflow-hidden ${
+                isLight ? 'bg-slate-200' : 'bg-slate-800'
+              }`}>
+                <div
+                  className="bg-gradient-to-r from-sky-500 to-purple-500 h-full rounded-full transition-all duration-700 ease-out"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
           </div>
-          <div className={`w-full rounded-full h-2 overflow-hidden ${
-            isLight ? 'bg-slate-200' : 'bg-slate-800'
+
+          {/* Question Card */}
+          <div className={`backdrop-blur-md border rounded-xl shadow-2xl transition-all duration-200 ease-out h-auto py-12 px-8 overflow-hidden ${
+            fadeIn ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'
+          } ${
+            isLight
+              ? 'bg-white/90 border-slate-200'
+              : 'bg-slate-900/60 border-slate-800'
           }`}>
-            <div
-              className="bg-gradient-to-r from-sky-500 to-purple-500 h-full rounded-full transition-all duration-500"
-              style={{ width: `${progress}%` }}
-            />
+
+            {/* Question Content */}
+            <div className="w-full">
+
+                {/* Question 1: Role */}
+                {currentQuestion === 1 && (
+                  <div>
+                    <h2 className={`text-2xl font-bold mb-6 text-center ${
+                      isLight ? 'text-slate-800' : 'text-slate-200'
+                    }`}>
+                      What is your role?
+                    </h2>
+                    <div className="space-y-4 max-w-md mx-auto">
+                      {roleOptions.map((option) => (
+                        <button
+                          key={option.value}
+                          type="button"
+                          onClick={() => {
+                            setFormData({ ...formData, role: option.value });
+                            // Auto-advance after selection
+                            setTimeout(() => {
+                              goToNext();
+                            }, 400);
+                          }}
+                          className={`w-full px-6 py-5 rounded-xl border-2 text-lg font-semibold transition-all duration-300 ${
+                            formData.role === option.value
+                              ? 'border-sky-500 bg-sky-500/20 text-sky-400 shadow-[0_0_20px_rgba(14,165,233,0.4)]'
+                              : isLight
+                              ? 'border-slate-300 bg-white text-slate-700 hover:border-slate-400'
+                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-slate-600'
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Question 2: Personality */}
+                {currentQuestion === 2 && (
+                  <div>
+                    <h2 className={`text-2xl font-bold mb-2 text-center ${
+                      isLight ? 'text-slate-800' : 'text-slate-200'
+                    }`}>
+                      Choose 3 words to describe your personality.
+                    </h2>
+                    <p className={`text-sm mb-6 text-center ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                      Select exactly 3 words ({formData.personality.length}/3 selected)
+                    </p>
+                    <div className="grid grid-cols-3 gap-3 max-w-2xl mx-auto">
+                      {personalityOptions.map((option) => (
+                        <button
+                          key={option.value}
+                          type="button"
+                          onClick={() => togglePersonality(option.value)}
+                          className={`px-4 py-4 rounded-lg border-2 text-base font-semibold transition-all duration-300 ${
+                            formData.personality.includes(option.value)
+                              ? 'border-sky-500 bg-sky-500/20 text-sky-400 shadow-[0_0_20px_rgba(14,165,233,0.4)]'
+                              : isLight
+                              ? 'border-slate-300 bg-white text-slate-700 hover:border-slate-400'
+                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-slate-600'
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Question 3: Stability vs Growth - 1-10 Scale */}
+                {currentQuestion === 3 && (
+                  <div>
+                    <h2 className={`text-2xl font-bold mb-6 text-center ${
+                      isLight ? 'text-slate-800' : 'text-slate-200'
+                    }`}>
+                      When you hit a major turning point, what do you tend to do?
+                    </h2>
+                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => handleScaleSelect('stabilityVsGrowth', num * 10)}
+                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
+                            formData.stabilityVsGrowth === num * 10
+                              ? 'border-sky-500 bg-sky-500 text-white shadow-[0_0_15px_rgba(14,165,233,0.6)]'
+                              : isLight
+                              ? 'border-slate-300 bg-white text-slate-700 hover:border-sky-400 hover:bg-sky-50'
+                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-sky-500 hover:bg-slate-700'
+                          }`}
+                        >
+                          {num}
+                        </button>
+                      ))}
+                    </div>
+                    {/* Legend Below */}
+                    <div className="relative max-w-2xl mx-auto mt-4">
+                      <div className="flex justify-between gap-3">
+                        <span className="flex-1 text-center text-xs text-slate-400">Stable</span>
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1 text-center text-xs text-slate-400">Risk</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Question 4: Success Values */}
+                {currentQuestion === 4 && (
+                  <div>
+                    <h2 className={`text-2xl font-bold mb-2 text-center ${
+                      isLight ? 'text-slate-800' : 'text-slate-200'
+                    }`}>
+                      Which of these defines 'success' for you in 10 years?
+                    </h2>
+                    <p className={`text-sm mb-6 text-center ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+                      Select exactly 2 options ({formData.successValues.length}/2 selected)
+                    </p>
+                    <div className="grid grid-cols-2 gap-4 max-w-xl mx-auto">
+                      {successOptions.map((option) => (
+                        <button
+                          key={option.value}
+                          type="button"
+                          onClick={() => toggleSuccessValue(option.value)}
+                          className={`px-6 py-6 rounded-xl border-2 transition-all duration-300 text-center ${
+                            formData.successValues.includes(option.value)
+                              ? 'border-purple-500 bg-purple-500/20 shadow-[0_0_20px_rgba(168,85,247,0.4)]'
+                              : isLight
+                              ? 'border-slate-300 bg-white hover:border-slate-400'
+                              : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
+                          }`}
+                        >
+                          <div className={`text-xl font-bold mb-1 ${
+                            formData.successValues.includes(option.value)
+                              ? 'text-purple-400'
+                              : isLight
+                              ? 'text-slate-800'
+                              : 'text-slate-200'
+                          }`}>
+                            {option.label}
+                          </div>
+                          <div className={`text-xs ${
+                            formData.successValues.includes(option.value)
+                              ? 'text-purple-300/70'
+                              : isLight
+                              ? 'text-slate-500'
+                              : 'text-slate-400'
+                          }`}>
+                            {option.description}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Question 5: Superpower */}
+                {currentQuestion === 5 && (
+                  <div>
+                    <h2 className={`text-2xl font-bold mb-6 text-center ${
+                      isLight ? 'text-slate-800' : 'text-slate-200'
+                    }`}>
+                      What’s your biggest strength when solving problems?
+                    </h2>
+                    <div className="space-y-4 max-w-xl mx-auto">
+                      {superpowerOptions.map((option) => (
+                        <button
+                          key={option.value}
+                          type="button"
+                          onClick={() => handleSuperpowerSelect(option.value)}
+                          className={`w-full flex items-center gap-5 px-6 py-5 rounded-xl border-2 cursor-pointer transition-all duration-300 ${
+                            formData.superpower === option.value
+                              ? 'border-purple-500 bg-purple-500/20 shadow-[0_0_20px_rgba(168,85,247,0.4)]'
+                              : isLight
+                              ? 'border-slate-300 bg-white hover:border-slate-400'
+                              : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
+                          }`}
+                        >
+                          <span className={`text-lg font-semibold ${
+                            formData.superpower === option.value
+                              ? 'text-purple-400'
+                              : isLight
+                              ? 'text-slate-700'
+                              : 'text-slate-300'
+                          }`}>
+                            {option.label}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Question 6: Work Identity - 1-10 Scale */}
+                {currentQuestion === 6 && (
+                  <div>
+                    <h2 className={`text-2xl font-bold mb-6 text-center ${
+                      isLight ? 'text-slate-800' : 'text-slate-200'
+                    }`}>
+                      How do you feel about your current path?
+                    </h2>
+                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => handleScaleSelect('workIdentity', num * 10)}
+                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
+                            formData.workIdentity === num * 10
+                              ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
+                              : isLight
+                              ? 'border-slate-300 bg-white text-slate-700 hover:border-purple-400 hover:bg-purple-50'
+                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-purple-500 hover:bg-slate-700'
+                          }`}
+                        >
+                          {num}
+                        </button>
+                      ))}
+                    </div>
+                    {/* Legend Below */}
+                    <div className="relative max-w-2xl mx-auto mt-4">
+                      <div className="flex justify-between gap-3">
+                        <span className="flex-1 text-center text-xs text-slate-400">Happy</span>
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1 text-center text-xs text-slate-400">Regret</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Question 7: Exploration Paths - 1-10 Scale */}
+                {currentQuestion === 7 && (
+                  <div>
+                    <h2 className={`text-2xl font-bold mb-6 text-center ${
+                      isLight ? 'text-slate-800' : 'text-slate-200'
+                    }`}>
+                      Do you prefer exploring many paths or sticking with one?
+                    </h2>
+                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => handleScaleSelect('explorationPaths', num * 10)}
+                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
+                            formData.explorationPaths === num * 10
+                              ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
+                              : isLight
+                              ? 'border-slate-300 bg-white text-slate-700 hover:border-purple-400 hover:bg-purple-50'
+                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-purple-500 hover:bg-slate-700'
+                          }`}
+                        >
+                          {num}
+                        </button>
+                      ))}
+                    </div>
+                    {/* Legend Below */}
+                    <div className="relative max-w-2xl mx-auto mt-4">
+                      <div className="flex justify-between gap-3">
+                        <span className="flex-1 text-center text-xs text-slate-400">Steady</span>
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1 text-center text-xs text-slate-400">Explore</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Question 8: Responsibility Impact - 1-10 Scale */}
+                {currentQuestion === 8 && (
+                  <div>
+                    <h2 className={`text-2xl font-bold mb-6 text-center ${
+                      isLight ? 'text-slate-800' : 'text-slate-200'
+                    }`}>
+                      How much do responsibilities shape your decisions?
+                    </h2>
+                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => handleScaleSelect('responsibilityImpact', num * 10)}
+                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
+                            formData.responsibilityImpact === num * 10
+                              ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
+                              : isLight
+                              ? 'border-slate-300 bg-white text-slate-700 hover:border-purple-400 hover:bg-purple-50'
+                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-purple-500 hover:bg-slate-700'
+                          }`}
+                        >
+                          {num}
+                        </button>
+                      ))}
+                    </div>
+                    {/* Legend Below */}
+                    <div className="relative max-w-2xl mx-auto mt-4">
+                      <div className="flex justify-between gap-3">
+                        <span className="flex-1 text-center text-xs text-slate-400">Free</span>
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1 text-center text-xs text-slate-400">Restricted</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Question 9: Future Success - 1-10 Scale */}
+                {currentQuestion === 9 && (
+                  <div>
+                    <h2 className={`text-2xl font-bold mb-6 text-center ${
+                      isLight ? 'text-slate-800' : 'text-slate-200'
+                    }`}>
+                      What does "success" look like to you in 10 years?
+                    </h2>
+                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => handleScaleSelect('futureSuccess', num * 10)}
+                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
+                            formData.futureSuccess === num * 10
+                              ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
+                              : isLight
+                              ? 'border-slate-300 bg-white text-slate-700 hover:border-purple-400 hover:bg-purple-50'
+                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-purple-500 hover:bg-slate-700'
+                          }`}
+                        >
+                          {num}
+                        </button>
+                      ))}
+                    </div>
+                    {/* Legend Below */}
+                    <div className="relative max-w-2xl mx-auto mt-4">
+                      <div className="flex justify-between gap-3">
+                        <span className="flex-1 text-center text-xs text-slate-400">Stay</span>
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1 text-center text-xs text-slate-400">Move</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Question 10: Work Connection - 1-10 Scale */}
+                {currentQuestion === 10 && (
+                  <div>
+                    <h2 className={`text-2xl font-bold mb-6 text-center ${
+                      isLight ? 'text-slate-800' : 'text-slate-200'
+                    }`}>
+                      How connected is your identity to your work?
+                    </h2>
+                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => handleScaleSelect('workConnection', num * 10)}
+                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
+                            formData.workConnection === num * 10
+                              ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
+                              : isLight
+                              ? 'border-slate-300 bg-white text-slate-700 hover:border-purple-400 hover:bg-purple-50'
+                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-purple-500 hover:bg-slate-700'
+                          }`}
+                        >
+                          {num}
+                        </button>
+                      ))}
+                    </div>
+                    {/* Legend Below */}
+                    <div className="relative max-w-2xl mx-auto mt-4">
+                      <div className="flex justify-between gap-3">
+                        <span className="flex-1 text-center text-xs text-slate-400">Life</span>
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1 text-center text-xs text-slate-400">Work</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+            </div>
+
+            {/* Bottom Navigation */}
+            <div className="mt-12 flex justify-between items-center w-full">
+              {/* Back Button - Bottom Left */}
+              {currentQuestion > 1 ? (
+                <button
+                  onClick={goToPrevious}
+                  className={`flex items-center gap-2 px-5 py-3 rounded-lg transition-all duration-300 hover:scale-105 min-w-[100px] ${
+                    isLight
+                      ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 hover:shadow-lg'
+                      : 'bg-slate-800 hover:bg-slate-700 text-slate-300 hover:shadow-[0_0_15px_rgba(100,116,139,0.3)]'
+                  }`}
+                >
+                  <ChevronLeft size={20} />
+                  Back
+                </button>
+              ) : (
+                <div />
+              )}
+
+              {/* Next/Submit Button - Bottom Right */}
+              {currentQuestion === 10 && isFormComplete ? (
+                <button
+                  onClick={handleSubmit}
+                  className="flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-sky-600 to-purple-600 hover:from-sky-500 hover:to-purple-500 text-white font-bold transition-all duration-300 shadow-[0_0_20px_rgba(14,165,233,0.4)] hover:shadow-[0_0_30px_rgba(14,165,233,0.6)] hover:scale-105 min-w-[100px]"
+                >
+                  <Sparkles size={20} />
+                  INITIALIZE ENGINE
+                </button>
+              ) : (
+                <button
+                  onClick={goToNext}
+                  disabled={!canProceed() || currentQuestion === totalQuestions}
+                  className={`flex items-center gap-2 px-5 py-3 rounded-lg transition-all duration-300 min-w-[100px] ${
+                    canProceed() && currentQuestion < totalQuestions
+                      ? isLight
+                        ? 'bg-sky-600 hover:bg-sky-500 text-white hover:shadow-lg hover:scale-105'
+                        : 'bg-sky-600 hover:bg-sky-500 text-white hover:shadow-[0_0_15px_rgba(14,165,233,0.4)] hover:scale-105'
+                      : 'bg-slate-700 text-slate-500 cursor-not-allowed opacity-50'
+                  }`}
+                >
+                  Next
+                  <ChevronRight size={20} />
+                </button>
+              )}
+            </div>
+
           </div>
         </div>
-
-        {/* Form Card */}
-        <form onSubmit={handleSubmit} className={`backdrop-blur-md border rounded-xl p-8 shadow-xl ${
-          isLight
-            ? 'bg-white/90 border-slate-200'
-            : 'bg-slate-900/60 border-slate-800'
-        }`}>
-
-          {/* Question 1: Name */}
-          <div className="mb-8">
-            <label className="block mb-3">
-              <span className={`text-lg font-semibold mb-2 block ${
-                isLight ? 'text-slate-800' : 'text-slate-200'
-              }`}>
-                1. What is your name?
-              </span>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className={`w-full border rounded-lg px-4 py-3 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50 transition-all ${
-                  isLight
-                    ? 'bg-white border-slate-300 text-slate-900'
-                    : 'bg-slate-950 border-slate-700 text-slate-200'
-                }`}
-                placeholder="Enter your name to initialize..."
-                required
-              />
-            </label>
-          </div>
-
-          {/* Question 2: Vibe */}
-          <div className="mb-8">
-            <label className="block mb-3">
-              <span className={`text-lg font-semibold mb-2 block ${
-                isLight ? 'text-slate-800' : 'text-slate-200'
-              }`}>
-                2. Describe your 'vibe' or personality in 3 keywords
-              </span>
-              <input
-                type="text"
-                value={formData.vibe}
-                onChange={(e) => setFormData({ ...formData, vibe: e.target.value })}
-                className={`w-full border rounded-lg px-4 py-3 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50 transition-all ${
-                  isLight
-                    ? 'bg-white border-slate-300 text-slate-900'
-                    : 'bg-slate-950 border-slate-700 text-slate-200'
-                }`}
-                placeholder="e.g., Scrappy, analytical, adventurous"
-                required
-              />
-            </label>
-          </div>
-
-          {/* Question 3: Stability vs Growth */}
-          <div className="mb-8">
-            <label className="block mb-3">
-              <span className={`text-lg font-semibold mb-2 block ${
-                isLight ? 'text-slate-800' : 'text-slate-200'
-              }`}>
-                3. When facing a major crossroads, do you protect stability or pivot for growth?
-              </span>
-              <div className="mt-4">
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={formData.stabilityVsGrowth}
-                  onChange={(e) => setFormData({ ...formData, stabilityVsGrowth: parseInt(e.target.value) })}
-                  className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-sky-500"
-                />
-                <div className="flex justify-between text-sm mt-2">
-                  <span className={isLight ? 'text-slate-600' : 'text-slate-400'}>Protect Stability</span>
-                  <span className="text-sky-400 font-semibold">{formData.stabilityVsGrowth}</span>
-                  <span className={isLight ? 'text-slate-600' : 'text-slate-400'}>Pivot for Growth</span>
-                </div>
-              </div>
-            </label>
-          </div>
-
-          {/* Question 4: Success Values */}
-          <div className="mb-8">
-            <span className={`text-lg font-semibold mb-3 block ${
-              isLight ? 'text-slate-800' : 'text-slate-200'
-            }`}>
-              4. Which of these defines 'success' for you in 10 years?
-            </span>
-            <p className={`text-sm mb-4 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-              Select exactly 2 options ({formData.successValues.length}/2 selected)
-            </p>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {successOptions.map((option) => (
-                <button
-                  key={option}
-                  type="button"
-                  onClick={() => toggleSuccessValue(option)}
-                  className={`px-4 py-3 rounded-lg border-2 transition-all duration-300 ${
-                    formData.successValues.includes(option)
-                      ? 'border-sky-500 bg-sky-500/20 text-sky-400 shadow-[0_0_20px_rgba(14,165,233,0.2)]'
-                      : isLight
-                      ? 'border-slate-300 bg-white text-slate-700 hover:border-slate-400'
-                      : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-slate-600'
-                  }`}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Question 5: Superpower */}
-          <div className="mb-8">
-            <span className={`text-lg font-semibold mb-3 block ${
-              isLight ? 'text-slate-800' : 'text-slate-200'
-            }`}>
-              5. What is your primary 'Superpower' when solving problems?
-            </span>
-            <div className="space-y-3">
-              {superpowerOptions.map((option) => (
-                <label
-                  key={option.value}
-                  className={`flex items-center gap-4 px-5 py-4 rounded-lg border-2 cursor-pointer transition-all duration-300 ${
-                    formData.superpower === option.value
-                      ? 'border-purple-500 bg-purple-500/20 shadow-[0_0_20px_rgba(168,85,247,0.2)]'
-                      : isLight
-                      ? 'border-slate-300 bg-white hover:border-slate-400'
-                      : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="superpower"
-                    value={option.value}
-                    checked={formData.superpower === option.value}
-                    onChange={(e) => setFormData({ ...formData, superpower: e.target.value })}
-                    className="sr-only"
-                    required
-                  />
-                  <span className="text-2xl">{option.icon}</span>
-                  <span className={`text-lg ${
-                    formData.superpower === option.value
-                      ? 'text-purple-400 font-semibold'
-                      : isLight
-                      ? 'text-slate-700'
-                      : 'text-slate-300'
-                  }`}>
-                    {option.label}
-                  </span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* Question 6: Work Identity */}
-          <div className="mb-8">
-            <label className="block mb-3">
-              <span className={`text-lg font-semibold mb-2 block ${
-                isLight ? 'text-slate-800' : 'text-slate-200'
-              }`}>
-                6. How much of your identity is tied to your professional achievements?
-              </span>
-              <div className="mt-4">
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={formData.workIdentity}
-                  onChange={(e) => setFormData({ ...formData, workIdentity: parseInt(e.target.value) })}
-                  className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-sky-500"
-                />
-                <div className="flex justify-between text-sm mt-2">
-                  <span className={isLight ? 'text-slate-600' : 'text-slate-400'}>Work supports life</span>
-                  <span className="text-sky-400 font-semibold">{formData.workIdentity}</span>
-                  <span className={isLight ? 'text-slate-600' : 'text-slate-400'}>Work is my life</span>
-                </div>
-              </div>
-            </label>
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full bg-gradient-to-r from-sky-600 to-purple-600 hover:from-sky-500 hover:to-purple-500 text-white font-semibold py-4 rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(14,165,233,0.3)] hover:shadow-[0_0_30px_rgba(14,165,233,0.5)] flex items-center justify-center gap-3 text-lg"
-            disabled={progress < 100}
-          >
-            <Sparkles size={24} />
-            Paralytica Identity
-          </button>
-
-          {progress < 100 && (
-            <p className="text-center text-sm text-red-400 mt-3">
-              Complete all fields to initialize
-            </p>
-          )}
-        </form>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { generateNextNode, generateControlTimeline } from '../utils/mockApi';
+import { generateNextNode } from '../utils/mockApi';
 import Step1MapTimeline from '../components/Step1MapTimeline';
 import Step2PrimaryTimeline from '../components/Step2PrimaryTimeline';
 import Step3Loading from '../components/Step3Loading';
@@ -40,7 +40,7 @@ function Simulate({ bgTheme }) {
     // Generate baseline timeline (LEFT side - Baseline Reality)
     setIsGenerating(true);
     try {
-      // Start with user's actual milestones
+      // Use ONLY user's actual milestones for baseline
       const userMilestones = lifePoints.map(point => ({
         year: point.year,
         title: point.role,
@@ -53,15 +53,10 @@ function Simulate({ bgTheme }) {
         isUserMilestone: true
       }));
 
-      // Generate AI control predictions
-      const controlPredictions = await generateControlTimeline(decision, includeSocial, selectedBranch.year, 5);
-
-      // Combine: User milestones first, then control predictions
-      const baseline = [...userMilestones, ...controlPredictions];
-      setBaselineTimeline(baseline);
+      setBaselineTimeline(userMilestones);
 
       // Generate first draft node for projected timeline (RIGHT side)
-      await generateDraftNode(baseline);
+      await generateDraftNode(userMilestones);
     } catch (error) {
       console.error('Error generating timelines:', error);
       setIsGenerating(false);
