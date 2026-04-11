@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAppContext } from '../context/AppContext';
 import { Sparkles, Loader2 } from 'lucide-react';
+import BackButton from '../components/BackButton';
 
-function Questionnaire({ bgTheme, onComplete }) {
+function Questionnaire({ bgTheme }) {
   const navigate = useNavigate();
+  const { setHeuristicProfile } = useAppContext();
   const isLight = bgTheme === 'light';
   const [isLoading, setIsLoading] = useState(false);
 
@@ -58,10 +61,8 @@ function Questionnaire({ bgTheme, onComplete }) {
 
     // Simulate processing
     setTimeout(() => {
-      // Save to context or pass to parent
-      if (onComplete) {
-        onComplete(formData);
-      }
+      // Save to context
+      setHeuristicProfile(formData);
       // Navigate to simulate page
       navigate('/simulate');
     }, 3000);
@@ -111,6 +112,7 @@ function Questionnaire({ bgTheme, onComplete }) {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 pt-24">
+      <BackButton to="/" bgTheme={bgTheme} />
       <div className="w-full max-w-3xl">
         {/* Header */}
         <div className="text-center mb-8">

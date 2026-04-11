@@ -1,8 +1,11 @@
+import BackButton from '../components/BackButton';
+
 function About({ bgTheme }) {
   const isLight = bgTheme === 'light';
 
   return (
     <div className="min-h-screen p-6 pt-24">
+      <BackButton to="/" bgTheme={bgTheme} />
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent">

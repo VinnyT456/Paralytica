@@ -5,6 +5,7 @@ import Step2PrimaryTimeline from '../components/Step2PrimaryTimeline';
 import Step3Loading from '../components/Step3Loading';
 import Step4FracturedTimeline from '../components/Step4FracturedTimeline';
 import Modal from '../components/Modal';
+import BackButton from '../components/BackButton';
 
 function Simulate({ bgTheme }) {
   const [step, setStep] = useState(1);
@@ -51,6 +52,7 @@ function Simulate({ bgTheme }) {
 
   return (
     <div className="pt-20">
+      {step === 1 && <BackButton to="/questionnaire" bgTheme={bgTheme} />}
       {step === 1 && <Step1MapTimeline onNext={handleStep1Complete} bgTheme={bgTheme} />}
       {step === 2 && <Step2PrimaryTimeline lifePoints={lifePoints} onBranch={handleBranchClick} bgTheme={bgTheme} />}
       {step === 3 && <Step3Loading bgTheme={bgTheme} />}

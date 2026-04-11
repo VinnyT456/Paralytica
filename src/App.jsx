@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AppProvider } from './context/AppContext';
 import Navigation from './components/Navigation';
 import Home from './pages/Home';
 import About from './pages/About';
 import Questionnaire from './pages/Questionnaire';
 import Simulate from './pages/Simulate';
+import History from './pages/History';
 
 // Layout Component (wraps all pages with navigation and theme)
-function Layout({ bgTheme, setBgTheme, heuristicProfile, setHeuristicProfile }) {
+function Layout({ bgTheme, setBgTheme }) {
   const isLight = bgTheme === 'light';
 
   // Get background styles based on theme
@@ -34,8 +36,9 @@ function Layout({ bgTheme, setBgTheme, heuristicProfile, setHeuristicProfile }) 
       <Routes>
         <Route path="/" element={<Home bgTheme={bgTheme} />} />
         <Route path="/about" element={<About bgTheme={bgTheme} />} />
-        <Route path="/questionnaire" element={<Questionnaire bgTheme={bgTheme} onComplete={setHeuristicProfile} />} />
-        <Route path="/simulate" element={<Simulate bgTheme={bgTheme} heuristicProfile={heuristicProfile} />} />
+        <Route path="/questionnaire" element={<Questionnaire bgTheme={bgTheme} />} />
+        <Route path="/simulate" element={<Simulate bgTheme={bgTheme} />} />
+        <Route path="/history" element={<History bgTheme={bgTheme} />} />
       </Routes>
     </div>
   );
@@ -44,17 +47,13 @@ function Layout({ bgTheme, setBgTheme, heuristicProfile, setHeuristicProfile }) 
 // Main App Component with Theming
 function App() {
   const [bgTheme, setBgTheme] = useState('space');
-  const [heuristicProfile, setHeuristicProfile] = useState(null);
 
   return (
-    <BrowserRouter>
-      <Layout
-        bgTheme={bgTheme}
-        setBgTheme={setBgTheme}
-        heuristicProfile={heuristicProfile}
-        setHeuristicProfile={setHeuristicProfile}
-      />
-    </BrowserRouter>
+    <AppProvider>
+      <BrowserRouter>
+        <Layout bgTheme={bgTheme} setBgTheme={setBgTheme} />
+      </BrowserRouter>
+    </AppProvider>
   );
 }
 
