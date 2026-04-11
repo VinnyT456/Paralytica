@@ -7,7 +7,12 @@ import {
   Loader2,
   RefreshCcw,
   X,
-  Play
+  Play,
+  Sparkles,
+  Palette,
+  Home as HomeIcon,
+  Info,
+  Zap
 } from 'lucide-react';
 
 // Mock API simulation function
@@ -65,6 +70,237 @@ const simulateBranchResponse = async (branchPoint, newDecision, includeSocial) =
     }, 2500);
   });
 };
+
+// Navigation Bar Component
+function NavigationBar({ currentPage, setCurrentPage, bgTheme, setBgTheme }) {
+  const themes = ['space', 'cyber', 'void'];
+
+  const cycleTheme = () => {
+    const currentIndex = themes.indexOf(bgTheme);
+    const nextIndex = (currentIndex + 1) % themes.length;
+    setBgTheme(themes[nextIndex]);
+  };
+
+  const getThemeIcon = () => {
+    switch(bgTheme) {
+      case 'space': return '🌌';
+      case 'cyber': return '⚡';
+      case 'void': return '🌑';
+      default: return '🎨';
+    }
+  };
+
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
+      <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => setCurrentPage('home')}>
+            <Sparkles className="text-purple-500" size={28} />
+            <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-sky-400 bg-clip-text text-transparent">
+              NEXUS
+            </span>
+          </div>
+
+          {/* Navigation Links */}
+          <div className="flex items-center gap-6">
+            <button
+              onClick={() => setCurrentPage('home')}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                currentPage === 'home'
+                  ? 'text-purple-400 bg-purple-500/10'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <HomeIcon size={18} />
+              Home
+            </button>
+
+            <button
+              onClick={() => setCurrentPage('about')}
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                currentPage === 'about'
+                  ? 'text-purple-400 bg-purple-500/10'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <Info size={18} />
+              About
+            </button>
+
+            <button
+              onClick={() => setCurrentPage('simulate')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-sky-600 hover:from-purple-500 hover:to-sky-500 text-white transition-all shadow-[0_0_15px_rgba(168,85,247,0.3)] ${
+                currentPage === 'simulate' ? 'ring-2 ring-purple-400' : ''
+              }`}
+            >
+              <Zap size={18} />
+              Launch Simulator
+            </button>
+
+            {/* Theme Switcher */}
+            <button
+              onClick={cycleTheme}
+              className="ml-2 p-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors text-2xl"
+              title={`Current theme: ${bgTheme}`}
+            >
+              {getThemeIcon()}
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+}
+
+// Home Page Component
+function HomePage({ setCurrentPage }) {
+  return (
+    <div className="min-h-screen flex items-center justify-center p-6 pt-24">
+      <div className="max-w-5xl mx-auto text-center">
+        {/* Hero Section */}
+        <div className="mb-12 animate-fade-in-up">
+          <div className="inline-block mb-6">
+            <Sparkles className="text-purple-500 mx-auto animate-pulse" size={64} />
+          </div>
+
+          <h1 className="text-7xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-purple-400 via-sky-400 to-emerald-400 bg-clip-text text-transparent leading-tight">
+            Map Your Multiverse
+          </h1>
+
+          <p className="text-2xl text-slate-400 mb-4 max-w-3xl mx-auto">
+            Every decision splits reality into infinite branches.
+            Visualize the life you didn't choose.
+          </p>
+
+          <p className="text-lg text-slate-500 mb-12 max-w-2xl mx-auto">
+            A data storytelling tool that simulates alternate timelines based on pivotal life decisions.
+            See how different choices reshape your career, relationships, and happiness across parallel realities.
+          </p>
+
+          {/* CTA Button */}
+          <button
+            onClick={() => setCurrentPage('simulate')}
+            className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-purple-600 via-sky-600 to-emerald-600 hover:from-purple-500 hover:via-sky-500 hover:to-emerald-500 text-white text-xl font-bold px-12 py-6 rounded-2xl transition-all duration-500 shadow-[0_0_40px_rgba(168,85,247,0.4)] hover:shadow-[0_0_60px_rgba(168,85,247,0.6)] hover:scale-105"
+          >
+            <Zap className="group-hover:rotate-12 transition-transform" size={28} />
+            Initialize Engine
+            <ArrowRight className="group-hover:translate-x-2 transition-transform" size={28} />
+          </button>
+        </div>
+
+        {/* Feature Pills */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
+          <div className="bg-slate-900/60 backdrop-blur-sm border border-purple-500/30 rounded-xl p-6">
+            <GitBranch className="text-purple-400 mb-3 mx-auto" size={32} />
+            <h3 className="text-lg font-semibold text-slate-200 mb-2">Timeline Branching</h3>
+            <p className="text-sm text-slate-400">Explore how pivotal decisions create divergent life paths</p>
+          </div>
+
+          <div className="bg-slate-900/60 backdrop-blur-sm border border-sky-500/30 rounded-xl p-6">
+            <Loader2 className="text-sky-400 mb-3 mx-auto" size={32} />
+            <h3 className="text-lg font-semibold text-slate-200 mb-2">Reality Simulation</h3>
+            <p className="text-sm text-slate-400">AI-powered narrative generation for alternate futures</p>
+          </div>
+
+          <div className="bg-slate-900/60 backdrop-blur-sm border border-emerald-500/30 rounded-xl p-6">
+            <Sparkles className="text-emerald-400 mb-3 mx-auto" size={32} />
+            <h3 className="text-lg font-semibold text-slate-200 mb-2">Data Storytelling</h3>
+            <p className="text-sm text-slate-400">Visualize happiness, wealth, and satisfaction metrics</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// About Page Component
+function AboutPage() {
+  return (
+    <div className="min-h-screen p-6 pt-24">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-16">
+          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent">
+            About Nexus
+          </h1>
+          <p className="text-xl text-slate-400">
+            A WildHacks 2026 Project: Time as Branching Decisions
+          </p>
+        </div>
+
+        {/* Philosophy Section */}
+        <div className="bg-slate-900/60 backdrop-blur-sm border border-slate-800 rounded-xl p-8 mb-8 hover:border-purple-500/50 transition-all duration-300">
+          <h2 className="text-3xl font-bold mb-4 text-transparent bg-gradient-to-r from-purple-400 to-sky-400 bg-clip-text">
+            The Philosophy of Time
+          </h2>
+          <div className="space-y-4 text-slate-300 leading-relaxed">
+            <p>
+              Time is not a linear path but a branching tree of infinite possibilities. Each decision we make splits reality into parallel timelines—worlds where we chose differently, where we became someone else.
+            </p>
+            <p>
+              Nexus is an exploration of the many-worlds interpretation applied to human choice. It asks: What if you could see the ghost of the life you didn't live? What if every crossroads spawned a new universe?
+            </p>
+            <p>
+              This project visualizes decision-driven divergence through data storytelling, transforming abstract regret into concrete alternate trajectories. It's a meditation on choice, consequence, and the weight of roads not taken.
+            </p>
+          </div>
+        </div>
+
+        {/* Tech Stack Section */}
+        <div className="bg-slate-900/60 backdrop-blur-sm border border-slate-800 rounded-xl p-8 hover:border-sky-500/50 transition-all duration-300">
+          <h2 className="text-3xl font-bold mb-4 text-transparent bg-gradient-to-r from-sky-400 to-emerald-400 bg-clip-text">
+            The Tech Stack
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <h3 className="text-lg font-semibold text-slate-200 mb-3 flex items-center gap-2">
+                <div className="w-2 h-2 bg-purple-500 rounded-full" />
+                Frontend Architecture
+              </h3>
+              <ul className="space-y-2 text-slate-400">
+                <li>• React 19 with Hooks (useState, useEffect)</li>
+                <li>• Tailwind CSS for styling</li>
+                <li>• Lucide React for iconography</li>
+                <li>• Custom animations & transitions</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold text-slate-200 mb-3 flex items-center gap-2">
+                <div className="w-2 h-2 bg-sky-500 rounded-full" />
+                Design System
+              </h3>
+              <ul className="space-y-2 text-slate-400">
+                <li>• Dark mode neon aesthetic</li>
+                <li>• Glassmorphism effects</li>
+                <li>• Gradient accents (purple/sky/emerald)</li>
+                <li>• Dynamic theme switching</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-slate-700 pt-6">
+            <h3 className="text-lg font-semibold text-slate-200 mb-3 flex items-center gap-2">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full" />
+              Data & Simulation
+            </h3>
+            <p className="text-slate-400">
+              Mock API generates branching narratives with configurable social dynamics.
+              Three-node projection system (Year +1, +3, +5) with metrics tracking for wealth trajectory,
+              job satisfaction, and overall happiness across alternate timelines.
+            </p>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center mt-12 text-slate-500">
+          <p>Built with curiosity and code at WildHacks 2026</p>
+          <p className="text-sm mt-2">Theme: Time as Branching Decisions</p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // Step 1: Map the Timeline Component
 function Step1MapTimeline({ onNext }) {
@@ -592,8 +828,8 @@ function Step4FracturedTimeline({ lifePoints, branchIndex, branchDecision, alter
   );
 }
 
-// Main App Component
-function App() {
+// Simulate Page Component (wraps the existing 4-step flow)
+function SimulatePage() {
   const [step, setStep] = useState(1);
   const [lifePoints, setLifePoints] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState(null);
@@ -637,7 +873,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="pt-20">
       {step === 1 && <Step1MapTimeline onNext={handleStep1Complete} />}
       {step === 2 && <Step2PrimaryTimeline lifePoints={lifePoints} onBranch={handleBranchClick} />}
       {step === 3 && <Step3Loading />}
@@ -658,6 +894,54 @@ function App() {
           onSubmit={handleModalSubmit}
         />
       )}
+    </div>
+  );
+}
+
+// Main App Component with Routing and Theming
+function App() {
+  const [currentPage, setCurrentPage] = useState('home');
+  const [bgTheme, setBgTheme] = useState('space');
+
+  // Get background styles based on theme
+  const getBackgroundStyles = () => {
+    switch(bgTheme) {
+      case 'space':
+        return {
+          background: 'radial-gradient(ellipse at top, #1e1b4b 0%, #0f172a 50%, #020617 100%)',
+        };
+      case 'cyber':
+        return {
+          background: '#0a0a0a',
+          backgroundImage: `
+            linear-gradient(rgba(6, 182, 212, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(6, 182, 212, 0.05) 1px, transparent 1px)
+          `,
+          backgroundSize: '50px 50px',
+        };
+      case 'void':
+        return {
+          background: '#000000',
+        };
+      default:
+        return {
+          background: '#020617',
+        };
+    }
+  };
+
+  return (
+    <div className="min-h-screen text-slate-200" style={getBackgroundStyles()}>
+      <NavigationBar
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        bgTheme={bgTheme}
+        setBgTheme={setBgTheme}
+      />
+
+      {currentPage === 'home' && <HomePage setCurrentPage={setCurrentPage} />}
+      {currentPage === 'about' && <AboutPage />}
+      {currentPage === 'simulate' && <SimulatePage />}
     </div>
   );
 }
