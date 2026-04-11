@@ -11,38 +11,53 @@ import {
 } from 'lucide-react';
 
 // Mock API simulation function
-const simulateBranchResponse = async (branchPoint, newDecision) => {
+const simulateBranchResponse = async (branchPoint, newDecision, includeSocial) => {
   return new Promise((resolve) => {
     setTimeout(() => {
       const baseYear = parseInt(branchPoint.year);
+
+      // Generate narratives based on includeSocial flag
+      const narratives = includeSocial ? {
+        firstRipple: "Your decision begins to reshape daily reality. New professional connections form, and you meet someone at a networking event who becomes more than a colleague. Dating in this new chapter feels different—more aligned with who you're becoming.",
+        metamorphosis: "The changes compound. Your career trajectory shifts dramatically, and you're now in a serious relationship. Friends from your old life barely recognize you. Conversations about long-term partnership and life planning become regular.",
+        newEquilibrium: "A new normal emerges. You're thriving professionally and have built a life with a partner who shares this alternate vision. Looking back at the old timeline feels like observing a stranger's abandoned life."
+      } : {
+        firstRipple: "Your decision begins to reshape your professional reality. New connections form in your industry, old patterns fade. The career path forward feels uncertain but alive with potential.",
+        metamorphosis: "The professional changes compound. Your skills have evolved dramatically. Industry doors you didn't know existed swing open. Your reputation in this new field grows.",
+        newEquilibrium: "A new professional equilibrium emerges. Your career trajectory is unrecognizable from the original path. Looking back, the old job feels like a distant memory, a parallel universe you once inhabited."
+      };
+
       resolve({
         multiverse_summary: `In this alternate timeline, your choice to ${newDecision.toLowerCase()} created a cascade of new possibilities. The simulation projects three key moments in this divergent reality.`,
         timeline: [
           {
             year: baseYear + 1,
             title: "The First Ripple",
-            narrative: "Your decision begins to reshape daily reality. New connections form, old patterns fade. The path forward feels uncertain but alive with potential.",
+            narrative: narratives.firstRipple,
             metrics: {
-              stress: 45,
-              fulfillment: 72
+              wealth: 65,
+              satisfaction: 78,
+              happiness: 72
             }
           },
           {
             year: baseYear + 3,
             title: "The Metamorphosis",
-            narrative: "The changes compound. You're unrecognizable to your past self. Skills you never imagined having become second nature. Doors you didn't know existed swing open.",
+            narrative: narratives.metamorphosis,
             metrics: {
-              stress: 38,
-              fulfillment: 85
+              wealth: 82,
+              satisfaction: 88,
+              happiness: 85
             }
           },
           {
             year: baseYear + 5,
             title: "The New Equilibrium",
-            narrative: "A new normal emerges. Looking back, the old timeline feels like a distant memory, a parallel universe you once inhabited. This is home now.",
+            narrative: narratives.newEquilibrium,
             metrics: {
-              stress: 25,
-              fulfillment: 91
+              wealth: 90,
+              satisfaction: 92,
+              happiness: 94
             }
           }
         ]
@@ -54,14 +69,15 @@ const simulateBranchResponse = async (branchPoint, newDecision) => {
 // Step 1: Map the Timeline Component
 function Step1MapTimeline({ onNext }) {
   const [lifePoints, setLifePoints] = useState([
-    { id: 1, year: '2019', title: 'Started College', description: 'Enrolled in Computer Science, full of optimism and uncertainty.' },
-    { id: 2, year: '2021', title: 'Landed Corporate Job', description: 'Accepted a high-paying role at a prestigious tech company.' },
-    { id: 3, year: '2024', title: 'The Burnout', description: 'Realized the golden handcuffs were real. Felt trapped and unfulfilled.' }
+    { id: 1, year: '2019', role: 'Computer Science Student', company: 'Northwestern University', location: 'Evanston, IL', happiness: 7 },
+    { id: 2, year: '2021', role: 'Software Engineer', company: 'Meta', location: 'Menlo Park, CA', happiness: 8 },
+    { id: 3, year: '2024', role: 'Senior Software Engineer', company: 'Meta', location: 'Menlo Park, CA', happiness: 4 }
   ]);
+  const [includeSocial, setIncludeSocial] = useState(true);
 
   const addLifePoint = () => {
     const newId = Math.max(...lifePoints.map(p => p.id), 0) + 1;
-    setLifePoints([...lifePoints, { id: newId, year: '', title: '', description: '' }]);
+    setLifePoints([...lifePoints, { id: newId, year: '', role: '', company: '', location: '', happiness: 5 }]);
   };
 
   const removeLifePoint = (id) => {
@@ -78,10 +94,10 @@ function Step1MapTimeline({ onNext }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const validPoints = lifePoints.filter(p => p.year && p.title);
+    const validPoints = lifePoints.filter(p => p.year && p.role);
     if (validPoints.length > 0) {
       const sortedPoints = validPoints.sort((a, b) => parseInt(a.year) - parseInt(b.year));
-      onNext(sortedPoints);
+      onNext(sortedPoints, includeSocial);
     }
   };
 
@@ -134,27 +150,58 @@ function Step1MapTimeline({ onNext }) {
                   </div>
 
                   <div className="md:col-span-3">
-                    <label className="block text-sm text-slate-400 mb-2">Title</label>
+                    <label className="block text-sm text-slate-400 mb-2">Role/Title</label>
                     <input
                       type="text"
-                      value={point.title}
-                      onChange={(e) => updateLifePoint(point.id, 'title', e.target.value)}
+                      value={point.role}
+                      onChange={(e) => updateLifePoint(point.id, 'role', e.target.value)}
                       className="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-slate-200 focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
-                      placeholder="A pivotal moment..."
+                      placeholder="Software Engineer"
                       required
                     />
                   </div>
                 </div>
 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <div>
+                    <label className="block text-sm text-slate-400 mb-2">Company/Institution</label>
+                    <input
+                      type="text"
+                      value={point.company}
+                      onChange={(e) => updateLifePoint(point.id, 'company', e.target.value)}
+                      className="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-slate-200 focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                      placeholder="Google"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm text-slate-400 mb-2">Location</label>
+                    <input
+                      type="text"
+                      value={point.location}
+                      onChange={(e) => updateLifePoint(point.id, 'location', e.target.value)}
+                      className="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-slate-200 focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                      placeholder="Austin, TX"
+                    />
+                  </div>
+                </div>
+
                 <div className="mt-4">
-                  <label className="block text-sm text-slate-400 mb-2">Description</label>
-                  <textarea
-                    value={point.description}
-                    onChange={(e) => updateLifePoint(point.id, 'description', e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-slate-200 focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500 resize-none"
-                    rows="2"
-                    placeholder="What happened during this moment?"
+                  <label className="block text-sm text-slate-400 mb-2">
+                    Current Happiness: <span className="text-purple-400 font-semibold">{point.happiness}/10</span>
+                  </label>
+                  <input
+                    type="range"
+                    min="1"
+                    max="10"
+                    value={point.happiness}
+                    onChange={(e) => updateLifePoint(point.id, 'happiness', parseInt(e.target.value))}
+                    className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-purple-500"
                   />
+                  <div className="flex justify-between text-xs text-slate-500 mt-1">
+                    <span>1 (Low)</span>
+                    <span>10 (High)</span>
+                  </div>
                 </div>
               </div>
             ))}
@@ -167,6 +214,31 @@ function Step1MapTimeline({ onNext }) {
               <Plus size={20} />
               Add Milestone
             </button>
+
+            {/* Social Dynamics Toggle */}
+            <div className="bg-gradient-to-r from-purple-900/20 to-sky-900/20 border border-purple-500/30 rounded-lg p-5">
+              <label className="flex items-center justify-between cursor-pointer">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-slate-200 mb-1">
+                    Include Social & Relationship Dynamics
+                  </h3>
+                  <p className="text-sm text-slate-400">
+                    Simulate how relationships, dating, and family planning evolve in alternate timelines
+                  </p>
+                </div>
+                <div className="ml-4">
+                  <div className="relative">
+                    <input
+                      type="checkbox"
+                      checked={includeSocial}
+                      onChange={(e) => setIncludeSocial(e.target.checked)}
+                      className="sr-only peer"
+                    />
+                    <div className="w-14 h-8 bg-slate-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-purple-600 peer-checked:to-sky-600"></div>
+                  </div>
+                </div>
+              </label>
+            </div>
 
             <button
               type="submit"
@@ -210,8 +282,24 @@ function Step2PrimaryTimeline({ lifePoints, onBranch }) {
 
                 {/* Card */}
                 <div className="flex-1 bg-slate-900/60 backdrop-blur-sm border border-slate-800 rounded-xl p-6 hover:border-purple-500/50 transition-all duration-300 shadow-lg">
-                  <h3 className="text-xl font-semibold text-slate-100 mb-2">{point.title}</h3>
-                  <p className="text-slate-400 mb-4">{point.description}</p>
+                  <h3 className="text-xl font-semibold text-slate-100 mb-2">{point.role}</h3>
+                  <p className="text-slate-400 mb-1">
+                    {point.company && <span className="text-sky-400">{point.company}</span>}
+                    {point.company && point.location && <span className="text-slate-600 mx-2">•</span>}
+                    {point.location && <span className="text-slate-500">{point.location}</span>}
+                  </p>
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="text-xs text-slate-500">Happiness:</span>
+                    <div className="flex gap-1">
+                      {[...Array(10)].map((_, i) => (
+                        <div
+                          key={i}
+                          className={`w-2 h-2 rounded-full ${i < point.happiness ? 'bg-purple-500' : 'bg-slate-700'}`}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-xs text-purple-400 font-semibold">{point.happiness}/10</span>
+                  </div>
 
                   <button
                     onClick={() => onBranch(point, index)}
@@ -250,7 +338,8 @@ function Modal({ branchPoint, onClose, onSubmit }) {
               Branching Point Detected
             </h2>
             <p className="text-slate-400">
-              <span className="text-sky-400 font-semibold">{branchPoint.year}</span> — {branchPoint.title}
+              <span className="text-sky-400 font-semibold">{branchPoint.year}</span> — {branchPoint.role}
+              {branchPoint.company && <span className="text-slate-500"> at {branchPoint.company}</span>}
             </p>
           </div>
           <button
@@ -368,8 +457,12 @@ function Step4FracturedTimeline({ lifePoints, branchIndex, branchDecision, alter
                     </div>
                   </div>
                   <div className="flex-1 bg-slate-900/40 border border-slate-800 rounded-xl p-5">
-                    <h3 className="text-lg font-semibold text-slate-300 mb-1">{point.title}</h3>
-                    <p className="text-slate-500 text-sm">{point.description}</p>
+                    <h3 className="text-lg font-semibold text-slate-300 mb-1">{point.role}</h3>
+                    <p className="text-slate-500 text-sm">
+                      {point.company && <span>{point.company}</span>}
+                      {point.company && point.location && <span> • </span>}
+                      {point.location && <span>{point.location}</span>}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -411,8 +504,12 @@ function Step4FracturedTimeline({ lifePoints, branchIndex, branchDecision, alter
                       </div>
                     </div>
                     <div className="flex-1 bg-slate-900/20 border border-slate-800 rounded-xl p-5">
-                      <h3 className="text-lg font-semibold text-slate-600 mb-1">{point.title}</h3>
-                      <p className="text-slate-700 text-sm">{point.description}</p>
+                      <h3 className="text-lg font-semibold text-slate-600 mb-1">{point.role}</h3>
+                      <p className="text-slate-700 text-sm">
+                        {point.company && <span>{point.company}</span>}
+                        {point.company && point.location && <span> • </span>}
+                        {point.location && <span>{point.location}</span>}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -448,25 +545,37 @@ function Step4FracturedTimeline({ lifePoints, branchIndex, branchDecision, alter
                       <div className="space-y-3">
                         <div>
                           <div className="flex justify-between text-xs mb-1">
-                            <span className="text-slate-400">Stress</span>
-                            <span className="text-sky-400 font-semibold">{node.metrics.stress}%</span>
+                            <span className="text-slate-400">Wealth Trajectory</span>
+                            <span className="text-emerald-400 font-semibold">{node.metrics.wealth}%</span>
                           </div>
                           <div className="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
                             <div
-                              className="bg-gradient-to-r from-sky-500 to-sky-400 h-full rounded-full transition-all duration-1000"
-                              style={{ width: `${node.metrics.stress}%`, animationDelay: `${index * 0.3 + 0.5}s` }}
+                              className="bg-gradient-to-r from-emerald-500 to-emerald-400 h-full rounded-full transition-all duration-1000"
+                              style={{ width: `${node.metrics.wealth}%`, animationDelay: `${index * 0.3 + 0.5}s` }}
                             />
                           </div>
                         </div>
                         <div>
                           <div className="flex justify-between text-xs mb-1">
-                            <span className="text-slate-400">Fulfillment</span>
-                            <span className="text-emerald-400 font-semibold">{node.metrics.fulfillment}%</span>
+                            <span className="text-slate-400">Job Satisfaction</span>
+                            <span className="text-sky-400 font-semibold">{node.metrics.satisfaction}%</span>
                           </div>
                           <div className="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
                             <div
-                              className="bg-gradient-to-r from-emerald-500 to-emerald-400 h-full rounded-full transition-all duration-1000"
-                              style={{ width: `${node.metrics.fulfillment}%`, animationDelay: `${index * 0.3 + 0.5}s` }}
+                              className="bg-gradient-to-r from-sky-500 to-sky-400 h-full rounded-full transition-all duration-1000"
+                              style={{ width: `${node.metrics.satisfaction}%`, animationDelay: `${index * 0.3 + 0.5}s` }}
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <div className="flex justify-between text-xs mb-1">
+                            <span className="text-slate-400">Overall Happiness</span>
+                            <span className="text-purple-400 font-semibold">{node.metrics.happiness}%</span>
+                          </div>
+                          <div className="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
+                            <div
+                              className="bg-gradient-to-r from-purple-500 to-purple-400 h-full rounded-full transition-all duration-1000"
+                              style={{ width: `${node.metrics.happiness}%`, animationDelay: `${index * 0.3 + 0.5}s` }}
                             />
                           </div>
                         </div>
@@ -492,9 +601,11 @@ function App() {
   const [branchDecision, setBranchDecision] = useState('');
   const [alternateTimeline, setAlternateTimeline] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [includeSocial, setIncludeSocial] = useState(true);
 
-  const handleStep1Complete = (points) => {
+  const handleStep1Complete = (points, socialDynamics) => {
     setLifePoints(points);
+    setIncludeSocial(socialDynamics);
     setStep(2);
   };
 
@@ -509,8 +620,8 @@ function App() {
     setShowModal(false);
     setStep(3);
 
-    // Simulate API call
-    const response = await simulateBranchResponse(selectedBranch, decision);
+    // Simulate API call with includeSocial parameter
+    const response = await simulateBranchResponse(selectedBranch, decision, includeSocial);
     setAlternateTimeline(response);
     setStep(4);
   };
@@ -522,6 +633,7 @@ function App() {
     setBranchIndex(null);
     setBranchDecision('');
     setAlternateTimeline(null);
+    setIncludeSocial(true);
   };
 
   return (
