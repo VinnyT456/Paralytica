@@ -61,7 +61,7 @@ function History({ bgTheme }) {
             className="inline-flex items-center gap-3 bg-gradient-to-r from-sky-600 to-purple-600 hover:from-sky-500 hover:to-purple-500 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(14,165,233,0.3)] hover:shadow-[0_0_30px_rgba(14,165,233,0.5)]"
           >
             <Sparkles size={20} />
-            Initialize New Nexus
+            Initialize New Paralytica
           </button>
         </div>
       </div>
@@ -137,7 +137,7 @@ function History({ bgTheme }) {
                       <h2 className={`text-2xl font-bold mb-2 ${
                         isLight ? 'text-slate-800' : 'text-slate-100'
                       }`}>
-                        {timeline.name}'s Nexus Blueprint
+                        {timeline.name}'s Paralytica Blueprint
                       </h2>
                       <p className={`text-sm font-mono ${
                         isLight ? 'text-slate-500' : 'text-slate-500'

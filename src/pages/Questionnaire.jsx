@@ -128,7 +128,7 @@ function Questionnaire({ bgTheme }) {
         </div>
 
         {/* Progress Bar */}
-        <div className="mb-8">
+        <div className="top-20 z-40 mb-8 pb-6">
           <div className="flex justify-between text-sm mb-2">
             <span className={isLight ? 'text-slate-600' : 'text-slate-400'}>Initialization Progress</span>
             <span className="text-sky-400 font-semibold">{progress}%</span>
@@ -328,7 +328,7 @@ function Questionnaire({ bgTheme }) {
             disabled={progress < 100}
           >
             <Sparkles size={24} />
-            Nexus Identity
+            Paralytica Identity
           </button>
 
           {progress < 100 && (

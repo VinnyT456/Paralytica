@@ -35,7 +35,7 @@ function Navigation({ bgTheme, setBgTheme }) {
           <Link to="/" className="flex items-center gap-2 cursor-pointer">
             <Sparkles className="text-purple-500" size={28} />
             <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-sky-400 bg-clip-text text-transparent">
-              NEXUS
+              PARALYTICA
             </span>
           </Link>
 

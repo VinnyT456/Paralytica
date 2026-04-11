@@ -9,7 +9,7 @@ function About({ bgTheme }) {
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-16">
           <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent">
-            About Nexus
+            About Paralytica
           </h1>
           <p className={`text-xl ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
             A WildHacks 2026 Project: Time as Branching Decisions
@@ -32,7 +32,7 @@ function About({ bgTheme }) {
               Time is not a linear path but a branching tree of infinite possibilities. Each decision we make splits reality into parallel timelines—worlds where we chose differently, where we became someone else.
             </p>
             <p>
-              Nexus is an exploration of the many-worlds interpretation applied to human choice. It asks: What if you could see the ghost of the life you didn't live? What if every crossroads spawned a new universe?
+              Paralytica is an exploration of the many-worlds interpretation applied to human choice. It asks: What if you could see the ghost of the life you didn't live? What if every crossroads spawned a new universe?
             </p>
             <p>
               This project visualizes decision-driven divergence through data storytelling, transforming abstract regret into concrete alternate trajectories. It's a meditation on choice, consequence, and the weight of roads not taken.

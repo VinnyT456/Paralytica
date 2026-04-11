@@ -41,7 +41,7 @@ function Step1MapTimeline({ onNext, bgTheme }) {
       <div className="w-full max-w-3xl">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-sky-400 to-emerald-400 bg-clip-text text-transparent">
-            NEXUS: Multiverse Builder
+            PARALYTICA: Multiverse Builder
           </h1>
           <p className={`text-lg ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>Map your timeline. Explore what could have been.</p>
         </div>
