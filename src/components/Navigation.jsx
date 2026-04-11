@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Sparkles, Home as HomeIcon, Info, Zap, Clock } from 'lucide-react';
+import { Sparkles, Home as HomeIcon, Info, Zap, Clock, Sun, Moon } from 'lucide-react';
 
 function Navigation({ bgTheme, setBgTheme }) {
   const location = useLocation();
@@ -9,14 +9,6 @@ function Navigation({ bgTheme, setBgTheme }) {
     const currentIndex = themes.indexOf(bgTheme);
     const nextIndex = (currentIndex + 1) % themes.length;
     setBgTheme(themes[nextIndex]);
-  };
-
-  const getThemeIcon = () => {
-    switch(bgTheme) {
-      case 'space': return '🌌';
-      case 'light': return '☀️';
-      default: return '🎨';
-    }
   };
 
   const isLight = bgTheme === 'light';
@@ -96,14 +88,14 @@ function Navigation({ bgTheme, setBgTheme }) {
             {/* Theme Switcher */}
             <button
               onClick={cycleTheme}
-              className={`ml-2 p-2 rounded-lg transition-colors text-2xl ${
+              className={`ml-2 p-2 rounded-lg transition-colors ${
                 isLight
-                  ? 'bg-slate-100 hover:bg-slate-200'
-                  : 'bg-slate-800 hover:bg-slate-700'
+                  ? 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                  : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
               }`}
               title={`Current theme: ${bgTheme}`}
             >
-              {getThemeIcon()}
+              {isLight ? <Sun size={20} /> : <Moon size={20} />}
             </button>
           </div>
         </div>
