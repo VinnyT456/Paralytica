@@ -238,7 +238,7 @@ function Questionnaire({ bgTheme }) {
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
               <h1 className="text-3xl font-bold bg-gradient-to-r from-sky-400 to-purple-400 bg-clip-text text-transparent">
-                Identity Assessment
+                About You
               </h1>
             </div>
 
