@@ -63,20 +63,6 @@ function Navigation({ bgTheme, setBgTheme }) {
             </Link>
 
             <Link
-              to="/history"
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
-                isActive('/history')
-                  ? 'text-purple-600 bg-purple-500/10'
-                  : isLight
-                  ? 'text-slate-600 hover:text-slate-900'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <Clock size={18} />
-              Archive
-            </Link>
-
-            <Link
               to="/demo"
               className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
                 isActive('/demo')
@@ -97,7 +83,7 @@ function Navigation({ bgTheme, setBgTheme }) {
               }`}
             >
               <Zap size={18} />
-              Launch Simulator
+              Start Exploring
             </Link>
 
             {/* Theme Switcher */}
