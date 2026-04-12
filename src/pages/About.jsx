@@ -89,7 +89,7 @@ function About({ bgTheme }) {
           <h2 className="text-3xl font-bold mb-4 text-transparent bg-gradient-to-r from-sky-400 to-emerald-400 bg-clip-text">
             Tech Stack
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <h3 className={`text-lg font-semibold mb-3 flex items-center gap-2 ${
                 isLight ? 'text-slate-800' : 'text-slate-200'
@@ -120,22 +120,20 @@ function About({ bgTheme }) {
                 <li>• Theme Switching</li>
               </ul>
             </div>
-          </div>
 
-          <div className={`border-t pt-6 ${isLight ? 'border-slate-200' : 'border-slate-700'}`}>
-            <h3 className={`text-lg font-semibold mb-3 flex items-center gap-2 ${
-              isLight ? 'text-slate-800' : 'text-slate-200'
-            }`}>
-              <div className="w-2 h-2 bg-emerald-500 rounded-full" />
-              Data & Simulation
-            </h3>
-            <p className={isLight ? 'text-slate-600' : 'text-slate-400'}>
+            <div>
+              <h3 className={`text-lg font-semibold mb-3 flex items-center gap-2 ${
+                isLight ? 'text-slate-800' : 'text-slate-200'
+              }`}>
+                <div className="w-2 h-2 bg-emerald-500 rounded-full" />
+                Data & Simulation
+              </h3>
               <ul className={`space-y-2 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                 <li>• Simulated Scenarios (Mock API)</li>
                 <li>• Adjustable Variables</li>
                 <li>• Tracks Outcomes Across Timelines</li>
               </ul>
-            </p>
+            </div>
           </div>
         </div>
 
