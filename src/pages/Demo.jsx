@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
-import { MAYA_CHEN, JORDAN_REYES } from '../data/personas';
+import { MAYA_CHEN, JORDAN_REYES, getDemoPersonaById } from '../data/personas';
 
 function Demo({ bgTheme }) {
   const isLight = bgTheme === 'light';
   const navigate = useNavigate();
-  const { setHeuristicProfile, setDemoPersona } = useAppContext();
+  const { setHeuristicProfile, setDemoPersonaId } = useAppContext();
 
   const personas = [
     {
@@ -27,16 +27,16 @@ function Demo({ bgTheme }) {
   ];
 
   const handleExploreTimeline = (persona) => {
-    // Load persona's heuristic profile into context
-    setHeuristicProfile(persona.data.heuristicProfile);
+    const id = persona.data.id;
+    const resolved = getDemoPersonaById(id);
+    if (!resolved) return;
 
-    // Store the full persona data for use in Simulate
-    if (setDemoPersona) {
-      setDemoPersona(persona.data);
-    }
+    // Always from canonical frozen persona — not user-controlled input
+    setHeuristicProfile(resolved.heuristicProfile);
+    setDemoPersonaId(id);
 
-    // Navigate to simulate page
-    navigate('/simulate', { state: { demoPersona: persona.data } });
+    // Pass only id in history state; Simulate resolves via getDemoPersonaById (not spoofable data blobs)
+    navigate('/simulate', { state: { demoPersonaId: id } });
   };
 
   return (

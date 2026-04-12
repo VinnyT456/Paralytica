@@ -14,13 +14,41 @@ function DualTimeline({
   onManualOverride,
   onReset,
   bgTheme,
-  isDemoPersona = false
+  isDemoPersona = false,
+  demoTimelineLength = null
 }) {
   const navigate = useNavigate();
   const isLight = bgTheme === 'light';
   const [customDecision, setCustomDecision] = useState('');
   const timelineEndRef = useRef(null);
   const decisionInputRef = useRef(null);
+  const onAcceptRef = useRef(onAccept);
+  onAcceptRef.current = onAccept;
+
+  const isLastDemoDraft =
+    isDemoPersona &&
+    typeof demoTimelineLength === 'number' &&
+    demoTimelineLength > 0 &&
+    draftNode &&
+    projectedTimeline.length === demoTimelineLength - 1;
+
+  const hideDemoDecisionHeader =
+    isDemoPersona &&
+    typeof demoTimelineLength === 'number' &&
+    demoTimelineLength > 0 &&
+    projectedTimeline.length >= demoTimelineLength - 1 &&
+    (!draftNode || projectedTimeline.length === demoTimelineLength - 1);
+
+  const lastDemoAutoKeyRef = useRef(null);
+  useEffect(() => {
+    if (!isLastDemoDraft || !draftNode) return;
+    const key = `${draftNode.year}-${projectedTimeline.length}`;
+    if (lastDemoAutoKeyRef.current === key) return;
+    lastDemoAutoKeyRef.current = key;
+    const text = draftNode.aiSuggestion ?? customDecision ?? '';
+    onAcceptRef.current(text);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- avoid re-firing when customDecision syncs from prior step
+  }, [isLastDemoDraft, draftNode, projectedTimeline.length]);
 
   // Auto-scroll to bottom when new nodes are added
   useEffect(() => {
@@ -352,70 +380,74 @@ function DualTimeline({
                 </div>
               </div>
 
-              {/* Next Decision Input (AI Suggestion as editable field) */}
-              <div className={`mb-4 p-3 rounded-lg border ${
-                isLight
-                  ? 'bg-sky-50/80 border-sky-300'
-                  : 'bg-sky-900/10 border-sky-700/50'
-              }`}>
-                <div className="flex items-start gap-2">
-                  <Wand2 className={`flex-shrink-0 mt-2 ${
-                    isLight ? 'text-sky-600' : 'text-sky-400'
-                  }`} size={16} />
-                  <div className="flex-1">
-                    <p className={`text-xs font-semibold mb-2 ${
-                      isLight ? 'text-sky-700' : 'text-sky-300'
-                    }`}>
-                      Next Step Decision
-                    </p>
-                    <input
-                      ref={decisionInputRef}
-                      type="text"
-                      value={customDecision}
-                      onChange={(e) => setCustomDecision(e.target.value)}
-                      className={`w-full border rounded-md px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50 ${
-                        isLight
-                          ? 'bg-white border-sky-300 text-slate-900 placeholder-slate-400'
-                          : 'bg-slate-900/50 border-sky-700 text-slate-200 placeholder-slate-500'
-                      }`}
-                      placeholder="What if I..."
-                    />
-                    {draftNode.nextPrompt && (
-                      <p className={`text-xs mt-2 italic ${
-                        isLight ? 'text-slate-600' : 'text-slate-400'
-                      }`}>
-                        {draftNode.nextPrompt}
-                      </p>
-                    )}
+              {!isLastDemoDraft && (
+                <>
+                  {/* Next Decision Input (AI Suggestion as editable field) */}
+                  <div className={`mb-4 p-3 rounded-lg border ${
+                    isLight
+                      ? 'bg-sky-50/80 border-sky-300'
+                      : 'bg-sky-900/10 border-sky-700/50'
+                  }`}>
+                    <div className="flex items-start gap-2">
+                      <Wand2 className={`flex-shrink-0 mt-2 ${
+                        isLight ? 'text-sky-600' : 'text-sky-400'
+                      }`} size={16} />
+                      <div className="flex-1">
+                        <p className={`text-xs font-semibold mb-2 ${
+                          isLight ? 'text-sky-700' : 'text-sky-300'
+                        }`}>
+                          Your Decision
+                        </p>
+                        <input
+                          ref={decisionInputRef}
+                          type="text"
+                          value={customDecision}
+                          onChange={(e) => setCustomDecision(e.target.value)}
+                          className={`w-full border rounded-md px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50 ${
+                            isLight
+                              ? 'bg-white border-sky-300 text-slate-900 placeholder-slate-400'
+                              : 'bg-slate-900/50 border-sky-700 text-slate-200 placeholder-slate-500'
+                          }`}
+                          placeholder="What if I..."
+                        />
+                        {draftNode.nextPrompt && (
+                          <p className={`text-xs mt-2 italic ${
+                            isLight ? 'text-slate-600' : 'text-slate-400'
+                          }`}>
+                            {draftNode.nextPrompt}
+                          </p>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
 
-              {/* Action Buttons */}
-              <div className="flex gap-2">
-                <button
-                  onClick={handleAcceptClick}
-                  className={`flex-1 flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-300 ${
-                    isLight
-                      ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-500/50 hover:shadow-emerald-500/70'
-                      : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.6)] hover:shadow-[0_0_25px_rgba(16,185,129,0.8)] ring-2 ring-emerald-400/30'
-                  }`}
-                >
-                  <Check size={14} />
-                  Accept & Continue
-                </button>
-                <button
-                  onClick={handleDivergeClick}
-                  className={`flex-1 flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-300 ${
-                    isLight
-                      ? 'bg-slate-600 hover:bg-slate-500 text-white shadow-md'
-                      : 'bg-slate-700 hover:bg-slate-600 text-white shadow-[0_0_10px_rgba(100,116,139,0.3)]'
-                  }`}
-                >
-                  <RefreshCw size={14} />
-                  Clear & Rewrite
-                </button>
-              </div>
+                  {/* Action Buttons */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleAcceptClick}
+                      className={`flex-1 flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-300 ${
+                        isLight
+                          ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-500/50 hover:shadow-emerald-500/70'
+                          : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.6)] hover:shadow-[0_0_25px_rgba(16,185,129,0.8)] ring-2 ring-emerald-400/30'
+                      }`}
+                    >
+                      <Check size={14} />
+                      Accept & Continue
+                    </button>
+                    <button
+                      onClick={handleDivergeClick}
+                      className={`flex-1 flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-300 ${
+                        isLight
+                          ? 'bg-slate-600 hover:bg-slate-500 text-white shadow-md'
+                          : 'bg-slate-700 hover:bg-slate-600 text-white shadow-[0_0_10px_rgba(100,116,139,0.3)]'
+                      }`}
+                    >
+                      <RefreshCw size={14} />
+                      Clear & Rewrite
+                    </button>
+                  </div>
+                </>
+              )}
             </>
           )}
         </div>
@@ -443,24 +475,26 @@ function DualTimeline({
               ? 'from-slate-900 via-slate-600 to-transparent bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]'
               : 'from-white via-slate-300 to-transparent bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]'
           }`}>
-            Dual-Universe Comparison
+            Compare Two Possible Futures
           </h1>
 
-          {/* THE DECISION CHIP - Enhanced */}
-          <div className="flex flex-col items-center">
-            <p className={`text-xs font-bold font-mono tracking-widest mb-2 ${
-              isLight ? 'text-slate-600' : 'text-slate-500'
-            }`}>
-              DECISION: WHAT IF I
-            </p>
-            <div className={`relative bg-sky-500/10 border-2 border-sky-400 rounded-full px-8 py-3 shadow-[0_0_30px_rgba(56,189,248,0.4)] ${
-              isLight ? 'shadow-[0_0_25px_rgba(56,189,248,0.3)]' : 'shadow-[0_0_30px_rgba(56,189,248,0.4)]'
-            }`}>
-              <span className="text-sky-400 font-bold text-2xl">
-                {branchDecision}
-              </span>
+          {/* THE DECISION CHIP - Enhanced (hidden for demo once the scripted path reaches its final segment) */}
+          {!hideDemoDecisionHeader && (
+            <div className="flex flex-col items-center">
+              <p className={`text-xs font-bold font-mono tracking-widest mb-2 ${
+                isLight ? 'text-slate-600' : 'text-slate-500'
+              }`}>
+                Your decision: What if you…
+              </p>
+              <div className={`relative bg-sky-500/10 border-2 border-sky-400 rounded-full px-8 py-3 shadow-[0_0_30px_rgba(56,189,248,0.4)] ${
+                isLight ? 'shadow-[0_0_25px_rgba(56,189,248,0.3)]' : 'shadow-[0_0_30px_rgba(56,189,248,0.4)]'
+              }`}>
+                <span className="text-sky-400 font-bold text-2xl">
+                  {branchDecision}
+                </span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* UNIVERSE CONTAINERS - Holographic Panels */}
@@ -474,12 +508,12 @@ function DualTimeline({
             <h2 className={`text-2xl font-black tracking-[0.3em] uppercase mb-3 ${
               isLight ? 'text-slate-600' : 'text-slate-500'
             }`}>
-              BASELINE REALITY
+              YOUR CURRENT PATH
             </h2>
             <p className={`text-xs font-light max-w-xs ${
               isLight ? 'text-slate-600' : 'text-slate-600'
             }`}>
-              The grounded, original trajectory based on your established history.
+              The direction your life is heading in right now, based on your past choices and experiences. 
             </p>
           </div>
 
@@ -490,12 +524,12 @@ function DualTimeline({
               : 'bg-slate-950/20 border-slate-800/60'
           }`}>
             <h2 className="text-2xl font-black tracking-[0.3em] uppercase mb-3 bg-gradient-to-r from-sky-400 to-purple-500 bg-clip-text text-transparent">
-              PROJECTED FUTURE
+              A POSSIBLE FUTURE 
             </h2>
             <p className={`text-xs font-light max-w-xs ${
               isLight ? 'text-slate-600' : 'text-slate-400'
             }`}>
-              The unfolding nexus of potential—a life re-forged by your active decisions.
+              How making a different choice could change your direction and lead your life somewhere new. 
             </p>
           </div>
         </div>

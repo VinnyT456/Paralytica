@@ -1,6 +1,8 @@
 // Pre-configured demo personas with complete questionnaire and career data
 
 export const MAYA_CHEN = {
+  /** Stable id for routing / lookup — never trust client-supplied persona objects; resolve by id. */
+  id: 'maya_chen',
   // Basic Info
   name: "Maya Chen",
   gender: "Female",
@@ -55,7 +57,7 @@ export const MAYA_CHEN = {
   branchOutcomes: {
     default: {
       // Single branching path (works for any milestone)
-      decision: "What if I declined Figma and joined a healthcare startup instead?",
+      decision: "I doubled down on the work at HealthNow, taking on more responsibility as the team starts to grow.",
       timeline: [
         {
           year: 2025,
@@ -87,32 +89,13 @@ export const MAYA_CHEN = {
             happiness: 68
           }
         },
-        {
-          year: 2032,
-          title: "Acquisition & New Chapter",
-          narrative: "HealthNow is acquired by UnitedHealth for $120M. Your equity payout is life-changing. You take three months off to travel and journal extensively. When you return, you join a venture capital firm as a Venture Partner, focusing on early-stage health tech investments. You're now on the other side of the table, helping founders navigate the journey you just completed.",
-          metrics: {
-            wealth: 92,
-            satisfaction: 85,
-            happiness: 88
-          }
-        },
-        {
-          year: 2034,
-          title: "Investor & Advisor",
-          narrative: "You've invested in 8 startups, 3 of which are showing real promise. You split your time between advising founders and teaching a Stanford course on product research. The work feels full-circle—you're sharing hard-won wisdom with the next generation. Financial security is no longer a concern. You're optimizing for impact and meaning now.",
-          metrics: {
-            wealth: 95,
-            satisfaction: 93,
-            happiness: 92
-          }
-        }
       ]
     }
   }
 };
 
 export const JORDAN_REYES = {
+  id: 'jordan_reyes',
   // Basic Info
   name: "Jordan Reyes",
   gender: "Male",
@@ -199,29 +182,42 @@ export const JORDAN_REYES = {
             happiness: 55
           }
         },
-        {
-          year: 2030,
-          title: "Exit Event & Reassessment",
-          narrative: "DataPulse is acquired by Salesforce for $85M. Your equity payout is substantial—enough to pay off student loans and put a down payment on a condo. But you're burned out. The acquisition brings corporate bureaucracy you were trying to avoid. You take a month off to think. Friends in finance are making more. Friends in tech seem happier. You're at a crossroads.",
-          metrics: {
-            wealth: 78,
-            satisfaction: 68,
-            happiness: 65
-          }
-        },
-        {
-          year: 2034,
-          title: "Contracting & Consulting",
-          narrative: "You left Salesforce and started consulting independently. You work with 3-4 startups simultaneously, helping them build data infrastructure. The flexibility is liberating—you control your schedule, pick your clients, and charge premium rates. Your parents finally stopped worrying when they saw your tax return. You're building wealth on your terms, but sometimes wonder about the road not taken.",
-          metrics: {
-            wealth: 88,
-            satisfaction: 82,
-            happiness: 80
-          }
-        }
       ]
     }
   }
 };
 
 export const ALL_PERSONAS = [MAYA_CHEN, JORDAN_REYES];
+
+const DEMO_PERSONAS_BY_ID = {
+  maya_chen: MAYA_CHEN,
+  jordan_reyes: JORDAN_REYES,
+};
+
+function deepFreeze(obj) {
+  if (obj === null || typeof obj !== 'object') return obj;
+  Object.freeze(obj);
+  for (const key of Object.keys(obj)) {
+    const value = obj[key];
+    if (value && typeof value === 'object' && !Object.isFrozen(value)) {
+      deepFreeze(value);
+    }
+  }
+  return obj;
+}
+
+const frozenPersonaById = new Map();
+
+/**
+ * Returns a deep-frozen copy of a known demo persona, or null if id is unknown.
+ * Use this instead of trusting objects from location.state or other client input.
+ */
+export function getDemoPersonaById(id) {
+  if (id == null || typeof id !== 'string') return null;
+  const canonical = DEMO_PERSONAS_BY_ID[id];
+  if (!canonical) return null;
+  if (!frozenPersonaById.has(id)) {
+    frozenPersonaById.set(id, deepFreeze(structuredClone(canonical)));
+  }
+  return frozenPersonaById.get(id);
+}

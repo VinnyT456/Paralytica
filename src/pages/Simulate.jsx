@@ -8,11 +8,14 @@ import Step3Loading from '../components/Step3Loading';
 import DualTimeline from '../components/DualTimeline';
 import Modal from '../components/Modal';
 import BackButton from '../components/BackButton';
+import { getDemoPersonaById } from '../data/personas';
 
 function Simulate({ bgTheme }) {
   const location = useLocation();
-  const { heuristicProfile, demoPersona } = useAppContext();
-  const activeDemoPersona = location.state?.demoPersona || demoPersona;
+  const { heuristicProfile, demoPersonaId } = useAppContext();
+  const stateId = location.state?.demoPersonaId;
+  const resolvedId = typeof stateId === 'string' ? stateId : demoPersonaId;
+  const activeDemoPersona = resolvedId ? getDemoPersonaById(resolvedId) : null;
   const [step, setStep] = useState(1);
   const [lifePoints, setLifePoints] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState(null);
@@ -49,7 +52,7 @@ function Simulate({ bgTheme }) {
       setIncludeSocial(true); // Default to including social dynamics for demos
       setStep(2); // Skip Step 1 (Map Timeline) and go directly to Step 2 (Primary Timeline)
     }
-  }, [location.state, demoPersona]);
+  }, [location.state, demoPersonaId, activeDemoPersona]);
 
   const handleStep1Complete = (points, socialDynamics) => {
     setLifePoints(points);
@@ -285,6 +288,7 @@ function Simulate({ bgTheme }) {
           onReset={handleReset}
           bgTheme={bgTheme}
           isDemoPersona={!!activeDemoPersona}
+          demoTimelineLength={activeDemoPersona?.branchOutcomes?.default?.timeline?.length ?? null}
         />
       )}
 

@@ -13,7 +13,8 @@ export const useAppContext = () => {
 export const AppProvider = ({ children }) => {
   const [savedTimelines, setSavedTimelines] = useState([]);
   const [heuristicProfile, setHeuristicProfile] = useState(null);
-  const [demoPersona, setDemoPersona] = useState(null);
+  /** Known demo persona id only — resolve with getDemoPersonaById; do not store raw persona objects. */
+  const [demoPersonaId, setDemoPersonaId] = useState(null);
 
   const saveTimeline = (timeline) => {
     const newTimeline = {
@@ -40,8 +41,8 @@ export const AppProvider = ({ children }) => {
     loadTimeline,
     heuristicProfile,
     setHeuristicProfile,
-    demoPersona,
-    setDemoPersona
+    demoPersonaId,
+    setDemoPersonaId
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
