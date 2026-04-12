@@ -148,6 +148,9 @@ export const generateNextNode = async (branchDecision, permanentTimeline, includ
     };
 
     const predictUrl = `${API_BASE}/api/predict-branch`;
+    const useMock = () =>
+      generateMockNode(branchDecision, permanentTimeline, includeSocial, branchYear, originalNode);
+
     console.log('🔵 Calling Nexus Temporal Engine:', predictUrl || '(same-origin /api/predict-branch)');
     console.log('📦 Request body:', requestBody);
 
@@ -159,21 +162,41 @@ export const generateNextNode = async (branchDecision, permanentTimeline, includ
       body: JSON.stringify(requestBody)
     });
 
-    console.log('📡 Response status:', response.status, response.statusText);
+    const statusLabel = `${response.status}${response.statusText ? ` ${response.statusText}` : ''}`;
+    console.log('📡 Response status:', statusLabel);
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('❌ API Error:', errorText);
-      throw new Error(`API request failed: ${response.statusText}`);
+      let errorText = '';
+      try {
+        errorText = await response.text();
+      } catch {
+        /* ignore */
+      }
+      const preview =
+        errorText.length > 400 ? `${errorText.slice(0, 400)}…` : errorText || '(empty response body)';
+      console.warn(
+        `Nexus Temporal Engine returned HTTP ${statusLabel}. Using mock timeline.`,
+        preview
+      );
+      return useMock();
     }
 
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch (parseErr) {
+      console.warn(
+        'Nexus Temporal Engine returned non-JSON. Using mock timeline.',
+        parseErr?.message || parseErr
+      );
+      return useMock();
+    }
 
     if (!data.success || !data.prediction) {
-      throw new Error('Invalid API response');
+      console.warn('Nexus Temporal Engine invalid payload (missing success/prediction). Using mock timeline.', data);
+      return useMock();
     }
 
-    // Return the prediction with AI suggestion
     return {
       ...data.prediction,
       aiSuggestion: data.prediction.suggestedNextDecision || null,
@@ -191,7 +214,7 @@ export const generateNextNode = async (branchDecision, permanentTimeline, includ
         error.message
       );
     } else {
-      console.error('Error calling Nexus Temporal Engine:', error);
+      console.warn('Nexus Temporal Engine error. Using mock timeline.', error);
     }
 
     return generateMockNode(branchDecision, permanentTimeline, includeSocial, branchYear, originalNode);
