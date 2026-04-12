@@ -63,33 +63,42 @@ export const MAYA_CHEN = {
       timeline: [
         {
           year: 2025,
-          title: "Startup Hustle Begins",
-          narrative: "You joined HealthNow, a 12-person startup building mental health tools. The pace is chaotic but exhilarating. You're wearing multiple hats—UX research, customer interviews, even some light design work. The learning curve is steep, but you're building skills faster than you ever did at Figma. Your friends ask if you regret not taking the 'safe' offer.",
+          title: "The Startup Grind Begins",
+          narrative: "You joined a small startup called HealthNow that builds tools for mental health. There are only 12 people, so everything moves really fast and can feel a bit messy at times. You don’t just do one job. You help with talking to users, testing ideas, and even some design work. You’re learning a lot very quickly—way more than in your previous experience. It’s not always easy, but it’s exciting and you’re growing your skills every day. When your friends ask if you regret not choosing a “safer” job, you’re not really sure you do.",
           metrics: {
             wealth: 48,
             satisfaction: 87,
             happiness: 88
-          }
+          },
+          suggestedFollowUp:
+            "What if I owned the research roadmap for our next funding push and hired my first junior researcher?",
+          nextPrompt: "You’re early at HealthNow—what’s the next move you’d make to shape the product?"
         },
         {
           year: 2027,
-          title: "Product-Market Fit Discovery",
-          narrative: "HealthNow finds product-market fit. You led the user research that identified the breakthrough insight. The team grows to 35 people. You're promoted to Lead Researcher, managing two junior researchers. The work feels meaningful—you see real impact in user testimonials. But the pressure is mounting. Investors want faster growth. Work-life balance becomes a distant memory.",
+          title: "Finding Product-Market Fit",
+          narrative: "HealthNow finds product-market fit. You led the user research that uncovered the key insight that made it possible. The team grows to 35 people, and you’re promoted to Lead Researcher, managing two junior researchers. The work feels meaningful—you can see real impact through user feedback and testimonials. But the pressure is increasing. Investors expect faster growth, and work-life balance starts to disappear.",
           metrics: {
             wealth: 66,
             satisfaction: 91,
             happiness: 80
-          }
+          },
+          suggestedFollowUp:
+            "What if I set a hard boundary on after-hours pings and asked leadership for a real research ethics review before every experiment?",
+          nextPrompt: "Growth is heating up—what would you do next to protect the mission and yourself?"
         },
         {
           year: 2029,
-          title: "The Series B Crossroads",
-          narrative: "HealthNow raises a $15M Series B. You're offered equity that could be worth six figures if things go well. But the company culture shifts—growth metrics dominate every conversation. You miss the mission-driven intimacy of the early days. A headhunter reaches out about a Director role at Microsoft. You wonder if startup life is sustainable long-term.",
+          title: "What Comes Next After Series B Funding",
+          narrative: "HealthNow raises a $15M Series B. You’re offered equity that could be worth a lot if the company succeeds. But the culture starts to change—growth metrics now drive most decisions and conversations. You miss the early days when things felt more personal and mission-driven. A recruiter reaches out about a Director role at Microsoft. You start thinking about whether startup life is something you can sustain long term.",
           metrics: {
             wealth: 82,
             satisfaction: 72,
             happiness: 68
-          }
+          },
+          suggestedFollowUp:
+            "What if I took the Microsoft director conversation seriously and compared two five-year life plans on paper?",
+          nextPrompt: null
         },
       ]
     }
@@ -158,33 +167,42 @@ export const JORDAN_REYES = {
       timeline: [
         {
           year: 2025,
-          title: "Startup Reality Check",
-          narrative: "You joined DataPulse, a 20-person B2B analytics startup in River North. The title is 'Growth Analyst' but you're really doing everything—SQL queries at 9am, sales pitches at 2pm. The pay is lower than State Farm, but everyone says the equity will be worth it. Your parents are worried. You tell them it's fine, but you're not entirely sure yourself.",
+          title: "The Startup Reality Check",
+          narrative: "You join DataPulse, a small analytics startup in River North. Your job title is “Growth Analyst,” but you end up doing a little bit of everything—writing SQL in the morning and talking to potential customers in the afternoon. The pay is lower than a big company job, but everyone keeps saying the stock could be worth a lot someday. Your parents are worried about your choice. You tell them it’s fine… but deep down, you’re not completely sure yet.",
           metrics: {
             wealth: 44,
             satisfaction: 58,
             happiness: 56
-          }
+          },
+          suggestedFollowUp:
+            "What if I negotiated a written equity refresh and a clear promotion path after we signed our first enterprise deal?",
+          nextPrompt: "You’re proving yourself at DataPulse—what’s your next chess move?"
         },
         {
           year: 2027,
           title: "Hustle Mode Activated",
-          narrative: "DataPulse lands a major client—a Fortune 500 retailer. You're the lead analyst on the account. The work is intense: 60-hour weeks, weekend deployments, constant firefighting. But you're learning fast. Your SQL and Python skills have tripled. The CEO knows your name. You're building something real, even if the work-life balance is nonexistent.",
+          narrative: "DataPulse lands a big Fortune 500 retail client, and you become the main analyst on the account. Work ramps up fast—long weeks, weekend fixes, and constant urgent problems. It’s exhausting, but you’re learning a ton. Your SQL and Python skills are improving quickly. The CEO knows who you are now. It’s intense, and there’s barely any work-life balance, but it finally feels like you’re building something real.",
           metrics: {
             wealth: 56,
             satisfaction: 64,
             happiness: 50
-          }
+          },
+          suggestedFollowUp:
+            "What if I built playbooks and trained two junior analysts so we could finally turn off weekend deploys?",
+          nextPrompt: "The account is on fire—how do you stabilize the team without walking away?"
         },
         {
           year: 2029,
-          title: "Senior Analyst Promotion",
-          narrative: "You're promoted to Senior Analyst with a small team reporting to you. The company is growing—now 60 people. Your equity is starting to look valuable on paper. But the pressure is relentless. The CTO leaves abruptly, causing organizational chaos. You wonder if you should have stayed in the stability of insurance. Late-night calls with your parents often end with 'I told you so' left unsaid.",
+          title: "Promoted to Senior Analyst",
+          narrative: "You get promoted to Senior Analyst and now lead a small team. The company has grown to about 60 people, and your equity is starting to look more valuable on paper. But the pressure keeps building. When the CTO suddenly leaves, things get chaotic. You start questioning if you should have picked a more stable job instead. Late-night calls with your parents often end with the feeling of “I told you so,” even if they never say it.",
           metrics: {
             wealth: 74,
             satisfaction: 56,
             happiness: 46
-          }
+          },
+          suggestedFollowUp:
+            "What if I exercised a slice of my options to pay down student loans and lined up a backup offer at a steadier firm?",
+          nextPrompt: null
         },
       ]
     }

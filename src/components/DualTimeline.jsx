@@ -57,16 +57,16 @@ function DualTimeline({
     }
   }, [projectedTimeline, draftNode]);
 
-  // Auto-populate custom decision with AI suggestion when draft node changes
+  // Keep the input in sync with the current draft (including clearing when there is no suggestion)
   useEffect(() => {
-    if (draftNode?.aiSuggestion) {
-      setCustomDecision(draftNode.aiSuggestion);
-    }
+    if (!draftNode) return;
+    setCustomDecision(draftNode.aiSuggestion ?? '');
   }, [draftNode]);
 
   const handleAcceptClick = () => {
-    // Pass the custom decision to parent for next prediction
-    onAccept(customDecision);
+    const decisionText = customDecision;
+    onAccept(decisionText);
+    setCustomDecision('');
   };
 
   const handleDivergeClick = () => {

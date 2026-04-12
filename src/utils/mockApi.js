@@ -90,10 +90,17 @@ export const generateNextNode = async (branchDecision, permanentTimeline, includ
       return new Promise((resolve) => {
         setTimeout(() => {
           const node = hardcodedOutcome.timeline[nodeIndex];
+          const isLast = nodeIndex >= hardcodedOutcome.timeline.length - 1;
           resolve({
             ...node,
-            aiSuggestion: nodeIndex === 0 ? hardcodedOutcome.decision : null,
-            nextPrompt: nodeIndex === 0 ? "With this foundation established, what is your next major move?" : null
+            aiSuggestion:
+              node.suggestedFollowUp ??
+              (nodeIndex === 0 ? hardcodedOutcome.decision ?? '' : ''),
+            nextPrompt:
+              node.nextPrompt ??
+              (!isLast
+                ? 'With this foundation established, what is your next major move?'
+                : null)
           });
         }, 1500); // Simulate loading delay
       });
