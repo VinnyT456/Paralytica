@@ -1,4 +1,5 @@
 import { FaLinkedin } from 'react-icons/fa';
+import WildHacksLogo from '../assets/wildhacks_logo.png';
 
 const TEAM = [
   {
@@ -229,11 +230,29 @@ function About({ bgTheme }) {
           </h2>
           <div className={`space-y-3 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
             <p
-              className={`text-lg font-bold ${
+              className={`text-lg font-bold inline-flex flex-nowrap items-center gap-2 ${
                 isLight ? 'text-slate-800' : 'text-slate-200'
               }`}
             >
-              Built at WildHacks 2026
+              <span className="shrink-0">Built at</span>
+              <span className="inline-flex items-center shrink-0">
+                <img
+                  src={WildHacksLogo}
+                  alt=""
+                  className="h-10 w-auto"
+                  draggable={false}
+                />
+                <a
+                  href="https://www.wildhacks.net/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`underline-offset-2 hover:underline ${
+                    isLight ? 'text-sky-700 hover:text-sky-800' : 'text-sky-400 hover:text-sky-300'
+                  }`}
+                >
+                  WildHacks 2026
+                </a>
+              </span>
             </p>
             <p className={isLight ? 'text-slate-600' : 'text-slate-400'}>
               Theme: Time as Branching Decisions
