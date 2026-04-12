@@ -12,16 +12,16 @@ function Demo({ bgTheme }) {
       name: "Maya Chen",
       role: "UX Researcher",
       age: 22,
-      vibe: "Curious, reflective, quietly ambitious",
-      description: "Recent graduate who blends analytical thinking with empathy. Journals often and overthinks big decisions. Cares deeply about helping people through design. Motivated more by meaning and connection than prestige.",
+      vibe: "Curious, Thoughtful, Driven",
+      description: "Recent graduate who blends analytical thinking with empathy. She reflects deeply and can overthink big decisions. She’s motivated by helping people and finding meaningful work aligned with her values.",
       data: MAYA_CHEN
     },
     {
       name: "Jordan Reyes",
       role: "Data Analyst",
       age: 24,
-      vibe: "Practical, ambitious, quietly competitive",
-      description: "First-generation college graduate. Pragmatic and driven—career-focused and financially motivated. Wants to secure stability early. Confident in their abilities but wonders what they might be missing by playing it safe.",
+      vibe: "Practical, Ambitious, Competitive",
+      description: "First-generation college graduate focused on building a stable, successful career. Confident and goal-oriented, but sometimes wonders what they might miss by playing it safe and sticking to a clear plan.",
       data: JORDAN_REYES
     }
   ];
@@ -116,7 +116,7 @@ function Demo({ bgTheme }) {
                       : 'bg-purple-600 hover:bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.3)]'
                   }`}
                 >
-                  Explore Timeline
+                  {`Explore ${persona.name.split(' ')[0]}'s Path`}
                 </button>
               </div>
             </div>
