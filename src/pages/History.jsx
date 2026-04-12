@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { Clock, ExternalLink, Trash2, Sparkles, Zap } from 'lucide-react';
-import BackButton from '../components/BackButton';
 import ParalyticaLogo from '../assets/ParalyticaLogoTransparent.png';
 
 function History({ bgTheme }) {
@@ -38,7 +37,6 @@ function History({ bgTheme }) {
   if (savedTimelines.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center p-6 pt-24">
-        <BackButton to="/" bgTheme={bgTheme} />
         <div className="text-center max-w-lg">
           <div className="relative inline-block mb-8">
             <div className="absolute inset-0 flex items-center justify-center">

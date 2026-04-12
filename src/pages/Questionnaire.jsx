@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { Sparkles, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
-import ParalyticaLogo from '../assets/ParalyticaLogoTransparent.png';
 
 function Questionnaire({ bgTheme }) {
   const navigate = useNavigate();
@@ -54,15 +53,15 @@ function Questionnaire({ bgTheme }) {
   const canProceed = () => {
     switch (currentQuestion) {
       case 1: return formData.role !== '';
-      case 2: return formData.redoDecision !== '';
+      case 2: return formData.decisionPriority !== '';
       case 3: return formData.decisionStyle !== null;
-      case 4: return formData.decisionPriority !== '';
-      case 5: return formData.successValues.length === 2;
+      case 4: return formData.explorationPaths !== null;
+      case 5: return formData.redoDecision !== '';
       case 6: return formData.currentPathFeeling !== null;
-      case 7: return formData.explorationPaths !== null;
-      case 8: return formData.responsibilityImpact !== null;
-      case 9: return formData.futureSuccess !== null;
-      case 10: return formData.workConnection !== null;
+      case 7: return formData.responsibilityImpact !== null;
+      case 8: return formData.futureSuccess !== null;
+      case 9: return formData.workConnection !== null;
+      case 10: return formData.successValues.length === 2;
       default: return false;
     }
   };
@@ -94,28 +93,28 @@ function Questionnaire({ bgTheme }) {
     { value: 'school', label: 'Where you went to school' },
     { value: 'study', label: 'What you studied' },
     { value: 'firstJob', label: 'Your first job' },
-    { value: 'careerChange', label: 'A career change you didn\'t take' },
+    { value: 'careerChange', label: 'A career move you didn\'t take' },
     { value: 'location', label: 'A place you didn\'t move to' },
-    { value: 'relationship', label: 'A personal relationship decision' }
+    { value: 'relationship', label: 'A personal relationship choice' }
   ];
 
   // Decision Priority options
   const decisionPriorityOptions = [
-    { value: 'money', label: 'Money & stability' },
-    { value: 'passion', label: 'Passion & purpose' },
-    { value: 'freedom', label: 'Freedom & flexibility' },
-    { value: 'people', label: 'People & relationships' },
-    { value: 'impact', label: 'Impact & legacy' }
+    { value: 'money', label: 'Financial security' },
+    { value: 'passion', label: 'Passion/interest' },
+    { value: 'stability', label: 'Stability' },
+    { value: 'impact', label: 'Social impact' },
+    { value: 'status', label: 'Recognition/status' }
   ];
 
-  // Success value options
+  // Success value options (pick 2)
   const successOptions = [
     { value: 'wealth', label: 'Wealth', description: 'Financial prosperity and abundance' },
-    { value: 'autonomy', label: 'Autonomy', description: 'Freedom and independence' },
-    { value: 'impact', label: 'Impact', description: 'Creative influence and legacy' },
-    { value: 'connection', label: 'Connection', description: 'Relationships and community' },
+    { value: 'freedom', label: 'Freedom', description: 'Freedom and independence' },
+    { value: 'creativeImpact', label: 'Creative impact', description: 'Creative influence and legacy' },
+    { value: 'connection', label: 'Social connection', description: 'Relationships and community' },
     { value: 'security', label: 'Security', description: 'Stability and peace of mind' },
-    { value: 'growth', label: 'Growth', description: 'Learning and self-development' }
+    { value: 'balance', label: 'Work-life balance', description: 'Balance between work and life' }
   ];
 
   // Handle redo decision selection with auto-advance
@@ -149,7 +148,7 @@ function Questionnaire({ bgTheme }) {
         newValues = [...current, value];
 
         // Auto-advance if we just selected the 2nd item
-        if (newValues.length === 2) {
+        if (newValues.length === 2 && currentQuestion !== totalQuestions) {
           setTimeout(() => {
             goToNext();
           }, 400);
@@ -162,7 +161,7 @@ function Questionnaire({ bgTheme }) {
     });
   };
 
-  // Handle scale selection (Q3, Q6, Q7, Q8, Q9, Q10) with auto-advance
+  // Handle scale selection (risk, exploration, path, responsibility, life change, work identity) with auto-advance
   const handleScaleSelect = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
 
@@ -238,7 +237,6 @@ function Questionnaire({ bgTheme }) {
           {/* Header - Outside Card */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <img src={ParalyticaLogo} alt="Paralytica Logo" className="w-8 h-8" />
               <h1 className="text-3xl font-bold bg-gradient-to-r from-sky-400 to-purple-400 bg-clip-text text-transparent">
                 Identity Assessment
               </h1>
@@ -310,86 +308,13 @@ function Questionnaire({ bgTheme }) {
                   </div>
                 )}
 
-                {/* Question 2: Redo Decision */}
+                {/* Question 2: Decision Priority */}
                 {currentQuestion === 2 && (
                   <div>
                     <h2 className={`text-2xl font-bold mb-6 text-center ${
                       isLight ? 'text-slate-800' : 'text-slate-200'
                     }`}>
-                      If you could redo one major decision, what would it be?
-                    </h2>
-                    <div className="space-y-3 max-w-xl mx-auto">
-                      {redoDecisionOptions.map((option) => (
-                        <button
-                          key={option.value}
-                          type="button"
-                          onClick={() => handleRedoDecisionSelect(option.value)}
-                          className={`w-full px-6 py-4 rounded-xl border-2 text-base font-semibold transition-all duration-300 ${
-                            formData.redoDecision === option.value
-                              ? 'border-sky-500 bg-sky-500/20 text-sky-400 shadow-[0_0_20px_rgba(14,165,233,0.4)]'
-                              : isLight
-                              ? 'border-slate-300 bg-white text-slate-700 hover:border-slate-400'
-                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-slate-600'
-                          }`}
-                        >
-                          {option.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Question 3: Decision Style - 1-10 Scale */}
-                {currentQuestion === 3 && (
-                  <div>
-                    <h2 className={`text-2xl font-bold mb-6 text-center ${
-                      isLight ? 'text-slate-800' : 'text-slate-200'
-                    }`}>
-                      When you face a big life decision, what do you usually do?
-                    </h2>
-                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                        <button
-                          key={num}
-                          type="button"
-                          onClick={() => handleScaleSelect('decisionStyle', num * 10)}
-                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
-                            formData.decisionStyle === num * 10
-                              ? 'border-sky-500 bg-sky-500 text-white shadow-[0_0_15px_rgba(14,165,233,0.6)]'
-                              : isLight
-                              ? 'border-slate-300 bg-white text-slate-700 hover:border-sky-400 hover:bg-sky-50'
-                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-sky-500 hover:bg-slate-700'
-                          }`}
-                        >
-                          {num}
-                        </button>
-                      ))}
-                    </div>
-                    {/* Legend Below */}
-                    <div className="relative max-w-2xl mx-auto mt-4">
-                      <div className="flex justify-between gap-3">
-                        <span className="flex-1 text-center text-xs text-slate-400">Safe</span>
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1 text-center text-xs text-slate-400">Bold</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Question 4: Decision Priority */}
-                {currentQuestion === 4 && (
-                  <div>
-                    <h2 className={`text-2xl font-bold mb-6 text-center ${
-                      isLight ? 'text-slate-800' : 'text-slate-200'
-                    }`}>
-                      What matters most when you make major decisions?
+                      What matters most to you when making big decisions?
                     </h2>
                     <div className="space-y-3 max-w-xl mx-auto">
                       {decisionPriorityOptions.map((option) => (
@@ -412,13 +337,300 @@ function Questionnaire({ bgTheme }) {
                   </div>
                 )}
 
-                {/* Question 5: Success Values */}
+                {/* Question 3: Risk / decision style - 1-10 Scale */}
+                {currentQuestion === 3 && (
+                  <div>
+                    <h2 className={`text-2xl font-bold mb-6 text-center ${
+                      isLight ? 'text-slate-800' : 'text-slate-200'
+                    }`}>
+                      How much do you tend to take risks when making big decisions?
+                    </h2>
+                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => handleScaleSelect('decisionStyle', num * 10)}
+                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
+                            formData.decisionStyle === num * 10
+                              ? 'border-sky-500 bg-sky-500 text-white shadow-[0_0_15px_rgba(14,165,233,0.6)]'
+                              : isLight
+                              ? 'border-slate-300 bg-white text-slate-700 hover:border-sky-400 hover:bg-sky-50'
+                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-sky-500 hover:bg-slate-700'
+                          }`}
+                        >
+                          {num}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="relative max-w-2xl mx-auto mt-4">
+                      <div className="flex justify-between gap-3">
+                        <span className="flex-1 text-center text-xs text-slate-400">not at all</span>
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1 text-center text-xs text-slate-400">a lot</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Question 4: Exploring paths - 1-10 Scale */}
+                {currentQuestion === 4 && (
+                  <div>
+                    <h2 className={`text-2xl font-bold mb-6 text-center ${
+                      isLight ? 'text-slate-800' : 'text-slate-200'
+                    }`}>
+                      How much do you prefer exploring different paths?
+                    </h2>
+                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => handleScaleSelect('explorationPaths', num * 10)}
+                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
+                            formData.explorationPaths === num * 10
+                              ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
+                              : isLight
+                              ? 'border-slate-300 bg-white text-slate-700 hover:border-purple-400 hover:bg-purple-50'
+                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-purple-500 hover:bg-slate-700'
+                          }`}
+                        >
+                          {num}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="relative max-w-2xl mx-auto mt-4">
+                      <div className="flex justify-between gap-3">
+                        <span className="flex-1 text-center text-xs text-slate-400">not at all</span>
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1 text-center text-xs text-slate-400">a lot</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Question 5: Redo Decision */}
                 {currentQuestion === 5 && (
+                  <div>
+                    <h2 className={`text-2xl font-bold mb-6 text-center ${
+                      isLight ? 'text-slate-800' : 'text-slate-200'
+                    }`}>
+                      If you could redo one big decision, what would it be?
+                    </h2>
+                    <div className="space-y-3 max-w-xl mx-auto">
+                      {redoDecisionOptions.map((option) => (
+                        <button
+                          key={option.value}
+                          type="button"
+                          onClick={() => handleRedoDecisionSelect(option.value)}
+                          className={`w-full px-6 py-4 rounded-xl border-2 text-base font-semibold transition-all duration-300 ${
+                            formData.redoDecision === option.value
+                              ? 'border-sky-500 bg-sky-500/20 text-sky-400 shadow-[0_0_20px_rgba(14,165,233,0.4)]'
+                              : isLight
+                              ? 'border-slate-300 bg-white text-slate-700 hover:border-slate-400'
+                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-slate-600'
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Question 6: Current Path Feeling - 1-10 Scale */}
+                {currentQuestion === 6 && (
+                  <div>
+                    <h2 className={`text-2xl font-bold mb-6 text-center ${
+                      isLight ? 'text-slate-800' : 'text-slate-200'
+                    }`}>
+                      How do you feel about the path you&apos;re on right now?
+                    </h2>
+                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => handleScaleSelect('currentPathFeeling', num * 10)}
+                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
+                            formData.currentPathFeeling === num * 10
+                              ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
+                              : isLight
+                              ? 'border-slate-300 bg-white text-slate-700 hover:border-purple-400 hover:bg-purple-50'
+                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-purple-500 hover:bg-slate-700'
+                          }`}
+                        >
+                          {num}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="relative max-w-2xl mx-auto mt-4">
+                      <div className="flex justify-between gap-3">
+                        <span className="flex-1 text-center text-xs text-slate-400">not at all</span>
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1 text-center text-xs text-slate-400">a lot</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Question 7: Responsibility Impact - 1-10 Scale */}
+                {currentQuestion === 7 && (
+                  <div>
+                    <h2 className={`text-2xl font-bold mb-6 text-center ${
+                      isLight ? 'text-slate-800' : 'text-slate-200'
+                    }`}>
+                      How much do your responsibilities limit your choices?
+                    </h2>
+                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => handleScaleSelect('responsibilityImpact', num * 10)}
+                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
+                            formData.responsibilityImpact === num * 10
+                              ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
+                              : isLight
+                              ? 'border-slate-300 bg-white text-slate-700 hover:border-purple-400 hover:bg-purple-50'
+                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-purple-500 hover:bg-slate-700'
+                          }`}
+                        >
+                          {num}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="relative max-w-2xl mx-auto mt-4">
+                      <div className="flex justify-between gap-3">
+                        <span className="flex-1 text-center text-xs text-slate-400">not at all</span>
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1 text-center text-xs text-slate-400">a lot</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Question 8: Life change over next 10 years - 1-10 Scale */}
+                {currentQuestion === 8 && (
+                  <div>
+                    <h2 className={`text-2xl font-bold mb-6 text-center ${
+                      isLight ? 'text-slate-800' : 'text-slate-200'
+                    }`}>
+                      How much do you see your life changing over the next 10 years?
+                    </h2>
+                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => handleScaleSelect('futureSuccess', num * 10)}
+                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
+                            formData.futureSuccess === num * 10
+                              ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
+                              : isLight
+                              ? 'border-slate-300 bg-white text-slate-700 hover:border-purple-400 hover:bg-purple-50'
+                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-purple-500 hover:bg-slate-700'
+                          }`}
+                        >
+                          {num}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="relative max-w-2xl mx-auto mt-4">
+                      <div className="flex justify-between gap-3">
+                        <span className="flex-1 text-center text-xs text-slate-400">not at all</span>
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1 text-center text-xs text-slate-400">a lot</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Question 9: Work / identity - 1-10 Scale */}
+                {currentQuestion === 9 && (
+                  <div>
+                    <h2 className={`text-2xl font-bold mb-6 text-center ${
+                      isLight ? 'text-slate-800' : 'text-slate-200'
+                    }`}>
+                      How much of your identity is tied to your work?
+                    </h2>
+                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => handleScaleSelect('workConnection', num * 10)}
+                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
+                            formData.workConnection === num * 10
+                              ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
+                              : isLight
+                              ? 'border-slate-300 bg-white text-slate-700 hover:border-purple-400 hover:bg-purple-50'
+                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-purple-500 hover:bg-slate-700'
+                          }`}
+                        >
+                          {num}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="relative max-w-2xl mx-auto mt-4">
+                      <div className="flex justify-between gap-3">
+                        <span className="flex-1 text-center text-xs text-slate-400">not at all</span>
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1" />
+                        <span className="flex-1 text-center text-xs text-slate-400">a lot</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Question 10: Success values (pick 2) */}
+                {currentQuestion === 10 && (
                   <div>
                     <h2 className={`text-2xl font-bold mb-2 text-center ${
                       isLight ? 'text-slate-800' : 'text-slate-200'
                     }`}>
-                      What does "success" look like to you in 10 years?
+                      What does &quot;success&quot; look like to you in 10 years?
                     </h2>
                     <p className={`text-sm mb-6 text-center ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                       Pick 2 ({formData.successValues.length}/2 selected)
@@ -446,237 +658,8 @@ function Questionnaire({ bgTheme }) {
                           }`}>
                             {option.label}
                           </div>
-                          {/* <div className={`text-xs ${
-                            formData.successValues.includes(option.value)
-                              ? 'text-purple-300/70'
-                              : isLight
-                              ? 'text-slate-500'
-                              : 'text-slate-400'
-                          }`}>
-                            {option.description}
-                          </div> */}
                         </button>
                       ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Question 6: Current Path Feeling - 1-10 Scale */}
-                {currentQuestion === 6 && (
-                  <div>
-                    <h2 className={`text-2xl font-bold mb-6 text-center ${
-                      isLight ? 'text-slate-800' : 'text-slate-200'
-                    }`}>
-                      How do you feel about your current path?
-                    </h2>
-                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                        <button
-                          key={num}
-                          type="button"
-                          onClick={() => handleScaleSelect('currentPathFeeling', num * 10)}
-                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
-                            formData.currentPathFeeling === num * 10
-                              ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
-                              : isLight
-                              ? 'border-slate-300 bg-white text-slate-700 hover:border-purple-400 hover:bg-purple-50'
-                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-purple-500 hover:bg-slate-700'
-                          }`}
-                        >
-                          {num}
-                        </button>
-                      ))}
-                    </div>
-                    {/* Legend Below */}
-                    <div className="relative max-w-2xl mx-auto mt-4">
-                      <div className="flex justify-between gap-3">
-                        <span className="flex-1 text-center text-xs text-slate-400">Happy</span>
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1 text-center text-xs text-slate-400">Regret</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Question 7: Exploration Paths - 1-10 Scale */}
-                {currentQuestion === 7 && (
-                  <div>
-                    <h2 className={`text-2xl font-bold mb-6 text-center ${
-                      isLight ? 'text-slate-800' : 'text-slate-200'
-                    }`}>
-                      Do you prefer exploring many paths or sticking with one?
-                    </h2>
-                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                        <button
-                          key={num}
-                          type="button"
-                          onClick={() => handleScaleSelect('explorationPaths', num * 10)}
-                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
-                            formData.explorationPaths === num * 10
-                              ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
-                              : isLight
-                              ? 'border-slate-300 bg-white text-slate-700 hover:border-purple-400 hover:bg-purple-50'
-                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-purple-500 hover:bg-slate-700'
-                          }`}
-                        >
-                          {num}
-                        </button>
-                      ))}
-                    </div>
-                    {/* Legend Below */}
-                    <div className="relative max-w-2xl mx-auto mt-4">
-                      <div className="flex justify-between gap-3">
-                        <span className="flex-1 text-center text-xs text-slate-400">Steady</span>
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1 text-center text-xs text-slate-400">Explore</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Question 8: Responsibility Impact - 1-10 Scale */}
-                {currentQuestion === 8 && (
-                  <div>
-                    <h2 className={`text-2xl font-bold mb-6 text-center ${
-                      isLight ? 'text-slate-800' : 'text-slate-200'
-                    }`}>
-                      How much do responsibilities shape your decisions?
-                    </h2>
-                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                        <button
-                          key={num}
-                          type="button"
-                          onClick={() => handleScaleSelect('responsibilityImpact', num * 10)}
-                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
-                            formData.responsibilityImpact === num * 10
-                              ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
-                              : isLight
-                              ? 'border-slate-300 bg-white text-slate-700 hover:border-purple-400 hover:bg-purple-50'
-                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-purple-500 hover:bg-slate-700'
-                          }`}
-                        >
-                          {num}
-                        </button>
-                      ))}
-                    </div>
-                    {/* Legend Below */}
-                    <div className="relative max-w-2xl mx-auto mt-4">
-                      <div className="flex justify-between gap-3">
-                        <span className="flex-1 text-center text-xs text-slate-400">Free</span>
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1 text-center text-xs text-slate-400">Restricted</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Question 9: Future Success - 1-10 Scale */}
-                {currentQuestion === 9 && (
-                  <div>
-                    <h2 className={`text-2xl font-bold mb-6 text-center ${
-                      isLight ? 'text-slate-800' : 'text-slate-200'
-                    }`}>
-                      What does "success" look like to you in 10 years?
-                    </h2>
-                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                        <button
-                          key={num}
-                          type="button"
-                          onClick={() => handleScaleSelect('futureSuccess', num * 10)}
-                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
-                            formData.futureSuccess === num * 10
-                              ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
-                              : isLight
-                              ? 'border-slate-300 bg-white text-slate-700 hover:border-purple-400 hover:bg-purple-50'
-                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-purple-500 hover:bg-slate-700'
-                          }`}
-                        >
-                          {num}
-                        </button>
-                      ))}
-                    </div>
-                    {/* Legend Below */}
-                    <div className="relative max-w-2xl mx-auto mt-4">
-                      <div className="flex justify-between gap-3">
-                        <span className="flex-1 text-center text-xs text-slate-400">Stay</span>
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1 text-center text-xs text-slate-400">Move</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Question 10: Work Connection - 1-10 Scale */}
-                {currentQuestion === 10 && (
-                  <div>
-                    <h2 className={`text-2xl font-bold mb-6 text-center ${
-                      isLight ? 'text-slate-800' : 'text-slate-200'
-                    }`}>
-                      How connected is your identity to your work?
-                    </h2>
-                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                        <button
-                          key={num}
-                          type="button"
-                          onClick={() => handleScaleSelect('workConnection', num * 10)}
-                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
-                            formData.workConnection === num * 10
-                              ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
-                              : isLight
-                              ? 'border-slate-300 bg-white text-slate-700 hover:border-purple-400 hover:bg-purple-50'
-                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-purple-500 hover:bg-slate-700'
-                          }`}
-                        >
-                          {num}
-                        </button>
-                      ))}
-                    </div>
-                    {/* Legend Below */}
-                    <div className="relative max-w-2xl mx-auto mt-4">
-                      <div className="flex justify-between gap-3">
-                        <span className="flex-1 text-center text-xs text-slate-400">Life</span>
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1 text-center text-xs text-slate-400">Work</span>
-                      </div>
                     </div>
                   </div>
                 )}

@@ -14,7 +14,7 @@ export const MAYA_CHEN = {
     redoDecision: 'study',
     decisionStyle: 60, // 6 on 1-10 scale (leans thoughtful but not overly cautious)
     decisionPriority: 'passion', // Passion/interest
-    successValues: ['impact', 'connection'], // Creative impact & Work-life balance
+    successValues: ['creativeImpact', 'balance'], // Creative impact & Work-life balance
     currentPathFeeling: 70, // 7 (mostly happy, mild uncertainty)
     explorationPaths: 80, // 8 (likes exploring)
     responsibilityImpact: 40, // 4 (leans toward freedom)
