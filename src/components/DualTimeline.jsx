@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { Check, RefreshCw, Sparkles, Wand2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Check, RefreshCw, Sparkles, Wand2, Zap } from 'lucide-react';
 
 function DualTimeline({
   branchDecision,
@@ -12,8 +13,10 @@ function DualTimeline({
   onDiverge,
   onManualOverride,
   onReset,
-  bgTheme
+  bgTheme,
+  isDemoPersona = false
 }) {
+  const navigate = useNavigate();
   const isLight = bgTheme === 'light';
   const [customDecision, setCustomDecision] = useState('');
   const timelineEndRef = useRef(null);
@@ -590,20 +593,30 @@ function DualTimeline({
           </div>
         </div>
 
-        {/* Reset Button */}
-        {!isGenerating && projectedTimeline.length > 0 && (
+        {/* Reset/Try It Yourself Button */}
+        {!isGenerating && projectedTimeline.length > 0 && !draftNode && (
           <div className="text-center mt-10">
-            <button
-              onClick={onReset}
-              className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-300 ${
-                isLight
-                  ? 'bg-slate-200 hover:bg-slate-300 text-slate-700 shadow-md hover:shadow-lg'
-                  : 'bg-slate-800 hover:bg-slate-700 text-slate-300 shadow-lg hover:shadow-xl'
-              }`}
-            >
-              <RefreshCw size={16} />
-              Start Over
-            </button>
+            {isDemoPersona ? (
+              <button
+                onClick={() => navigate('/questionnaire')}
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-lg text-base font-bold bg-gradient-to-r from-purple-600 to-sky-600 hover:from-purple-500 hover:to-sky-500 text-white transition-all shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_30px_rgba(168,85,247,0.6)] hover:scale-105"
+              >
+                <Zap size={20} />
+                Try It Yourself
+              </button>
+            ) : (
+              <button
+                onClick={onReset}
+                className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-semibold transition-all duration-300 ${
+                  isLight
+                    ? 'bg-slate-200 hover:bg-slate-300 text-slate-700 shadow-md hover:shadow-lg'
+                    : 'bg-slate-800 hover:bg-slate-700 text-slate-300 shadow-lg hover:shadow-xl'
+                }`}
+              >
+                <RefreshCw size={16} />
+                Start Over
+              </button>
+            )}
           </div>
         )}
       </div>

@@ -79,7 +79,30 @@ export const simulateBranchResponse = async (branchPoint, newDecision, includeSo
 };
 
 // Iterative node generation - generates ONE node at a time using Nexus Temporal Engine
-export const generateNextNode = async (branchDecision, permanentTimeline, includeSocial, branchYear, originalNode = null, userProfile = null) => {
+export const generateNextNode = async (branchDecision, permanentTimeline, includeSocial, branchYear, originalNode = null, userProfile = null, demoPersona = null) => {
+  // Check if this is a demo persona with hardcoded outcomes
+  if (demoPersona && demoPersona.branchOutcomes && demoPersona.branchOutcomes.default) {
+    const hardcodedOutcome = demoPersona.branchOutcomes.default;
+    const nodeIndex = permanentTimeline.length;
+
+    // Return the hardcoded timeline node for this position
+    if (nodeIndex < hardcodedOutcome.timeline.length) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          const node = hardcodedOutcome.timeline[nodeIndex];
+          resolve({
+            ...node,
+            aiSuggestion: nodeIndex === 0 ? hardcodedOutcome.decision : null,
+            nextPrompt: nodeIndex === 0 ? "With this foundation established, what is your next major move?" : null
+          });
+        }, 1500); // Simulate loading delay
+      });
+    } else {
+      // All hardcoded nodes have been shown - return completion signal
+      return null;
+    }
+  }
+
   try {
     const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 

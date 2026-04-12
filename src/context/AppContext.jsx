@@ -13,6 +13,7 @@ export const useAppContext = () => {
 export const AppProvider = ({ children }) => {
   const [savedTimelines, setSavedTimelines] = useState([]);
   const [heuristicProfile, setHeuristicProfile] = useState(null);
+  const [demoPersona, setDemoPersona] = useState(null);
 
   const saveTimeline = (timeline) => {
     const newTimeline = {
@@ -38,7 +39,9 @@ export const AppProvider = ({ children }) => {
     deleteTimeline,
     loadTimeline,
     heuristicProfile,
-    setHeuristicProfile
+    setHeuristicProfile,
+    demoPersona,
+    setDemoPersona
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

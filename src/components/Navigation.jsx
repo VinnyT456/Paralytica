@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home as HomeIcon, Info, Zap, Clock, Sun, Moon } from 'lucide-react';
+import { Home as HomeIcon, Info, Zap, Clock, Sun, Moon, Users } from 'lucide-react';
 import ParalyticaLogo from '../assets/PurpleParalyticaLogoTransparent.png';
 
 function Navigation({ bgTheme, setBgTheme }) {
@@ -74,6 +74,20 @@ function Navigation({ bgTheme, setBgTheme }) {
             >
               <Clock size={18} />
               Archive
+            </Link>
+
+            <Link
+              to="/demo"
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                isActive('/demo')
+                  ? 'text-purple-600 bg-purple-500/10'
+                  : isLight
+                  ? 'text-slate-600 hover:text-slate-900'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <Users size={18} />
+              Demo
             </Link>
 
             <Link

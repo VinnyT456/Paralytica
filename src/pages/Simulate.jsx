@@ -1,4 +1,5 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { generateNextNode } from '../utils/mockApi';
 import Step1MapTimeline from '../components/Step1MapTimeline';
@@ -9,7 +10,8 @@ import Modal from '../components/Modal';
 import BackButton from '../components/BackButton';
 
 function Simulate({ bgTheme }) {
-  const { heuristicProfile } = useAppContext();
+  const location = useLocation();
+  const { heuristicProfile, demoPersona } = useAppContext();
   const [step, setStep] = useState(1);
   const [lifePoints, setLifePoints] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState(null);
@@ -27,6 +29,26 @@ function Simulate({ bgTheme }) {
   const [lastRequestTime, setLastRequestTime] = useState(0);
   const API_COOLDOWN_MS = 2000; // 2 second cooldown between requests
   const requestInFlight = useRef(false); // Track if a request is currently in progress
+
+  // Check if we're loading a demo persona and pre-populate timeline
+  useEffect(() => {
+    const personaData = location.state?.demoPersona || demoPersona;
+
+    if (personaData && personaData.careerMilestones && personaData.careerMilestones.length > 0) {
+      // Pre-load the timeline with demo persona's career milestones
+      const preloadedPoints = personaData.careerMilestones.map(milestone => ({
+        year: milestone.year,
+        role: milestone.role,
+        company: milestone.company,
+        location: milestone.location,
+        happiness: milestone.happiness
+      }));
+
+      setLifePoints(preloadedPoints);
+      setIncludeSocial(true); // Default to including social dynamics for demos
+      setStep(2); // Skip Step 1 (Map Timeline) and go directly to Step 2 (Primary Timeline)
+    }
+  }, [location.state, demoPersona]);
 
   const handleStep1Complete = (points, socialDynamics) => {
     setLifePoints(points);
@@ -109,6 +131,9 @@ function Simulate({ bgTheme }) {
       // Get corresponding baseline node (may be undefined if projected extends beyond baseline)
       const baselineNode = baseline[projectedTimeline.length] || null;
 
+      // Get demo persona data (from context or location state)
+      const personaData = location.state?.demoPersona || demoPersona;
+
       console.log('🚀 Generating draft node...');
       const node = await generateNextNode(
         decision, // Use the passed decision parameter
@@ -116,7 +141,8 @@ function Simulate({ bgTheme }) {
         includeSocial,
         selectedBranch.year,
         baselineNode, // Pass as counter-context (null if beyond baseline)
-        heuristicProfile // Pass user profile for AI predictions
+        heuristicProfile, // Pass user profile for AI predictions
+        personaData // Pass demo persona for hardcoded outcomes
       );
       setDraftNode(node);
       console.log('✅ Draft node generated successfully');
@@ -169,6 +195,10 @@ function Simulate({ bgTheme }) {
       try {
         // Get corresponding baseline node (may be undefined if projected extends beyond baseline)
         const baselineNode = baselineTimeline[updatedProjectedTimeline.length] || null;
+
+        // Get demo persona data (from context or location state)
+        const personaData = location.state?.demoPersona || demoPersona;
+
         console.log('🚀 Generating next node after accept...');
         const node = await generateNextNode(
           decision,
@@ -176,7 +206,8 @@ function Simulate({ bgTheme }) {
           includeSocial,
           selectedBranch.year,
           baselineNode,
-          heuristicProfile
+          heuristicProfile,
+          personaData // Pass demo persona for hardcoded outcomes
         );
         setDraftNode(node);
         console.log('✅ Next node generated successfully');
@@ -245,6 +276,7 @@ function Simulate({ bgTheme }) {
           onManualOverride={handleManualOverride}
           onReset={handleReset}
           bgTheme={bgTheme}
+          isDemoPersona={!!(location.state?.demoPersona || demoPersona)}
         />
       )}
 
