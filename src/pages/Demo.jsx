@@ -45,10 +45,10 @@ function Demo({ bgTheme }) {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className={`text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-sky-400 bg-clip-text text-transparent`}>
-            Demo Personas
+            Try Sample Profiles
           </h1>
           <p className={`text-lg ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-            Explore pre-configured life trajectories
+            Explore how different lives can unfold
           </p>
         </div>
 

@@ -106,7 +106,7 @@ function Home({ bgTheme }) {
             <ArrowRight className="group-hover:translate-x-2 transition-transform" size={36} />
           </button>
           <p className={`mt-6 text-base ${isLight ? 'text-slate-500' : 'text-slate-500'}`}>
-            Discover where your choices could lead. 
+            Discover where your choices could lead
           </p>
         </div>
       </div>
