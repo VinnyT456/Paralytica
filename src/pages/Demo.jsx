@@ -19,7 +19,7 @@ function Demo({ bgTheme }) {
     {
       name: "Jordan Reyes",
       role: "Data Analyst",
-      age: 24,
+      age: 25,
       vibe: "Practical, Ambitious, Competitive",
       description: "First-generation college graduate focused on building a stable, successful career. Confident and goal-oriented, but sometimes wonders what they might miss by playing it safe and sticking to a clear plan.",
       data: JORDAN_REYES
