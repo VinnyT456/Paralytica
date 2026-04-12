@@ -14,11 +14,11 @@ function Questionnaire({ bgTheme }) {
   // Form state
   const [formData, setFormData] = useState({
     role: '',
-    personality: [],
-    stabilityVsGrowth: 50,
+    redoDecision: '',
+    decisionStyle: 50,
+    decisionPriority: '',
     successValues: [],
-    superpower: '',
-    workIdentity: 50,
+    currentPathFeeling: 50,
     explorationPaths: 50,
     responsibilityImpact: 50,
     futureSuccess: 50,
@@ -53,11 +53,11 @@ function Questionnaire({ bgTheme }) {
   const canProceed = () => {
     switch (currentQuestion) {
       case 1: return formData.role !== '';
-      case 2: return formData.personality.length === 3;
-      case 3: return true; // stabilityVsGrowth always has a value
-      case 4: return formData.successValues.length === 2;
-      case 5: return formData.superpower !== '';
-      case 6: return true; // workIdentity always has a value
+      case 2: return formData.redoDecision !== '';
+      case 3: return true; // decisionStyle always has a value
+      case 4: return formData.decisionPriority !== '';
+      case 5: return formData.successValues.length === 2;
+      case 6: return true; // currentPathFeeling always has a value
       case 7: return true; // explorationPaths always has a value
       case 8: return true; // responsibilityImpact always has a value
       case 9: return true; // futureSuccess always has a value
@@ -71,9 +71,9 @@ function Questionnaire({ bgTheme }) {
 
   const isFormComplete =
     formData.role !== '' &&
-    formData.personality.length === 3 &&
-    formData.successValues.length === 2 &&
-    formData.superpower !== '';
+    formData.redoDecision !== '' &&
+    formData.decisionPriority !== '' &&
+    formData.successValues.length === 2;
 
   // Role options
   const roleOptions = [
@@ -82,17 +82,23 @@ function Questionnaire({ bgTheme }) {
     { value: 'professional', label: 'Professional' }
   ];
 
-  // Personality options
-  const personalityOptions = [
-    { value: 'curious', label: 'Curious' },
-    { value: 'resilient', label: 'Resilient' },
-    { value: 'charismatic', label: 'Charismatic' },
-    { value: 'analytical', label: 'Analytical' },
-    { value: 'compassionate', label: 'Compassionate' },
-    { value: 'impulsive', label: 'Impulsive' },
-    { value: 'reserved', label: 'Reserved' },
-    { value: 'optimistic', label: 'Optimistic' },
-    { value: 'meticulous', label: 'Meticulous' }
+  // Redo Decision options
+  const redoDecisionOptions = [
+    { value: 'school', label: 'Where you went to school' },
+    { value: 'study', label: 'What you studied' },
+    { value: 'firstJob', label: 'Your first job' },
+    { value: 'careerChange', label: 'A career change you didn\'t take' },
+    { value: 'location', label: 'A place you didn\'t move to' },
+    { value: 'relationship', label: 'A personal relationship decision' }
+  ];
+
+  // Decision Priority options
+  const decisionPriorityOptions = [
+    { value: 'money', label: 'Money & stability' },
+    { value: 'passion', label: 'Passion & purpose' },
+    { value: 'freedom', label: 'Freedom & flexibility' },
+    { value: 'people', label: 'People & relationships' },
+    { value: 'impact', label: 'Impact & legacy' }
   ];
 
   // Success value options
@@ -101,39 +107,28 @@ function Questionnaire({ bgTheme }) {
     { value: 'autonomy', label: 'Autonomy', description: 'Freedom and independence' },
     { value: 'impact', label: 'Impact', description: 'Creative influence and legacy' },
     { value: 'connection', label: 'Connection', description: 'Relationships and community' },
-    { value: 'security', label: 'Security', description: 'Stability and peace of mind' }
+    { value: 'security', label: 'Security', description: 'Stability and peace of mind' },
+    { value: 'growth', label: 'Growth', description: 'Learning and self-development' }
   ];
 
-  // Superpower options
-  const superpowerOptions = [
-    { value: 'technical', label: 'Technical Execution'},
-    { value: 'intuitive', label: 'Intuitive/Gut Feeling'},
-    { value: 'emotional', label: 'Emotional Intelligence'},
-    { value: 'analytical', label: 'Deep Analysis'}
-  ];
+  // Handle redo decision selection with auto-advance
+  const handleRedoDecisionSelect = (value) => {
+    setFormData(prev => ({ ...prev, redoDecision: value }));
 
-  // Handle personality selection with auto-advance
-  const togglePersonality = (value) => {
-    setFormData(prev => {
-      const current = prev.personality;
-      let newPersonality;
-      if (current.includes(value)) {
-        newPersonality = current.filter(v => v !== value);
-      } else if (current.length < 3) {
-        newPersonality = [...current, value];
+    // Auto-advance after selection
+    setTimeout(() => {
+      goToNext();
+    }, 400);
+  };
 
-        // Auto-advance if we just selected the 3rd item
-        if (newPersonality.length === 3) {
-          setTimeout(() => {
-            goToNext();
-          }, 400);
-        }
-      } else {
-        return prev;
-      }
+  // Handle decision priority selection with auto-advance
+  const handleDecisionPrioritySelect = (value) => {
+    setFormData(prev => ({ ...prev, decisionPriority: value }));
 
-      return { ...prev, personality: newPersonality };
-    });
+    // Auto-advance after selection
+    setTimeout(() => {
+      goToNext();
+    }, 400);
   };
 
   // Handle success value selection with auto-advance
@@ -160,21 +155,11 @@ function Questionnaire({ bgTheme }) {
     });
   };
 
-  // Handle scale selection (Q3 and Q6) with auto-advance
+  // Handle scale selection (Q3, Q6, Q7, Q8, Q9, Q10) with auto-advance
   const handleScaleSelect = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
 
     // Auto-advance after selection with a short delay
-    setTimeout(() => {
-      goToNext();
-    }, 400);
-  };
-
-  // Handle superpower selection with auto-advance
-  const handleSuperpowerSelect = (value) => {
-    setFormData(prev => ({ ...prev, superpower: value }));
-
-    // Auto-advance after selection
     setTimeout(() => {
       goToNext();
     }, 400);
@@ -185,7 +170,7 @@ function Questionnaire({ bgTheme }) {
     e.preventDefault();
 
     // Validation
-    if (!formData.role || formData.personality.length !== 3 || formData.successValues.length !== 2 || !formData.superpower) {
+    if (!formData.role || !formData.redoDecision || !formData.decisionPriority || formData.successValues.length !== 2) {
       alert('Please complete all required fields');
       return;
     }
@@ -195,10 +180,7 @@ function Questionnaire({ bgTheme }) {
     // Simulate processing
     setTimeout(() => {
       // Save to context
-      setHeuristicProfile({
-        ...formData,
-        personality: formData.personality.join(', ')
-      });
+      setHeuristicProfile(formData);
       // Navigate to simulate page
       navigate('/simulate');
     }, 3000);
@@ -224,7 +206,7 @@ function Questionnaire({ bgTheme }) {
           </h2>
           <p className="text-slate-400 text-lg mb-2">Analyzing heuristic profile</p>
           <p className="text-slate-500 text-sm font-mono">
-            ROLE: {formData.role.toUpperCase()} • TRAIT: {formData.personality[0]}
+            ROLE: {formData.role.toUpperCase()} • DECISION: {formData.redoDecision.toUpperCase()}
           </p>
         </div>
       </div>
@@ -283,7 +265,7 @@ function Questionnaire({ bgTheme }) {
                     <h2 className={`text-2xl font-bold mb-6 text-center ${
                       isLight ? 'text-slate-800' : 'text-slate-200'
                     }`}>
-                      What is your role?
+                      Which best describes you right now?
                     </h2>
                     <div className="space-y-4 max-w-md mx-auto">
                       {roleOptions.map((option) => (
@@ -312,25 +294,22 @@ function Questionnaire({ bgTheme }) {
                   </div>
                 )}
 
-                {/* Question 2: Personality */}
+                {/* Question 2: Redo Decision */}
                 {currentQuestion === 2 && (
                   <div>
-                    <h2 className={`text-2xl font-bold mb-2 text-center ${
+                    <h2 className={`text-2xl font-bold mb-6 text-center ${
                       isLight ? 'text-slate-800' : 'text-slate-200'
                     }`}>
-                      Choose 3 words to describe your personality.
+                      If you could redo one major decision, what would it be?
                     </h2>
-                    <p className={`text-sm mb-6 text-center ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                      Select exactly 3 words ({formData.personality.length}/3 selected)
-                    </p>
-                    <div className="grid grid-cols-3 gap-3 max-w-2xl mx-auto">
-                      {personalityOptions.map((option) => (
+                    <div className="space-y-3 max-w-xl mx-auto">
+                      {redoDecisionOptions.map((option) => (
                         <button
                           key={option.value}
                           type="button"
-                          onClick={() => togglePersonality(option.value)}
-                          className={`px-4 py-4 rounded-lg border-2 text-base font-semibold transition-all duration-300 ${
-                            formData.personality.includes(option.value)
+                          onClick={() => handleRedoDecisionSelect(option.value)}
+                          className={`w-full px-6 py-4 rounded-xl border-2 text-base font-semibold transition-all duration-300 ${
+                            formData.redoDecision === option.value
                               ? 'border-sky-500 bg-sky-500/20 text-sky-400 shadow-[0_0_20px_rgba(14,165,233,0.4)]'
                               : isLight
                               ? 'border-slate-300 bg-white text-slate-700 hover:border-slate-400'
@@ -344,22 +323,22 @@ function Questionnaire({ bgTheme }) {
                   </div>
                 )}
 
-                {/* Question 3: Stability vs Growth - 1-10 Scale */}
+                {/* Question 3: Decision Style - 1-10 Scale */}
                 {currentQuestion === 3 && (
                   <div>
                     <h2 className={`text-2xl font-bold mb-6 text-center ${
                       isLight ? 'text-slate-800' : 'text-slate-200'
                     }`}>
-                      When you hit a major turning point, what do you tend to do?
+                      When you face a big life decision, what do you usually do?
                     </h2>
                     <div className="flex justify-between gap-3 max-w-2xl mx-auto">
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
                         <button
                           key={num}
                           type="button"
-                          onClick={() => handleScaleSelect('stabilityVsGrowth', num * 10)}
+                          onClick={() => handleScaleSelect('decisionStyle', num * 10)}
                           className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
-                            formData.stabilityVsGrowth === num * 10
+                            formData.decisionStyle === num * 10
                               ? 'border-sky-500 bg-sky-500 text-white shadow-[0_0_15px_rgba(14,165,233,0.6)]'
                               : isLight
                               ? 'border-slate-300 bg-white text-slate-700 hover:border-sky-400 hover:bg-sky-50'
@@ -373,7 +352,7 @@ function Questionnaire({ bgTheme }) {
                     {/* Legend Below */}
                     <div className="relative max-w-2xl mx-auto mt-4">
                       <div className="flex justify-between gap-3">
-                        <span className="flex-1 text-center text-xs text-slate-400">Stable</span>
+                        <span className="flex-1 text-center text-xs text-slate-400">Safe</span>
                         <span className="flex-1" />
                         <span className="flex-1" />
                         <span className="flex-1" />
@@ -382,22 +361,51 @@ function Questionnaire({ bgTheme }) {
                         <span className="flex-1" />
                         <span className="flex-1" />
                         <span className="flex-1" />
-                        <span className="flex-1 text-center text-xs text-slate-400">Risk</span>
+                        <span className="flex-1 text-center text-xs text-slate-400">Bold</span>
                       </div>
                     </div>
                   </div>
                 )}
 
-                {/* Question 4: Success Values */}
+                {/* Question 4: Decision Priority */}
                 {currentQuestion === 4 && (
+                  <div>
+                    <h2 className={`text-2xl font-bold mb-6 text-center ${
+                      isLight ? 'text-slate-800' : 'text-slate-200'
+                    }`}>
+                      What matters most when you make major decisions?
+                    </h2>
+                    <div className="space-y-3 max-w-xl mx-auto">
+                      {decisionPriorityOptions.map((option) => (
+                        <button
+                          key={option.value}
+                          type="button"
+                          onClick={() => handleDecisionPrioritySelect(option.value)}
+                          className={`w-full px-6 py-4 rounded-xl border-2 text-base font-semibold transition-all duration-300 ${
+                            formData.decisionPriority === option.value
+                              ? 'border-purple-500 bg-purple-500/20 text-purple-400 shadow-[0_0_20px_rgba(168,85,247,0.4)]'
+                              : isLight
+                              ? 'border-slate-300 bg-white text-slate-700 hover:border-slate-400'
+                              : 'border-slate-700 bg-slate-800/50 text-slate-300 hover:border-slate-600'
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Question 5: Success Values */}
+                {currentQuestion === 5 && (
                   <div>
                     <h2 className={`text-2xl font-bold mb-2 text-center ${
                       isLight ? 'text-slate-800' : 'text-slate-200'
                     }`}>
-                      Which of these defines 'success' for you in 10 years?
+                      What does "success" look like to you in 10 years?
                     </h2>
                     <p className={`text-sm mb-6 text-center ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                      Select exactly 2 options ({formData.successValues.length}/2 selected)
+                      Pick 2 ({formData.successValues.length}/2 selected)
                     </p>
                     <div className="grid grid-cols-2 gap-4 max-w-xl mx-auto">
                       {successOptions.map((option) => (
@@ -422,7 +430,7 @@ function Questionnaire({ bgTheme }) {
                           }`}>
                             {option.label}
                           </div>
-                          <div className={`text-xs ${
+                          {/* <div className={`text-xs ${
                             formData.successValues.includes(option.value)
                               ? 'text-purple-300/70'
                               : isLight
@@ -430,51 +438,14 @@ function Questionnaire({ bgTheme }) {
                               : 'text-slate-400'
                           }`}>
                             {option.description}
-                          </div>
+                          </div> */}
                         </button>
                       ))}
                     </div>
                   </div>
                 )}
 
-                {/* Question 5: Superpower */}
-                {currentQuestion === 5 && (
-                  <div>
-                    <h2 className={`text-2xl font-bold mb-6 text-center ${
-                      isLight ? 'text-slate-800' : 'text-slate-200'
-                    }`}>
-                      What’s your biggest strength when solving problems?
-                    </h2>
-                    <div className="space-y-4 max-w-xl mx-auto">
-                      {superpowerOptions.map((option) => (
-                        <button
-                          key={option.value}
-                          type="button"
-                          onClick={() => handleSuperpowerSelect(option.value)}
-                          className={`w-full flex items-center gap-5 px-6 py-5 rounded-xl border-2 cursor-pointer transition-all duration-300 ${
-                            formData.superpower === option.value
-                              ? 'border-purple-500 bg-purple-500/20 shadow-[0_0_20px_rgba(168,85,247,0.4)]'
-                              : isLight
-                              ? 'border-slate-300 bg-white hover:border-slate-400'
-                              : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
-                          }`}
-                        >
-                          <span className={`text-lg font-semibold ${
-                            formData.superpower === option.value
-                              ? 'text-purple-400'
-                              : isLight
-                              ? 'text-slate-700'
-                              : 'text-slate-300'
-                          }`}>
-                            {option.label}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Question 6: Work Identity - 1-10 Scale */}
+                {/* Question 6: Current Path Feeling - 1-10 Scale */}
                 {currentQuestion === 6 && (
                   <div>
                     <h2 className={`text-2xl font-bold mb-6 text-center ${
@@ -487,9 +458,9 @@ function Questionnaire({ bgTheme }) {
                         <button
                           key={num}
                           type="button"
-                          onClick={() => handleScaleSelect('workIdentity', num * 10)}
+                          onClick={() => handleScaleSelect('currentPathFeeling', num * 10)}
                           className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
-                            formData.workIdentity === num * 10
+                            formData.currentPathFeeling === num * 10
                               ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
                               : isLight
                               ? 'border-slate-300 bg-white text-slate-700 hover:border-purple-400 hover:bg-purple-50'

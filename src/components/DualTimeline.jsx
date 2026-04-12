@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Check, RefreshCw, Edit3, Sparkles, Save, Shield } from 'lucide-react';
+import { Check, RefreshCw, Edit3, Sparkles, Save } from 'lucide-react';
 
 function DualTimeline({
   branchDecision,
@@ -437,41 +437,81 @@ function DualTimeline({
   return (
     <div className="min-h-screen p-6 md:p-12 pt-24">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold mb-3 bg-gradient-to-r from-purple-400 via-sky-400 to-emerald-400 bg-clip-text text-transparent">
+        {/* TOP SECTION - Header & Decision */}
+        <div className="relative flex flex-col items-center mb-8">
+          {/* BACKGROUND ATMOSPHERE - Indigo Glow */}
+          <div className="absolute inset-0 flex justify-center items-center pointer-events-none overflow-hidden">
+            <div className={`w-full h-full bg-gradient-radial ${
+              isLight
+                ? 'from-indigo-200/20 via-transparent to-transparent'
+                : 'from-indigo-500/10 via-transparent to-transparent'
+            }`} />
+          </div>
+
+          {/* THE TITLE - Refined Scale */}
+          <h1 className={`relative text-4xl font-black tracking-tighter mb-3 bg-gradient-to-b ${
+            isLight
+              ? 'from-slate-900 via-slate-600 to-transparent bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]'
+              : 'from-white via-slate-300 to-transparent bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]'
+          }`}>
             Dual-Universe Comparison
           </h1>
-          <p className={`mb-2 text-sm ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-            Decision: <span className={`font-semibold italic ${isLight ? 'text-sky-600' : 'text-sky-400'}`}>"{branchDecision}"</span>
-          </p>
-          <p className={`text-xs ${isLight ? 'text-slate-500' : 'text-slate-500'}`}>
-            {projectedTimeline.length} projected node{projectedTimeline.length !== 1 ? 's' : ''} • {baselineTimeline.length} baseline nodes
-          </p>
+
+          {/* THE DECISION CHIP - Refined */}
+          <div className={`relative bg-sky-500/10 border border-sky-400/50 rounded-full px-4 py-1.5 shadow-[0_0_20px_rgba(56,189,248,0.2)] ${
+            isLight ? 'shadow-[0_0_15px_rgba(56,189,248,0.15)]' : 'shadow-[0_0_20px_rgba(56,189,248,0.2)]'
+          }`}>
+            <span className="text-sky-400 font-mono text-sm">
+              "{branchDecision}"
+            </span>
+          </div>
+        </div>
+
+        {/* UNIVERSE CONTAINERS - Premium Glass Cards */}
+        <div className="grid grid-cols-2 gap-12 mb-12">
+          {/* BASELINE REALITY - Glass Container */}
+          <div className={`flex flex-col items-center text-center p-8 rounded-2xl border backdrop-blur-xl shadow-2xl shadow-[inset_0_0_20px_rgba(255,255,255,0.03)] ${
+            isLight
+              ? 'bg-slate-100/60 border-slate-300/50'
+              : 'bg-slate-900/40 border-slate-800/50'
+          }`}>
+            <h2 className={`text-2xl font-black tracking-[0.3em] uppercase mb-3 ${
+              isLight ? 'text-slate-600' : 'text-slate-500'
+            }`}>
+              BASELINE REALITY
+            </h2>
+            <p className={`text-xs max-w-xs ${
+              isLight ? 'text-slate-500' : 'text-slate-600'
+            }`}>
+              The grounded, original trajectory based on your established history.
+            </p>
+          </div>
+
+          {/* PROJECTED FUTURE - Glass Container with Gradient */}
+          <div className={`flex flex-col items-center text-center p-8 rounded-2xl border backdrop-blur-xl shadow-2xl shadow-[inset_0_0_20px_rgba(255,255,255,0.03)] ${
+            isLight
+              ? 'bg-slate-100/60 border-slate-300/50'
+              : 'bg-slate-900/40 border-slate-800/50'
+          }`}>
+            <h2 className="text-2xl font-black tracking-[0.3em] uppercase mb-3 bg-gradient-to-r from-sky-400 to-purple-500 bg-clip-text text-transparent">
+              PROJECTED FUTURE
+            </h2>
+            <p className={`text-xs max-w-xs ${
+              isLight ? 'text-slate-500' : 'text-slate-400'
+            }`}>
+              The unfolding nexus of potential—a life re-forged by your active decisions.
+            </p>
+          </div>
         </div>
 
         {/* Dual Timeline Container */}
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-2 gap-16 mt-12">
           {/* LEFT COLUMN: BASELINE REALITY */}
-          <div>
-            <div className="sticky top-20 z-10 pb-6 mb-6" style={{
-              background: isLight ? 'linear-gradient(to bottom, #f8fafc 85%, transparent)' : 'linear-gradient(to bottom, #020617 85%, transparent)'
-            }}>
-              <h2 className={`text-2xl font-extrabold flex items-center gap-3 tracking-tight ${
-                isLight ? 'text-slate-700' : 'text-slate-400'
-              }`}>
-                <Shield size={28} className={isLight ? 'text-slate-600' : 'text-slate-500'} />
-                BASELINE REALITY
-              </h2>
-              <p className={`text-xs mt-2 ml-10 ${isLight ? 'text-slate-500' : 'text-slate-500'}`}>
-                The grounded, original path
-              </p>
-            </div>
-
+          <div className="w-full bg-transparent flex flex-col items-center saturate-50">
             <div
               ref={leftScrollRef}
               onScroll={() => handleScroll(leftScrollRef, rightScrollRef)}
-              className="space-y-6 pr-2"
+              className="space-y-6 w-full"
               style={{ maxHeight: 'calc(100vh - 260px)', overflowY: 'auto' }}
             >
               {baselineTimeline.map((node, index) => renderNode(node, index, true))}
@@ -479,25 +519,14 @@ function DualTimeline({
           </div>
 
           {/* RIGHT COLUMN: PROJECTED FUTURE */}
-          <div>
-            <div className="sticky top-20 z-10 pb-6 mb-6" style={{
-              background: isLight ? 'linear-gradient(to bottom, #f8fafc 85%, transparent)' : 'linear-gradient(to bottom, #020617 85%, transparent)'
-            }}>
-              <h2 className={`text-2xl font-extrabold flex items-center gap-3 tracking-tight ${
-                isLight ? 'text-purple-700' : 'text-purple-400'
-              }`}>
-                <Sparkles size={28} className={isLight ? 'text-purple-600 animate-pulse' : 'text-purple-400 animate-pulse'} />
-                PROJECTED FUTURE
-              </h2>
-              <p className={`text-xs mt-2 ml-10 ${isLight ? 'text-purple-600' : 'text-purple-500'}`}>
-                The interactive, AI-driven path
-              </p>
-            </div>
+          <div className="w-full bg-transparent flex flex-col items-center relative">
+            {/* Radial Gradient Backdrop - Only Behind Projected Cards */}
+            <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,_rgba(56,189,248,0.05)_0%,_transparent_70%)]" />
 
             <div
               ref={rightScrollRef}
               onScroll={() => handleScroll(rightScrollRef, leftScrollRef)}
-              className="space-y-6 pl-2"
+              className="space-y-6 w-full relative z-10"
               style={{ maxHeight: 'calc(100vh - 260px)', overflowY: 'auto' }}
             >
               {projectedTimeline.map((node, index) => renderNode(node, index, false))}
