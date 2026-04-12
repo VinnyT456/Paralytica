@@ -227,9 +227,9 @@ OUTPUT FORMAT (JSON only, no markdown):
   }
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`🌌 Nexus Temporal Engine running on http://localhost:${PORT}`);
+// Start server (0.0.0.0 so LAN devices can reach you if needed; Vite proxy uses 127.0.0.1 locally)
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🌌 Nexus Temporal Engine running on http://localhost:${PORT} (all interfaces)`);
   console.log(`✨ Gemini AI Status: ${GEMINI_API_KEY ? 'Connected' : 'API Key Missing'}`);
   console.log(`🤖 Model: ${GEMINI_MODEL}`);
   console.log(`🔧 Using Direct REST API (bypassing SDK)`);

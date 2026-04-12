@@ -111,7 +111,13 @@ export const generateNextNode = async (branchDecision, permanentTimeline, includ
   }
 
   try {
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+    // Empty / unset VITE_API_URL → same-origin `/api` (Vite dev/preview proxy → Express on :3001).
+    // Set VITE_API_URL only when the API lives on another origin (e.g. production).
+    const rawBase = import.meta.env.VITE_API_URL;
+    const API_BASE =
+      rawBase != null && String(rawBase).trim() !== ''
+        ? String(rawBase).replace(/\/$/, '')
+        : '';
 
     // Prepare milestone history from permanent timeline
     const milestoneHistory = permanentTimeline.map(node => ({
@@ -141,10 +147,11 @@ export const generateNextNode = async (branchDecision, permanentTimeline, includ
       baselineNode: originalNode || null
     };
 
-    console.log('🔵 Calling Nexus Temporal Engine:', API_URL);
+    const predictUrl = `${API_BASE}/api/predict-branch`;
+    console.log('🔵 Calling Nexus Temporal Engine:', predictUrl || '(same-origin /api/predict-branch)');
     console.log('📦 Request body:', requestBody);
 
-    const response = await fetch(`${API_URL}/api/predict-branch`, {
+    const response = await fetch(predictUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -174,10 +181,19 @@ export const generateNextNode = async (branchDecision, permanentTimeline, includ
     };
 
   } catch (error) {
-    console.error('Error calling Nexus Temporal Engine:', error);
+    const isNetwork =
+      error instanceof TypeError &&
+      (error.message === 'Failed to fetch' || error.name === 'TypeError');
 
-    // Fallback to mock data if API fails
-    console.warn('Falling back to mock data generation');
+    if (isNetwork) {
+      console.warn(
+        'Nexus Temporal Engine unreachable (is the API running on port 3001?). Using mock timeline.',
+        error.message
+      );
+    } else {
+      console.error('Error calling Nexus Temporal Engine:', error);
+    }
+
     return generateMockNode(branchDecision, permanentTimeline, includeSocial, branchYear, originalNode);
   }
 };
