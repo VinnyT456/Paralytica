@@ -7,6 +7,7 @@ function DualTimeline({
   projectedTimeline,
   draftNode,
   isGenerating,
+  branchIndex,
   onAccept,
   onDiverge,
   onManualOverride,
@@ -16,16 +17,7 @@ function DualTimeline({
   const isLight = bgTheme === 'light';
   const [isEditing, setIsEditing] = useState(false);
   const [manualInput, setManualInput] = useState('');
-  const leftScrollRef = useRef(null);
-  const rightScrollRef = useRef(null);
   const timelineEndRef = useRef(null);
-
-  // Synchronized scrolling
-  const handleScroll = (sourceRef, targetRef) => {
-    if (targetRef.current && sourceRef.current) {
-      targetRef.current.scrollTop = sourceRef.current.scrollTop;
-    }
-  };
 
   // Auto-scroll to bottom when new nodes are added
   useEffect(() => {
@@ -59,15 +51,15 @@ function DualTimeline({
           <div className={`w-12 h-12 border-2 rounded-full flex items-center justify-center transition-all duration-300 ${
             isBaseline
               ? isLight
-                ? 'bg-slate-100 border-slate-400 opacity-50'
-                : 'bg-slate-800 border-slate-600 opacity-50'
+                ? 'bg-slate-100 border-slate-400'
+                : 'bg-slate-800 border-slate-600'
               : isLight
               ? 'bg-white border-purple-500 shadow-lg shadow-purple-500/30'
               : 'bg-slate-900 border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.7)] animate-pulse'
           }`}>
             <span className={`text-xs font-bold ${
               isBaseline
-                ? isLight ? 'text-slate-500' : 'text-slate-500'
+                ? isLight ? 'text-slate-600' : 'text-slate-300'
                 : isLight ? 'text-purple-600' : 'text-purple-400'
             }`}>
               {node.year}
@@ -79,20 +71,20 @@ function DualTimeline({
         <div className={`flex-1 border-2 rounded-lg p-5 transition-all duration-300 ${
           isBaseline
             ? isLight
-              ? 'bg-slate-50 border-slate-300 opacity-50'
-              : 'bg-slate-900/50 border-slate-700 opacity-50'
+              ? 'bg-slate-50 border-slate-300'
+              : 'bg-slate-900/50 border-slate-700'
             : isLight
             ? 'bg-white border-purple-400 shadow-lg'
             : 'bg-slate-900/90 border-purple-500/60 shadow-[0_0_20px_rgba(168,85,247,0.3)]'
         }`}>
           <h3 className={`text-base font-semibold mb-2 ${
             isBaseline
-              ? isLight ? 'text-slate-600' : 'text-slate-400'
+              ? isLight ? 'text-slate-700' : 'text-slate-300'
               : isLight ? 'text-purple-700' : 'text-purple-300'
           }`}>{node.title}</h3>
           <p className={`text-sm mb-3 line-clamp-3 ${
             isBaseline
-              ? isLight ? 'text-slate-600' : 'text-slate-500'
+              ? isLight ? 'text-slate-600' : 'text-slate-300'
               : isLight ? 'text-slate-700' : 'text-slate-300'
           }`}>
             {node.narrative}
@@ -103,13 +95,13 @@ function DualTimeline({
             <div>
               <div className="flex justify-between text-xs mb-1">
                 <span className={isBaseline
-                  ? isLight ? 'text-slate-500' : 'text-slate-500'
+                  ? isLight ? 'text-slate-600' : 'text-slate-300'
                   : isLight ? 'text-slate-600' : 'text-slate-400'
                 }>Wealth</span>
                 <div className="flex items-center gap-2">
                   <span className={`font-semibold ${
                     isBaseline
-                      ? isLight ? 'text-slate-600' : 'text-slate-500'
+                      ? isLight ? 'text-slate-700' : 'text-slate-300'
                       : isLight ? 'text-emerald-700' : 'text-emerald-400'
                   }`}>
                     {node.metrics.wealth}%
@@ -137,13 +129,13 @@ function DualTimeline({
             <div>
               <div className="flex justify-between text-xs mb-1">
                 <span className={isBaseline
-                  ? isLight ? 'text-slate-500' : 'text-slate-500'
+                  ? isLight ? 'text-slate-600' : 'text-slate-300'
                   : isLight ? 'text-slate-600' : 'text-slate-400'
                 }>Satisfaction</span>
                 <div className="flex items-center gap-2">
                   <span className={`font-semibold ${
                     isBaseline
-                      ? isLight ? 'text-slate-600' : 'text-slate-500'
+                      ? isLight ? 'text-slate-700' : 'text-slate-300'
                       : isLight ? 'text-sky-700' : 'text-sky-400'
                   }`}>
                     {node.metrics.satisfaction}%
@@ -171,13 +163,13 @@ function DualTimeline({
             <div>
               <div className="flex justify-between text-xs mb-1">
                 <span className={isBaseline
-                  ? isLight ? 'text-slate-500' : 'text-slate-500'
+                  ? isLight ? 'text-slate-600' : 'text-slate-300'
                   : isLight ? 'text-slate-600' : 'text-slate-400'
                 }>Happiness</span>
                 <div className="flex items-center gap-2">
                   <span className={`font-semibold ${
                     isBaseline
-                      ? isLight ? 'text-slate-600' : 'text-slate-500'
+                      ? isLight ? 'text-slate-700' : 'text-slate-300'
                       : isLight ? 'text-purple-700' : 'text-purple-400'
                   }`}>
                     {node.metrics.happiness}%
@@ -204,13 +196,6 @@ function DualTimeline({
             </div>
           </div>
         </div>
-
-        {/* Dimensional Bridge (only render on baseline side) */}
-        {isBaseline && (
-          <div className={`absolute left-full top-6 h-1 w-8 bg-gradient-to-r from-slate-500 via-purple-500 to-sky-500 ${
-            isLight ? 'opacity-40' : 'opacity-60 shadow-[0_0_8px_rgba(168,85,247,0.5)]'
-          }`} />
-        )}
       </div>
     );
   };
@@ -448,8 +433,8 @@ function DualTimeline({
             }`} />
           </div>
 
-          {/* THE TITLE - Refined Scale */}
-          <h1 className={`relative text-4xl font-black tracking-tighter mb-3 bg-gradient-to-b ${
+          {/* THE TITLE - Bold Hierarchy */}
+          <h1 className={`relative text-6xl font-black tracking-tight mb-6 bg-gradient-to-b ${
             isLight
               ? 'from-slate-900 via-slate-600 to-transparent bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]'
               : 'from-white via-slate-300 to-transparent bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]'
@@ -457,84 +442,149 @@ function DualTimeline({
             Dual-Universe Comparison
           </h1>
 
-          {/* THE DECISION CHIP - Refined */}
-          <div className={`relative bg-sky-500/10 border border-sky-400/50 rounded-full px-4 py-1.5 shadow-[0_0_20px_rgba(56,189,248,0.2)] ${
-            isLight ? 'shadow-[0_0_15px_rgba(56,189,248,0.15)]' : 'shadow-[0_0_20px_rgba(56,189,248,0.2)]'
-          }`}>
-            <span className="text-sky-400 font-mono text-sm">
-              "{branchDecision}"
-            </span>
+          {/* THE DECISION CHIP - Enhanced */}
+          <div className="flex flex-col items-center">
+            <p className={`text-xs font-bold font-mono tracking-widest mb-2 ${
+              isLight ? 'text-slate-600' : 'text-slate-500'
+            }`}>
+              DECISION: WHAT IF I
+            </p>
+            <div className={`relative bg-sky-500/10 border-2 border-sky-400 rounded-full px-8 py-3 shadow-[0_0_30px_rgba(56,189,248,0.4)] ${
+              isLight ? 'shadow-[0_0_25px_rgba(56,189,248,0.3)]' : 'shadow-[0_0_30px_rgba(56,189,248,0.4)]'
+            }`}>
+              <span className="text-sky-400 font-bold text-2xl">
+                {branchDecision}
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* UNIVERSE CONTAINERS - Premium Glass Cards */}
-        <div className="grid grid-cols-2 gap-12 mb-12">
-          {/* BASELINE REALITY - Glass Container */}
-          <div className={`flex flex-col items-center text-center p-8 rounded-2xl border backdrop-blur-xl shadow-2xl shadow-[inset_0_0_20px_rgba(255,255,255,0.03)] ${
+        {/* UNIVERSE CONTAINERS - Holographic Panels */}
+        <div className="grid grid-cols-2 gap-12 mb-8">
+          {/* BASELINE REALITY - Light Container */}
+          <div className={`flex flex-col items-center text-center p-8 rounded-2xl border backdrop-blur-2xl ${
             isLight
-              ? 'bg-slate-100/60 border-slate-300/50'
-              : 'bg-slate-900/40 border-slate-800/50'
+              ? 'bg-slate-200/30 border-slate-400/60'
+              : 'bg-slate-950/20 border-slate-800/60'
           }`}>
             <h2 className={`text-2xl font-black tracking-[0.3em] uppercase mb-3 ${
               isLight ? 'text-slate-600' : 'text-slate-500'
             }`}>
               BASELINE REALITY
             </h2>
-            <p className={`text-xs max-w-xs ${
-              isLight ? 'text-slate-500' : 'text-slate-600'
+            <p className={`text-xs font-light max-w-xs ${
+              isLight ? 'text-slate-600' : 'text-slate-600'
             }`}>
               The grounded, original trajectory based on your established history.
             </p>
           </div>
 
-          {/* PROJECTED FUTURE - Glass Container with Gradient */}
-          <div className={`flex flex-col items-center text-center p-8 rounded-2xl border backdrop-blur-xl shadow-2xl shadow-[inset_0_0_20px_rgba(255,255,255,0.03)] ${
+          {/* PROJECTED FUTURE - Holographic Panel with Cyan Glow */}
+          <div className={`flex flex-col items-center text-center p-8 rounded-2xl border backdrop-blur-2xl shadow-[0_0_20px_rgba(56,189,248,0.1)] animate-pulse ${
             isLight
-              ? 'bg-slate-100/60 border-slate-300/50'
-              : 'bg-slate-900/40 border-slate-800/50'
+              ? 'bg-slate-200/30 border-slate-400/60'
+              : 'bg-slate-950/20 border-slate-800/60'
           }`}>
             <h2 className="text-2xl font-black tracking-[0.3em] uppercase mb-3 bg-gradient-to-r from-sky-400 to-purple-500 bg-clip-text text-transparent">
               PROJECTED FUTURE
             </h2>
-            <p className={`text-xs max-w-xs ${
-              isLight ? 'text-slate-500' : 'text-slate-400'
+            <p className={`text-xs font-light max-w-xs ${
+              isLight ? 'text-slate-600' : 'text-slate-400'
             }`}>
               The unfolding nexus of potential—a life re-forged by your active decisions.
             </p>
           </div>
         </div>
 
-        {/* Dual Timeline Container */}
-        <div className="grid grid-cols-2 gap-16 mt-12">
-          {/* LEFT COLUMN: BASELINE REALITY */}
-          <div className="w-full bg-transparent flex flex-col items-center saturate-50">
-            <div
-              ref={leftScrollRef}
-              onScroll={() => handleScroll(leftScrollRef, rightScrollRef)}
-              className="space-y-6 w-full"
-              style={{ maxHeight: 'calc(100vh - 260px)', overflowY: 'auto' }}
-            >
-              {baselineTimeline.map((node, index) => renderNode(node, index, true))}
+        {/* Timeline with Shared History */}
+        <div className="mt-6">
+          {/* SHARED HISTORY Section - All milestones before split */}
+          {branchIndex > 0 && (
+            <div className="flex flex-col items-center mb-6">
+              {/* SHARED HISTORY Label - At the very top */}
+              <div className={`inline-flex items-center gap-2 rounded-full px-6 py-2 backdrop-blur-2xl shadow-lg mb-6 ${
+                isLight
+                  ? 'bg-slate-200/40 border border-slate-400/60 text-slate-700'
+                  : 'bg-slate-950/20 border border-slate-800/60 text-slate-400'
+              }`}>
+                <div className={`w-1.5 h-1.5 rounded-full ${
+                  isLight ? 'bg-slate-600' : 'bg-slate-500'
+                }`} />
+                <h2 className="text-sm font-mono tracking-[0.3em] uppercase font-semibold">
+                  SHARED HISTORY
+                </h2>
+              </div>
+
+              {/* Shared Milestones - All nodes before splitIndex */}
+              <div className="relative flex flex-col items-center">
+                {/* Vertical Stem Line connecting all shared nodes */}
+                <div className={`absolute left-6 top-0 bottom-0 w-0.5 ${
+                  isLight ? 'bg-slate-400' : 'bg-slate-600'
+                }`} style={{ height: '100%' }} />
+
+                <div className="space-y-3 max-w-md w-full relative z-10">
+                  {baselineTimeline.slice(0, branchIndex).map((node, index) => (
+                    <div key={index}>
+                      {renderNode(node, index, false)}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Y-Split Indicator */}
+              <div className="relative w-full h-16 mt-4">
+                <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ overflow: 'visible' }}>
+                  {/* Baseline Path (Left) - Muted */}
+                  <path
+                    d="M 50% 0 L 25% 100%"
+                    stroke={isLight ? '#94a3b8' : '#64748b'}
+                    strokeWidth="2"
+                    fill="none"
+                    opacity="0.5"
+                  />
+                  {/* Projected Path (Right) - Glow Effect */}
+                  <path
+                    d="M 50% 0 L 75% 100%"
+                    stroke="url(#projected-glow)"
+                    strokeWidth="2"
+                    fill="none"
+                    className="animate-pulse"
+                    filter="drop-shadow(0 0 8px rgba(56, 189, 248, 0.6))"
+                  />
+                  {/* Gradient Definition */}
+                  <defs>
+                    <linearGradient id="projected-glow" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" style={{ stopColor: '#06b6d4', stopOpacity: 1 }} />
+                      <stop offset="100%" style={{ stopColor: '#a855f7', stopOpacity: 1 }} />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* RIGHT COLUMN: PROJECTED FUTURE */}
-          <div className="w-full bg-transparent flex flex-col items-center relative">
-            {/* Radial Gradient Backdrop - Only Behind Projected Cards */}
-            <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,_rgba(56,189,248,0.05)_0%,_transparent_70%)]" />
+          {/* Dual Timeline Container - Y-Split */}
+          <div className="grid grid-cols-2 gap-16">
+            {/* LEFT COLUMN: BASELINE REALITY */}
+            <div className="w-full bg-transparent flex flex-col items-center opacity-85">
+              <div className="space-y-3 w-full">
+                {baselineTimeline.slice(branchIndex).map((node, index) => renderNode(node, branchIndex + index, true))}
+              </div>
+            </div>
 
-            <div
-              ref={rightScrollRef}
-              onScroll={() => handleScroll(rightScrollRef, leftScrollRef)}
-              className="space-y-6 w-full relative z-10"
-              style={{ maxHeight: 'calc(100vh - 260px)', overflowY: 'auto' }}
-            >
-              {projectedTimeline.map((node, index) => renderNode(node, index, false))}
+            {/* RIGHT COLUMN: PROJECTED FUTURE */}
+            <div className="w-full bg-transparent flex flex-col items-center relative">
+              {/* Radial Gradient Backdrop - Only Behind Projected Cards */}
+              <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,_rgba(56,189,248,0.05)_0%,_transparent_70%)]" />
 
-              {/* Draft Node */}
-              {(draftNode || isGenerating) && renderDraftNode()}
+              <div className="space-y-4 w-full relative z-10">
+                {projectedTimeline.map((node, index) => renderNode(node, index, false))}
 
-              <div ref={timelineEndRef} />
+                {/* Draft Node */}
+                {(draftNode || isGenerating) && renderDraftNode()}
+
+                <div ref={timelineEndRef} />
+              </div>
             </div>
           </div>
         </div>

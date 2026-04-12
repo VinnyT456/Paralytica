@@ -28,7 +28,7 @@ function Simulate({ bgTheme }) {
   };
 
   const handleBranchClick = (point, index) => {
-    setSelectedBranch(point);
+    setSelectedBranch({ ...point, branchIndex: index });
     setShowModal(true);
   };
 
@@ -148,6 +148,7 @@ function Simulate({ bgTheme }) {
           projectedTimeline={projectedTimeline}
           draftNode={draftNode}
           isGenerating={isGenerating}
+          branchIndex={selectedBranch?.branchIndex || 0}
           onAccept={handleAccept}
           onDiverge={handleDiverge}
           onManualOverride={handleManualOverride}
