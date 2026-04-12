@@ -6,7 +6,6 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Questionnaire from './pages/Questionnaire';
 import Simulate from './pages/Simulate';
-import History from './pages/History';
 import Demo from './pages/Demo';
 
 // Layout Component (wraps all pages with navigation and theme)
@@ -39,7 +38,6 @@ function Layout({ bgTheme, setBgTheme }) {
         <Route path="/about" element={<About bgTheme={bgTheme} />} />
         <Route path="/questionnaire" element={<Questionnaire bgTheme={bgTheme} />} />
         <Route path="/simulate" element={<Simulate bgTheme={bgTheme} />} />
-        <Route path="/history" element={<History bgTheme={bgTheme} />} />
         <Route path="/demo" element={<Demo bgTheme={bgTheme} />} />
       </Routes>
     </div>
