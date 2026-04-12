@@ -182,7 +182,7 @@ See [server/README.md](./server/README.md) for endpoints, request/response shape
 
 ## License
 
-ISC
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for full details.
 
 ## Acknowledgments
 
