@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
 import Navigation from './components/Navigation';
+import SiteFooter from './components/SiteFooter';
 import Home from './pages/Home';
 import About from './pages/About';
 import Questionnaire from './pages/Questionnaire';
@@ -31,15 +32,21 @@ function Layout({ bgTheme, setBgTheme }) {
   };
 
   return (
-    <div className={`min-h-screen ${isLight ? 'text-slate-900' : 'text-slate-200'}`} style={getBackgroundStyles()}>
+    <div
+      className={`min-h-screen flex flex-col ${isLight ? 'text-slate-900' : 'text-slate-200'}`}
+      style={getBackgroundStyles()}
+    >
       <Navigation bgTheme={bgTheme} setBgTheme={setBgTheme} />
-      <Routes>
-        <Route path="/" element={<Home bgTheme={bgTheme} />} />
-        <Route path="/about" element={<About bgTheme={bgTheme} />} />
-        <Route path="/questionnaire" element={<Questionnaire bgTheme={bgTheme} />} />
-        <Route path="/simulate" element={<Simulate bgTheme={bgTheme} />} />
-        <Route path="/demo" element={<Demo bgTheme={bgTheme} />} />
-      </Routes>
+      <main className="flex-1 w-full min-w-0">
+        <Routes>
+          <Route path="/" element={<Home bgTheme={bgTheme} />} />
+          <Route path="/about" element={<About bgTheme={bgTheme} />} />
+          <Route path="/questionnaire" element={<Questionnaire bgTheme={bgTheme} />} />
+          <Route path="/simulate" element={<Simulate bgTheme={bgTheme} />} />
+          <Route path="/demo" element={<Demo bgTheme={bgTheme} />} />
+        </Routes>
+      </main>
+      <SiteFooter bgTheme={bgTheme} />
     </div>
   );
 }

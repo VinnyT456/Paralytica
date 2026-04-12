@@ -231,8 +231,8 @@ function Questionnaire({ bgTheme }) {
   return (
     <div className="min-h-screen flex flex-col relative">
       {/* Main Content - Centered */}
-      <div className="flex-1 flex items-center justify-center p-6 pt-32 pb-32">
-        <div className="w-full max-w-2xl">
+      <div className="flex-1 flex items-center justify-center px-4 pt-24 pb-28 sm:p-6 sm:pt-32 sm:pb-32">
+        <div className="w-full max-w-2xl min-w-0">
 
           {/* Header - Outside Card */}
           <div className="text-center mb-8">
@@ -262,7 +262,7 @@ function Questionnaire({ bgTheme }) {
           </div>
 
           {/* Question Card */}
-          <div className={`backdrop-blur-md border rounded-xl shadow-2xl transition-all duration-200 ease-out h-auto py-12 px-8 overflow-hidden ${
+          <div className={`backdrop-blur-md border rounded-xl shadow-2xl transition-all duration-200 ease-out h-auto py-8 px-4 sm:py-12 sm:px-8 overflow-hidden ${
             fadeIn ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'
           } ${
             isLight
@@ -345,13 +345,13 @@ function Questionnaire({ bgTheme }) {
                     }`}>
                       How much do you take risks when making big decisions?
                     </h2>
-                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
+                    <div className="grid grid-cols-5 gap-2 sm:flex sm:justify-between sm:gap-3 max-w-2xl mx-auto">
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
                         <button
                           key={num}
                           type="button"
                           onClick={() => handleScaleSelect('decisionStyle', num * 10)}
-                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
+                          className={`w-full min-w-0 aspect-square sm:flex-1 rounded-full border-2 flex items-center justify-center text-sm sm:text-lg font-bold transition-all duration-300 hover:scale-110 ${
                             formData.decisionStyle === num * 10
                               ? 'border-sky-500 bg-sky-500 text-white shadow-[0_0_15px_rgba(14,165,233,0.6)]'
                               : isLight
@@ -378,13 +378,13 @@ function Questionnaire({ bgTheme }) {
                     }`}>
                       How much do you like exploring different paths?
                     </h2>
-                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
+                    <div className="grid grid-cols-5 gap-2 sm:flex sm:justify-between sm:gap-3 max-w-2xl mx-auto">
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
                         <button
                           key={num}
                           type="button"
                           onClick={() => handleScaleSelect('explorationPaths', num * 10)}
-                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
+                          className={`w-full min-w-0 aspect-square sm:flex-1 rounded-full border-2 flex items-center justify-center text-sm sm:text-lg font-bold transition-all duration-300 hover:scale-110 ${
                             formData.explorationPaths === num * 10
                               ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
                               : isLight
@@ -440,13 +440,13 @@ function Questionnaire({ bgTheme }) {
                     }`}>
                       How satisfied are you with the path you&apos;re on right now?
                     </h2>
-                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
+                    <div className="grid grid-cols-5 gap-2 sm:flex sm:justify-between sm:gap-3 max-w-2xl mx-auto">
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
                         <button
                           key={num}
                           type="button"
                           onClick={() => handleScaleSelect('currentPathFeeling', num * 10)}
-                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
+                          className={`w-full min-w-0 aspect-square sm:flex-1 rounded-full border-2 flex items-center justify-center text-sm sm:text-lg font-bold transition-all duration-300 hover:scale-110 ${
                             formData.currentPathFeeling === num * 10
                               ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
                               : isLight
@@ -473,13 +473,13 @@ function Questionnaire({ bgTheme }) {
                     }`}>
                       How much do your responsibilities limit your choices?
                     </h2>
-                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
+                    <div className="grid grid-cols-5 gap-2 sm:flex sm:justify-between sm:gap-3 max-w-2xl mx-auto">
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
                         <button
                           key={num}
                           type="button"
                           onClick={() => handleScaleSelect('responsibilityImpact', num * 10)}
-                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
+                          className={`w-full min-w-0 aspect-square sm:flex-1 rounded-full border-2 flex items-center justify-center text-sm sm:text-lg font-bold transition-all duration-300 hover:scale-110 ${
                             formData.responsibilityImpact === num * 10
                               ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
                               : isLight
@@ -506,13 +506,13 @@ function Questionnaire({ bgTheme }) {
                     }`}>
                       How much do you expect your life to change over the next 10 years?
                     </h2>
-                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
+                    <div className="grid grid-cols-5 gap-2 sm:flex sm:justify-between sm:gap-3 max-w-2xl mx-auto">
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
                         <button
                           key={num}
                           type="button"
                           onClick={() => handleScaleSelect('futureSuccess', num * 10)}
-                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
+                          className={`w-full min-w-0 aspect-square sm:flex-1 rounded-full border-2 flex items-center justify-center text-sm sm:text-lg font-bold transition-all duration-300 hover:scale-110 ${
                             formData.futureSuccess === num * 10
                               ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
                               : isLight
@@ -539,13 +539,13 @@ function Questionnaire({ bgTheme }) {
                     }`}>
                       How much is your identity tied to your work?
                     </h2>
-                    <div className="flex justify-between gap-3 max-w-2xl mx-auto">
+                    <div className="grid grid-cols-5 gap-2 sm:flex sm:justify-between sm:gap-3 max-w-2xl mx-auto">
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
                         <button
                           key={num}
                           type="button"
                           onClick={() => handleScaleSelect('workConnection', num * 10)}
-                          className={`flex-1 aspect-square rounded-full border-2 flex items-center justify-center text-lg font-bold transition-all duration-300 hover:scale-110 ${
+                          className={`w-full min-w-0 aspect-square sm:flex-1 rounded-full border-2 flex items-center justify-center text-sm sm:text-lg font-bold transition-all duration-300 hover:scale-110 ${
                             formData.workConnection === num * 10
                               ? 'border-purple-500 bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.6)]'
                               : isLight
@@ -575,13 +575,13 @@ function Questionnaire({ bgTheme }) {
                     <p className={`text-sm mb-6 text-center ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                       Pick 2 ({formData.successValues.length}/2 selected)
                     </p>
-                    <div className="grid grid-cols-2 gap-4 max-w-xl mx-auto">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 max-w-xl mx-auto">
                       {successOptions.map((option) => (
                         <button
                           key={option.value}
                           type="button"
                           onClick={() => toggleSuccessValue(option.value)}
-                          className={`px-6 py-6 rounded-xl border-2 transition-all duration-300 text-center ${
+                          className={`px-4 py-4 sm:px-6 sm:py-6 rounded-xl border-2 transition-all duration-300 text-center ${
                             formData.successValues.includes(option.value)
                               ? 'border-purple-500 bg-purple-500/20 shadow-[0_0_20px_rgba(168,85,247,0.4)]'
                               : isLight
@@ -589,7 +589,7 @@ function Questionnaire({ bgTheme }) {
                               : 'border-slate-700 bg-slate-800/50 hover:border-slate-600'
                           }`}
                         >
-                          <div className={`text-xl font-bold mb-1 ${
+                          <div className={`text-lg sm:text-xl font-bold mb-1 ${
                             formData.successValues.includes(option.value)
                               ? 'text-purple-400'
                               : isLight

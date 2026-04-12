@@ -96,7 +96,10 @@ function DualTimeline({
     const deltaReference = !isBaseline ? getProjectedDeltaReference(index) : null;
 
     return (
-      <div key={index} className="relative flex gap-4 items-start" style={{ minHeight: '280px' }}>
+      <div
+        key={index}
+        className="relative flex gap-2 sm:gap-4 items-start min-h-[200px] sm:min-h-[260px] md:min-h-[280px]"
+      >
         {/* Timeline Dot */}
         <div className="relative z-10 flex-shrink-0">
           <div className={`w-12 h-12 border-2 rounded-full flex items-center justify-center transition-all duration-300 ${
@@ -119,7 +122,7 @@ function DualTimeline({
         </div>
 
         {/* Card */}
-        <div className={`flex-1 border-2 rounded-lg p-5 transition-all duration-300 ${
+        <div className={`flex-1 min-w-0 border-2 rounded-lg p-3 sm:p-5 transition-all duration-300 ${
           isBaseline
             ? isLight
               ? 'bg-slate-50 border-slate-300'
@@ -133,7 +136,7 @@ function DualTimeline({
               ? isLight ? 'text-slate-700' : 'text-slate-300'
               : isLight ? 'text-purple-700' : 'text-purple-300'
           }`}>{node.title}</h3>
-          <p className={`text-sm mb-3 ${
+          <p className={`text-xs sm:text-sm mb-3 break-words ${
             isBaseline
               ? isLight ? 'text-slate-600' : 'text-slate-300'
               : isLight ? 'text-slate-700' : 'text-slate-300'
@@ -258,7 +261,7 @@ function DualTimeline({
         : baselineTimeline[branchIndex] ?? null;
 
     return (
-      <div className="relative flex gap-4 items-start">
+      <div className="relative flex gap-2 sm:gap-4 items-start min-w-0">
         <div className="relative z-10 flex-shrink-0">
           <div className={`w-12 h-12 border-2 border-dashed rounded-full flex items-center justify-center animate-pulse ${
             isLight
@@ -276,7 +279,7 @@ function DualTimeline({
           </div>
         </div>
 
-        <div className={`flex-1 border-2 border-dashed rounded-lg p-4 ${
+        <div className={`flex-1 min-w-0 border-2 border-dashed rounded-lg p-3 sm:p-4 ${
           isLight
             ? 'bg-purple-50/50 border-purple-400 shadow-lg'
             : 'bg-purple-900/20 border-purple-500 shadow-[0_0_30px_rgba(168,85,247,0.4)]'
@@ -432,10 +435,10 @@ function DualTimeline({
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <button
                       onClick={handleAcceptClick}
-                      className={`flex-1 flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-300 ${
+                      className={`flex-1 flex items-center justify-center gap-1 px-3 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-300 ${
                         isLight
                           ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-500/50 hover:shadow-emerald-500/70'
                           : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.6)] hover:shadow-[0_0_25px_rgba(16,185,129,0.8)] ring-2 ring-emerald-400/30'
@@ -466,8 +469,8 @@ function DualTimeline({
   };
 
   return (
-    <div className="min-h-screen p-6 md:p-12 pt-24">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen px-3 py-4 sm:p-6 md:p-12 pt-20 sm:pt-24 overflow-x-hidden">
+      <div className="max-w-7xl mx-auto min-w-0">
         {/* TOP SECTION - Header & Decision */}
         <div className="relative flex flex-col items-center mb-8">
           {/* BACKGROUND ATMOSPHERE - Indigo Glow */}
@@ -480,7 +483,7 @@ function DualTimeline({
           </div>
 
           {/* THE TITLE - Bold Hierarchy */}
-          <h1 className={`relative text-6xl font-black tracking-tight mb-6 bg-gradient-to-b ${
+          <h1 className={`relative text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-4 sm:mb-6 px-1 text-center bg-gradient-to-b ${
             isLight
               ? 'from-slate-900 via-slate-600 to-transparent bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]'
               : 'from-white via-slate-300 to-transparent bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]'
@@ -496,10 +499,10 @@ function DualTimeline({
               }`}>
                 Your decision: What if you…
               </p>
-              <div className={`relative bg-sky-500/10 border-2 border-sky-400 rounded-full px-8 py-3 shadow-[0_0_30px_rgba(56,189,248,0.4)] ${
+              <div className={`relative bg-sky-500/10 border-2 border-sky-400 rounded-2xl sm:rounded-full px-4 py-2 sm:px-8 sm:py-3 shadow-[0_0_30px_rgba(56,189,248,0.4)] max-w-full ${
                 isLight ? 'shadow-[0_0_25px_rgba(56,189,248,0.3)]' : 'shadow-[0_0_30px_rgba(56,189,248,0.4)]'
               }`}>
-                <span className="text-sky-400 font-bold text-2xl">
+                <span className="text-sky-400 font-bold text-sm sm:text-xl md:text-2xl break-words text-center block">
                   {branchDecision}
                 </span>
               </div>
@@ -508,14 +511,14 @@ function DualTimeline({
         </div>
 
         {/* UNIVERSE CONTAINERS - Holographic Panels */}
-        <div className="grid grid-cols-2 gap-12 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 md:gap-12 mb-6 sm:mb-8">
           {/* BASELINE REALITY - Light Container */}
-          <div className={`flex flex-col items-center text-center p-8 rounded-2xl border backdrop-blur-2xl ${
+          <div className={`flex flex-col items-center text-center p-4 sm:p-8 rounded-2xl border backdrop-blur-2xl ${
             isLight
               ? 'bg-slate-200/30 border-slate-400/60'
               : 'bg-slate-950/20 border-slate-800/60'
           }`}>
-            <h2 className={`text-2xl font-black tracking-[0.3em] uppercase mb-3 ${
+            <h2 className={`text-sm sm:text-xl md:text-2xl font-black tracking-[0.12em] sm:tracking-[0.2em] md:tracking-[0.3em] uppercase mb-2 sm:mb-3 ${
               isLight ? 'text-slate-600' : 'text-slate-500'
             }`}>
               YOUR CURRENT PATH
@@ -528,12 +531,12 @@ function DualTimeline({
           </div>
 
           {/* PROJECTED FUTURE - Holographic Panel with Cyan Glow */}
-          <div className={`flex flex-col items-center text-center p-8 rounded-2xl border backdrop-blur-2xl shadow-[0_0_20px_rgba(56,189,248,0.1)] animate-pulse ${
+          <div className={`flex flex-col items-center text-center p-4 sm:p-8 rounded-2xl border backdrop-blur-2xl shadow-[0_0_20px_rgba(56,189,248,0.1)] animate-pulse ${
             isLight
               ? 'bg-slate-200/30 border-slate-400/60'
               : 'bg-slate-950/20 border-slate-800/60'
           }`}>
-            <h2 className="text-2xl font-black tracking-[0.3em] uppercase mb-3 bg-gradient-to-r from-sky-400 to-purple-500 bg-clip-text text-transparent">
+            <h2 className="text-sm sm:text-xl md:text-2xl font-black tracking-[0.12em] sm:tracking-[0.2em] md:tracking-[0.3em] uppercase mb-2 sm:mb-3 bg-gradient-to-r from-sky-400 to-purple-500 bg-clip-text text-transparent">
               A POSSIBLE FUTURE 
             </h2>
             <p className={`text-xs font-light max-w-xs ${
@@ -612,16 +615,18 @@ function DualTimeline({
           )}
 
           {/* Dual Timeline Container - Y-Split */}
-          <div className="grid grid-cols-2 gap-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-16">
             {/* LEFT COLUMN: BASELINE REALITY */}
-            <div className="w-full bg-transparent flex flex-col items-center opacity-85">
+            <div className={`w-full min-w-0 bg-transparent flex flex-col items-center opacity-85 border-b pb-8 mb-2 lg:border-b-0 lg:pb-0 lg:mb-0 ${
+              isLight ? 'border-slate-200' : 'border-slate-700/40'
+            }`}>
               <div className="space-y-3 w-full">
                 {baselineTimeline.slice(branchIndex).map((node, index) => renderNode(node, branchIndex + index, true))}
               </div>
             </div>
 
             {/* RIGHT COLUMN: PROJECTED FUTURE */}
-            <div className="w-full bg-transparent flex flex-col items-center relative">
+            <div className="w-full min-w-0 bg-transparent flex flex-col items-center relative">
               {/* Radial Gradient Backdrop - Only Behind Projected Cards */}
               <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,_rgba(56,189,248,0.05)_0%,_transparent_70%)]" />
 

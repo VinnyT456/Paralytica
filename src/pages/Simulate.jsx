@@ -264,7 +264,7 @@ function Simulate({ bgTheme }) {
   };
 
   return (
-    <div className="pt-20">
+    <div className="pt-0 sm:pt-4 min-w-0">
       {step === 1 && <BackButton to="/questionnaire" bgTheme={bgTheme} />}
       {step === 1 && <Step1MapTimeline onNext={handleStep1Complete} bgTheme={bgTheme} />}
       {step === 2 && (

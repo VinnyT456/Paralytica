@@ -39,10 +39,10 @@ function About({ bgTheme }) {
   const isLight = bgTheme === 'light';
 
   return (
-    <div className="min-h-screen p-6 pt-24">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent">
+    <div className="min-h-screen px-4 py-6 pt-20 sm:p-6 sm:pt-24">
+      <div className="max-w-4xl mx-auto min-w-0">
+        <div className="text-center mb-10 sm:mb-16">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 px-2 bg-gradient-to-r from-purple-400 to-emerald-400 bg-clip-text text-transparent">
             About Paralytica
           </h1>
           <p className={`text-xl ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>

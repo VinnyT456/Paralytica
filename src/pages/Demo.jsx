@@ -40,11 +40,11 @@ function Demo({ bgTheme }) {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-6">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen pt-20 sm:pt-24 pb-12 px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto min-w-0">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className={`text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-sky-400 bg-clip-text text-transparent`}>
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 px-2 bg-gradient-to-r from-purple-400 to-sky-400 bg-clip-text text-transparent`}>
             Try Sample Profiles
           </h1>
           <p className={`text-lg ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
@@ -57,7 +57,7 @@ function Demo({ bgTheme }) {
           {personas.map((persona, index) => (
             <div
               key={index}
-              className={`p-8 rounded-2xl border-2 transition-all duration-300 hover:scale-105 cursor-pointer ${
+              className={`p-5 sm:p-8 rounded-2xl border-2 transition-all duration-300 hover:scale-105 cursor-pointer ${
                 isLight
                   ? 'bg-white border-purple-200 hover:border-purple-400 hover:shadow-xl'
                   : 'bg-slate-900/50 border-purple-500/30 hover:border-purple-500 hover:shadow-[0_0_30px_rgba(168,85,247,0.3)]'

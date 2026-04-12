@@ -18,15 +18,15 @@ function Modal({ branchPoint, onClose, onSubmit, bgTheme }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className={`border rounded-2xl p-8 max-w-2xl w-full shadow-xl animate-fade-in-up ${
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
+      <div className={`border rounded-t-2xl sm:rounded-2xl p-5 sm:p-8 max-w-2xl w-full shadow-xl animate-fade-in-up max-h-[90vh] sm:max-h-none overflow-y-auto ${
         isLight
           ? 'bg-white border-purple-300'
           : 'bg-slate-900 border-purple-500/50 shadow-[0_0_50px_rgba(168,85,247,0.4)]'
       }`}>
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h2 className="text-3xl font-bold text-transparent bg-gradient-to-r from-purple-400 to-sky-400 bg-clip-text mb-2">
+            <h2 className="text-xl sm:text-3xl font-bold text-transparent bg-gradient-to-r from-purple-400 to-sky-400 bg-clip-text mb-2 pr-2">
               Alternative Path
             </h2>
             <p className={isLight ? 'text-slate-700' : 'text-slate-400'}>

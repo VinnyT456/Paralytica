@@ -4,8 +4,8 @@ function Step3Loading({ bgTheme }) {
   const isLight = bgTheme === 'light';
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
-      <div className="text-center">
+    <div className="min-h-screen flex items-center justify-center px-4 pt-20 pb-8 sm:p-6 sm:pt-24">
+      <div className="text-center max-w-md mx-auto px-2">
         <div className="relative inline-block mb-8">
           {/* Pulsing rings */}
           <div className="absolute inset-0 flex items-center justify-center">
@@ -24,10 +24,10 @@ function Step3Loading({ bgTheme }) {
           </div>
         </div>
 
-        <h2 className="text-3xl font-bold mb-3 bg-gradient-to-r from-purple-400 via-sky-400 to-emerald-400 bg-clip-text text-transparent">
+        <h2 className="text-xl sm:text-3xl font-bold mb-3 bg-gradient-to-r from-purple-400 via-sky-400 to-emerald-400 bg-clip-text text-transparent">
           Simulating Multiverse...
         </h2>
-        <p className="text-slate-400 text-lg">Projecting new reality vector</p>
+        <p className="text-slate-400 text-sm sm:text-lg">Projecting new reality vector</p>
       </div>
     </div>
   );
