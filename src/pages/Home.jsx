@@ -50,8 +50,7 @@ function Home({ bgTheme }) {
             <p className={`text-xl leading-relaxed ${
               isLight ? 'text-slate-600' : 'text-slate-400'
             }`}>
-              See where key decisions could take you.   
-              Explore different directions your story might take. 
+              See how your choices shape possible future paths and meaningful life outcomes. 
             </p>
           </div>
 
@@ -69,9 +68,8 @@ function Home({ bgTheme }) {
             }`}>Future Simulation</h3>
             <p className={`text-xl leading-relaxed ${
               isLight ? 'text-slate-600' : 'text-slate-400'
-            }`}>
-              Let AI generate realistic “what if” scenarios. 
-              Understand how one decision can affect what comes next. 
+            }`}>  
+              Explore realistic AI-generated scenarios showing how decisions shape outcomes. 
             </p>
           </div>
 
@@ -92,8 +90,7 @@ function Home({ bgTheme }) {
             <p className={`text-xl leading-relaxed ${
               isLight ? 'text-slate-600' : 'text-slate-400'
             }`}>
-              Track possible outcomes like happiness, finances, and life satisfaction. 
-              Compare different paths side by side. 
+              Compare potential outcomes like happiness, finances, and overall life satisfaction. 
             </p>
           </div>
         </div>

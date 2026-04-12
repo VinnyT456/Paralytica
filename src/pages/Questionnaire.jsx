@@ -343,7 +343,7 @@ function Questionnaire({ bgTheme }) {
                     <h2 className={`text-2xl font-bold mb-6 text-center ${
                       isLight ? 'text-slate-800' : 'text-slate-200'
                     }`}>
-                      How much do you tend to take risks when making big decisions?
+                      How much do you take risks when making big decisions?
                     </h2>
                     <div className="flex justify-between gap-3 max-w-2xl mx-auto">
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
@@ -363,19 +363,9 @@ function Questionnaire({ bgTheme }) {
                         </button>
                       ))}
                     </div>
-                    <div className="relative max-w-2xl mx-auto mt-4">
-                      <div className="flex justify-between gap-3">
-                        <span className="flex-1 text-center text-xs text-slate-400">not at all</span>
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1 text-center text-xs text-slate-400">a lot</span>
-                      </div>
+                    <div className="max-w-2xl mx-auto mt-4 flex justify-between text-xs text-slate-400 px-0.5">
+                      <span>not at all</span>
+                      <span>very much</span>
                     </div>
                   </div>
                 )}
@@ -386,7 +376,7 @@ function Questionnaire({ bgTheme }) {
                     <h2 className={`text-2xl font-bold mb-6 text-center ${
                       isLight ? 'text-slate-800' : 'text-slate-200'
                     }`}>
-                      How much do you prefer exploring different paths?
+                      How much do you like exploring different paths?
                     </h2>
                     <div className="flex justify-between gap-3 max-w-2xl mx-auto">
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
@@ -406,19 +396,9 @@ function Questionnaire({ bgTheme }) {
                         </button>
                       ))}
                     </div>
-                    <div className="relative max-w-2xl mx-auto mt-4">
-                      <div className="flex justify-between gap-3">
-                        <span className="flex-1 text-center text-xs text-slate-400">not at all</span>
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1 text-center text-xs text-slate-400">a lot</span>
-                      </div>
+                    <div className="max-w-2xl mx-auto mt-4 flex justify-between text-xs text-slate-400 px-0.5">
+                      <span>not at all</span>
+                      <span>very much</span>
                     </div>
                   </div>
                 )}
@@ -458,7 +438,7 @@ function Questionnaire({ bgTheme }) {
                     <h2 className={`text-2xl font-bold mb-6 text-center ${
                       isLight ? 'text-slate-800' : 'text-slate-200'
                     }`}>
-                      How do you feel about the path you&apos;re on right now?
+                      How satisfied are you with the path you&apos;re on right now?
                     </h2>
                     <div className="flex justify-between gap-3 max-w-2xl mx-auto">
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
@@ -478,19 +458,9 @@ function Questionnaire({ bgTheme }) {
                         </button>
                       ))}
                     </div>
-                    <div className="relative max-w-2xl mx-auto mt-4">
-                      <div className="flex justify-between gap-3">
-                        <span className="flex-1 text-center text-xs text-slate-400">not at all</span>
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1 text-center text-xs text-slate-400">a lot</span>
-                      </div>
+                    <div className="max-w-2xl mx-auto mt-4 flex justify-between text-xs text-slate-400 px-0.5">
+                      <span>not at all</span>
+                      <span>very much</span>
                     </div>
                   </div>
                 )}
@@ -521,19 +491,9 @@ function Questionnaire({ bgTheme }) {
                         </button>
                       ))}
                     </div>
-                    <div className="relative max-w-2xl mx-auto mt-4">
-                      <div className="flex justify-between gap-3">
-                        <span className="flex-1 text-center text-xs text-slate-400">not at all</span>
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1 text-center text-xs text-slate-400">a lot</span>
-                      </div>
+                    <div className="max-w-2xl mx-auto mt-4 flex justify-between text-xs text-slate-400 px-0.5">
+                      <span>not at all</span>
+                      <span>very much</span>
                     </div>
                   </div>
                 )}
@@ -544,7 +504,7 @@ function Questionnaire({ bgTheme }) {
                     <h2 className={`text-2xl font-bold mb-6 text-center ${
                       isLight ? 'text-slate-800' : 'text-slate-200'
                     }`}>
-                      How much do you see your life changing over the next 10 years?
+                      How much do you expect your life to change over the next 10 years?
                     </h2>
                     <div className="flex justify-between gap-3 max-w-2xl mx-auto">
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
@@ -564,19 +524,9 @@ function Questionnaire({ bgTheme }) {
                         </button>
                       ))}
                     </div>
-                    <div className="relative max-w-2xl mx-auto mt-4">
-                      <div className="flex justify-between gap-3">
-                        <span className="flex-1 text-center text-xs text-slate-400">not at all</span>
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1 text-center text-xs text-slate-400">a lot</span>
-                      </div>
+                    <div className="max-w-2xl mx-auto mt-4 flex justify-between text-xs text-slate-400 px-0.5">
+                      <span>not at all</span>
+                      <span>very much</span>
                     </div>
                   </div>
                 )}
@@ -587,7 +537,7 @@ function Questionnaire({ bgTheme }) {
                     <h2 className={`text-2xl font-bold mb-6 text-center ${
                       isLight ? 'text-slate-800' : 'text-slate-200'
                     }`}>
-                      How much of your identity is tied to your work?
+                      How much is your identity tied to your work?
                     </h2>
                     <div className="flex justify-between gap-3 max-w-2xl mx-auto">
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
@@ -607,19 +557,9 @@ function Questionnaire({ bgTheme }) {
                         </button>
                       ))}
                     </div>
-                    <div className="relative max-w-2xl mx-auto mt-4">
-                      <div className="flex justify-between gap-3">
-                        <span className="flex-1 text-center text-xs text-slate-400">not at all</span>
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1" />
-                        <span className="flex-1 text-center text-xs text-slate-400">a lot</span>
-                      </div>
+                    <div className="max-w-2xl mx-auto mt-4 flex justify-between text-xs text-slate-400 px-0.5">
+                      <span>not at all</span>
+                      <span>very much</span>
                     </div>
                   </div>
                 )}
