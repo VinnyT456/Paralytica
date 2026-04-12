@@ -155,7 +155,7 @@ export const JORDAN_REYES = {
     degree: 'B.S. Business Analytics',
     institution: 'University of Illinois Urbana-Champaign',
     location: 'Champaign, IL',
-    graduationYear: 2023,
+    graduationYear: 2024,
     major: 'Business Analytics'
   },
 
