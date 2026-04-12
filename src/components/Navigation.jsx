@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Sparkles, Home as HomeIcon, Info, Zap, Clock, Sun, Moon } from 'lucide-react';
+import { Home as HomeIcon, Info, Zap, Clock, Sun, Moon } from 'lucide-react';
+import ParalyticaLogo from '../assets/PurpleParalyticaLogoTransparent.png';
 
 function Navigation({ bgTheme, setBgTheme }) {
   const location = useLocation();
@@ -25,7 +26,7 @@ function Navigation({ bgTheme, setBgTheme }) {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 cursor-pointer">
-            <Sparkles className="text-purple-500" size={28} />
+            <img src={ParalyticaLogo} alt="Paralytica Logo" className="w-15 h-10" />
             <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-sky-400 bg-clip-text text-transparent">
               PARALYTICA
             </span>

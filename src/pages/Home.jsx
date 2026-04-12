@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, Zap, ArrowRight, GitBranch, Loader2 } from 'lucide-react';
+import ParalyticaLogo from '../assets/PurpleParalyticaLogoTransparent.png';
 
 function Home({ bgTheme }) {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ function Home({ bgTheme }) {
         {/* SECTION A: Hero Section - The Headline */}
         <div className="text-center mb-20 animate-fade-in-up">
           <div className="inline-block mb-8">
-            <Sparkles className="text-purple-500 mx-auto animate-pulse" size={80} />
+            <img src={ParalyticaLogo} alt="Paralytica Logo" className="w-50 h-40 mx-auto animate-pulse" />
           </div>
 
           <h1 className="text-7xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-purple-400 via-sky-400 to-emerald-400 bg-clip-text text-transparent leading-tight">
@@ -21,21 +22,20 @@ function Home({ bgTheme }) {
           <p className={`text-2xl mb-4 max-w-3xl mx-auto leading-relaxed ${
             isLight ? 'text-slate-600' : 'text-slate-400'
           }`}>
-            Every decision splits reality into infinite branches.
-            Visualize the life you didn't choose.
+            Explore how your choices shape your life. <br /> See its impact on your career, relationships, and happiness.  
           </p>
 
           <p className={`text-lg max-w-2xl mx-auto leading-relaxed ${
             isLight ? 'text-slate-500' : 'text-slate-500'
           }`}>
-            A data storytelling tool that simulates alternate timelines based on pivotal life decisions.
-            See how different choices reshape your career, relationships, and happiness across parallel realities.
+            An interactive tool to compare possible futures. <br /> 
+            See how small choices lead to different outcomes. 
           </p>
         </div>
 
         {/* SECTION B: Feature Pillars - MASSIVE Interactive Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-20">
-          {/* Pillar 1: Timeline Branching */}
+          {/* Pillar 1: Timeline Paths */}
           <div className={`group backdrop-blur-md border-2 rounded-3xl p-12 min-h-[480px] transition-all duration-500 hover:scale-[1.03] flex flex-col items-center justify-center text-center ${
             isLight
               ? 'bg-white/90 border-purple-300 hover:border-purple-500 hover:shadow-2xl'
@@ -46,11 +46,12 @@ function Home({ bgTheme }) {
             </div>
             <h3 className={`text-4xl font-bold mb-6 ${
               isLight ? 'text-slate-800' : 'text-slate-100'
-            }`}>Timeline Branching</h3>
+            }`}>Timeline <br /> Paths</h3>
             <p className={`text-xl leading-relaxed ${
               isLight ? 'text-slate-600' : 'text-slate-400'
             }`}>
-              Explore how pivotal decisions create divergent life paths. Watch your reality split at key moments and see what could have been.
+              See where key decisions could take you.   
+              Explore different directions your story might take. 
             </p>
           </div>
 
@@ -65,11 +66,12 @@ function Home({ bgTheme }) {
             </div>
             <h3 className={`text-4xl font-bold mb-6 ${
               isLight ? 'text-slate-800' : 'text-slate-100'
-            }`}>Reality Simulation</h3>
+            }`}>Future Simulation</h3>
             <p className={`text-xl leading-relaxed ${
               isLight ? 'text-slate-600' : 'text-slate-400'
             }`}>
-              AI-powered narrative generation creates compelling alternate futures. Experience the cascading effects of different choices.
+              Let AI generate realistic “what if” scenarios. 
+              Understand how one decision can affect what comes next. 
             </p>
           </div>
 
@@ -84,11 +86,14 @@ function Home({ bgTheme }) {
             </div>
             <h3 className={`text-4xl font-bold mb-6 ${
               isLight ? 'text-slate-800' : 'text-slate-100'
-            }`}>Data Storytelling</h3>
+            }`}>
+              Life <br />Insights
+            </h3>
             <p className={`text-xl leading-relaxed ${
               isLight ? 'text-slate-600' : 'text-slate-400'
             }`}>
-              Visualize happiness, wealth, and satisfaction metrics across parallel realities. See your life's trajectory quantified.
+              Track possible outcomes like happiness, finances, and life satisfaction. 
+              Compare different paths side by side. 
             </p>
           </div>
         </div>
@@ -100,11 +105,11 @@ function Home({ bgTheme }) {
             className="group relative inline-flex items-center gap-4 bg-gradient-to-r from-purple-600 via-sky-600 to-emerald-600 hover:from-purple-500 hover:via-sky-500 hover:to-emerald-500 text-white text-2xl font-bold px-20 py-8 rounded-2xl transition-all duration-500 shadow-[0_0_60px_rgba(168,85,247,0.6)] hover:shadow-[0_0_100px_rgba(168,85,247,0.8)] hover:scale-105"
           >
             <Zap className="group-hover:rotate-12 transition-transform" size={36} />
-            Initialize Engine
+            Start Exploring
             <ArrowRight className="group-hover:translate-x-2 transition-transform" size={36} />
           </button>
           <p className={`mt-6 text-base ${isLight ? 'text-slate-500' : 'text-slate-500'}`}>
-            Begin your journey through the multiverse
+            Discover where your choices could lead. 
           </p>
         </div>
       </div>

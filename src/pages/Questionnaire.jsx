@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { Sparkles, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import ParalyticaLogo from '../assets/ParalyticaLogoTransparent.png';
 
 function Questionnaire({ bgTheme }) {
   const navigate = useNavigate();
@@ -15,14 +16,14 @@ function Questionnaire({ bgTheme }) {
   const [formData, setFormData] = useState({
     role: '',
     redoDecision: '',
-    decisionStyle: 50,
+    decisionStyle: null,
     decisionPriority: '',
     successValues: [],
-    currentPathFeeling: 50,
-    explorationPaths: 50,
-    responsibilityImpact: 50,
-    futureSuccess: 50,
-    workConnection: 50
+    currentPathFeeling: null,
+    explorationPaths: null,
+    responsibilityImpact: null,
+    futureSuccess: null,
+    workConnection: null
   });
 
   const totalQuestions = 10;
@@ -54,14 +55,14 @@ function Questionnaire({ bgTheme }) {
     switch (currentQuestion) {
       case 1: return formData.role !== '';
       case 2: return formData.redoDecision !== '';
-      case 3: return true; // decisionStyle always has a value
+      case 3: return formData.decisionStyle !== null;
       case 4: return formData.decisionPriority !== '';
       case 5: return formData.successValues.length === 2;
-      case 6: return true; // currentPathFeeling always has a value
-      case 7: return true; // explorationPaths always has a value
-      case 8: return true; // responsibilityImpact always has a value
-      case 9: return true; // futureSuccess always has a value
-      case 10: return true; // workConnection always has a value
+      case 6: return formData.currentPathFeeling !== null;
+      case 7: return formData.explorationPaths !== null;
+      case 8: return formData.responsibilityImpact !== null;
+      case 9: return formData.futureSuccess !== null;
+      case 10: return formData.workConnection !== null;
       default: return false;
     }
   };
@@ -72,8 +73,14 @@ function Questionnaire({ bgTheme }) {
   const isFormComplete =
     formData.role !== '' &&
     formData.redoDecision !== '' &&
+    formData.decisionStyle !== null &&
     formData.decisionPriority !== '' &&
-    formData.successValues.length === 2;
+    formData.successValues.length === 2 &&
+    formData.currentPathFeeling !== null &&
+    formData.explorationPaths !== null &&
+    formData.responsibilityImpact !== null &&
+    formData.futureSuccess !== null &&
+    formData.workConnection !== null;
 
   // Role options
   const roleOptions = [
@@ -170,7 +177,16 @@ function Questionnaire({ bgTheme }) {
     e.preventDefault();
 
     // Validation
-    if (!formData.role || !formData.redoDecision || !formData.decisionPriority || formData.successValues.length !== 2) {
+    if (!formData.role ||
+        !formData.redoDecision ||
+        formData.decisionStyle === null ||
+        !formData.decisionPriority ||
+        formData.successValues.length !== 2 ||
+        formData.currentPathFeeling === null ||
+        formData.explorationPaths === null ||
+        formData.responsibilityImpact === null ||
+        formData.futureSuccess === null ||
+        formData.workConnection === null) {
       alert('Please complete all required fields');
       return;
     }
@@ -222,7 +238,7 @@ function Questionnaire({ bgTheme }) {
           {/* Header - Outside Card */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <Sparkles className="text-sky-500" size={32} />
+              <img src={ParalyticaLogo} alt="Paralytica Logo" className="w-8 h-8" />
               <h1 className="text-3xl font-bold bg-gradient-to-r from-sky-400 to-purple-400 bg-clip-text text-transparent">
                 Identity Assessment
               </h1>

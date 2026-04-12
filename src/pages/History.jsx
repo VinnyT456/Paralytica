@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { Clock, ExternalLink, Trash2, Sparkles, Zap } from 'lucide-react';
 import BackButton from '../components/BackButton';
+import ParalyticaLogo from '../assets/ParalyticaLogoTransparent.png';
 
 function History({ bgTheme }) {
   const navigate = useNavigate();
@@ -119,7 +120,7 @@ function History({ bgTheme }) {
                       ? 'bg-white border-purple-400 shadow-lg'
                       : 'bg-slate-900 border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.6)]'
                   }`}>
-                    <Sparkles className={isLight ? 'text-purple-600' : 'text-purple-400'} size={28} />
+                    <img src={ParalyticaLogo} alt="Paralytica Logo" className="w-7 h-7" />
                   </div>
                 </div>
 
