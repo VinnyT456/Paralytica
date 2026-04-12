@@ -1,0 +1,22 @@
+{
+  "userProfile": {
+    "role": "Software Engineer",
+    "decisionStyle": 7,
+    "decisionPriority": "Career Growth"
+  },
+  "milestoneHistory": [
+    {
+      "year": 2024,
+      "title": "Senior Developer",
+      "narrative": "Working at a tech startup in San Francisco",
+      "metrics": {
+        "wealth": 70,
+        "satisfaction": 80,
+        "happiness": 75
+      }
+    }
+  ],
+  "branchDecision": "What if I start my own company?",
+  "includeSocial": true,
+  "branchYear": 2024
+}

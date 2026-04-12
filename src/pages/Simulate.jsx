@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { useAppContext } from '../context/AppContext';
 import { generateNextNode } from '../utils/mockApi';
 import Step1MapTimeline from '../components/Step1MapTimeline';
 import Step2PrimaryTimeline from '../components/Step2PrimaryTimeline';
@@ -8,6 +9,7 @@ import Modal from '../components/Modal';
 import BackButton from '../components/BackButton';
 
 function Simulate({ bgTheme }) {
+  const { heuristicProfile } = useAppContext();
   const [step, setStep] = useState(1);
   const [lifePoints, setLifePoints] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState(null);
@@ -20,6 +22,11 @@ function Simulate({ bgTheme }) {
   const [projectedTimeline, setProjectedTimeline] = useState([]);
   const [draftNode, setDraftNode] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
+
+  // API Cooldown State (prevent multiple simultaneous requests)
+  const [lastRequestTime, setLastRequestTime] = useState(0);
+  const API_COOLDOWN_MS = 2000; // 2 second cooldown between requests
+  const requestInFlight = useRef(false); // Track if a request is currently in progress
 
   const handleStep1Complete = (points, socialDynamics) => {
     setLifePoints(points);
@@ -41,8 +48,9 @@ function Simulate({ bgTheme }) {
     setIsGenerating(true);
     try {
       // Use ONLY user's actual milestones for baseline
+      // IMPORTANT: Ensure year is always a Number to prevent string concatenation
       const userMilestones = lifePoints.map(point => ({
-        year: point.year,
+        year: Number(point.year),
         title: point.role,
         narrative: `${point.company ? `At ${point.company}` : 'Working'} ${point.location ? `in ${point.location}` : ''}`.trim(),
         metrics: {
@@ -53,48 +61,131 @@ function Simulate({ bgTheme }) {
         isUserMilestone: true
       }));
 
-      setBaselineTimeline(userMilestones);
+      // Filter baseline to only include milestones within 10 years of branch point
+      const branchYear = Number(selectedBranch.year);
+      const branchIdx = selectedBranch.branchIndex;
+
+      // Include all milestones up to and including branch point, plus future milestones within 10 years
+      const filteredBaseline = userMilestones.filter((milestone, index) => {
+        // Include all milestones up to and including the branch point (shared history)
+        if (index <= branchIdx) return true;
+        // For future milestones, only include if within 10 years of branch
+        return Number(milestone.year) - branchYear <= 10;
+      });
+
+      setBaselineTimeline(filteredBaseline);
 
       // Generate first draft node for projected timeline (RIGHT side)
-      await generateDraftNode(userMilestones);
+      // Pass decision directly since state update is async
+      await generateDraftNode(filteredBaseline, decision);
     } catch (error) {
       console.error('Error generating timelines:', error);
       setIsGenerating(false);
     }
   };
 
-  const generateDraftNode = async (baseline = baselineTimeline) => {
+  const generateDraftNode = async (baseline = baselineTimeline, decision = branchDecision) => {
+    // Prevent duplicate requests - check if already generating
+    if (isGenerating || requestInFlight.current) {
+      console.log('⏸️ Request blocked: Already generating');
+      return;
+    }
+
+    // Enforce cooldown period
+    const now = Date.now();
+    const timeSinceLastRequest = now - lastRequestTime;
+    if (timeSinceLastRequest < API_COOLDOWN_MS) {
+      const remainingCooldown = API_COOLDOWN_MS - timeSinceLastRequest;
+      console.log(`⏸️ Request blocked: Cooldown active (${Math.ceil(remainingCooldown / 1000)}s remaining)`);
+      return;
+    }
+
+    requestInFlight.current = true;
     setIsGenerating(true);
     setDraftNode(null);
+    setLastRequestTime(now);
 
     try {
-      const baselineNode = baseline[projectedTimeline.length]; // Get corresponding baseline node
+      // Get corresponding baseline node (may be undefined if projected extends beyond baseline)
+      const baselineNode = baseline[projectedTimeline.length] || null;
 
+      console.log('🚀 Generating draft node...');
       const node = await generateNextNode(
-        branchDecision,
+        decision, // Use the passed decision parameter
         projectedTimeline,
         includeSocial,
         selectedBranch.year,
-        baselineNode // Pass as counter-context
+        baselineNode, // Pass as counter-context (null if beyond baseline)
+        heuristicProfile // Pass user profile for AI predictions
       );
       setDraftNode(node);
+      console.log('✅ Draft node generated successfully');
     } catch (error) {
-      console.error('Error generating node:', error);
+      console.error('❌ Error generating node:', error);
     } finally {
       setIsGenerating(false);
+      requestInFlight.current = false;
     }
   };
 
-  const handleAccept = async () => {
+  const handleAccept = async (nextDecision) => {
     if (!draftNode) return;
 
+    // Prevent duplicate requests
+    if (isGenerating || requestInFlight.current) {
+      console.log('⏸️ Accept blocked: Already generating');
+      return;
+    }
+
     // Commit draft to projected timeline
-    setProjectedTimeline(prev => [...prev, draftNode]);
+    const updatedProjectedTimeline = [...projectedTimeline, draftNode];
+    setProjectedTimeline(updatedProjectedTimeline);
     setDraftNode(null);
 
-    // Generate next node if there are more baseline nodes
-    if (projectedTimeline.length < baselineTimeline.length - 1) {
-      await generateDraftNode();
+    // Check if we've reached 10 years from branch point
+    // IMPORTANT: Use Number() to ensure proper arithmetic
+    const yearsSinceBranch = Number(draftNode.year) - Number(selectedBranch.year);
+    const hasReached10Years = yearsSinceBranch >= 10;
+
+    // Generate next node using the custom decision from input field
+    // Stop ONLY if we've reached 10 years from branch point
+    if (!hasReached10Years) {
+      // Enforce cooldown period
+      const now = Date.now();
+      const timeSinceLastRequest = now - lastRequestTime;
+      if (timeSinceLastRequest < API_COOLDOWN_MS) {
+        const remainingCooldown = API_COOLDOWN_MS - timeSinceLastRequest;
+        console.log(`⏸️ Request blocked: Cooldown active (${Math.ceil(remainingCooldown / 1000)}s remaining)`);
+        return;
+      }
+
+      // Use the nextDecision passed from the input field
+      const decision = nextDecision || branchDecision;
+
+      requestInFlight.current = true;
+      setIsGenerating(true);
+      setLastRequestTime(now);
+
+      try {
+        // Get corresponding baseline node (may be undefined if projected extends beyond baseline)
+        const baselineNode = baselineTimeline[updatedProjectedTimeline.length] || null;
+        console.log('🚀 Generating next node after accept...');
+        const node = await generateNextNode(
+          decision,
+          updatedProjectedTimeline,
+          includeSocial,
+          selectedBranch.year,
+          baselineNode,
+          heuristicProfile
+        );
+        setDraftNode(node);
+        console.log('✅ Next node generated successfully');
+      } catch (error) {
+        console.error('❌ Error generating next node:', error);
+      } finally {
+        setIsGenerating(false);
+        requestInFlight.current = false;
+      }
     }
   };
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Check, RefreshCw, Edit3, Sparkles, Save } from 'lucide-react';
+import { Check, RefreshCw, Sparkles, Wand2 } from 'lucide-react';
 
 function DualTimeline({
   branchDecision,
@@ -15,9 +15,9 @@ function DualTimeline({
   bgTheme
 }) {
   const isLight = bgTheme === 'light';
-  const [isEditing, setIsEditing] = useState(false);
-  const [manualInput, setManualInput] = useState('');
+  const [customDecision, setCustomDecision] = useState('');
   const timelineEndRef = useRef(null);
+  const decisionInputRef = useRef(null);
 
   // Auto-scroll to bottom when new nodes are added
   useEffect(() => {
@@ -26,11 +26,24 @@ function DualTimeline({
     }
   }, [projectedTimeline, draftNode]);
 
-  const handleManualSubmit = () => {
-    if (manualInput.trim()) {
-      onManualOverride(manualInput);
-      setManualInput('');
-      setIsEditing(false);
+  // Auto-populate custom decision with AI suggestion when draft node changes
+  useEffect(() => {
+    if (draftNode?.aiSuggestion) {
+      setCustomDecision(draftNode.aiSuggestion);
+    }
+  }, [draftNode]);
+
+  const handleAcceptClick = () => {
+    // Pass the custom decision to parent for next prediction
+    onAccept(customDecision);
+  };
+
+  const handleDivergeClick = () => {
+    // Clear the input field and focus it
+    setCustomDecision('');
+    // Focus the input field
+    if (decisionInputRef.current) {
+      decisionInputRef.current.focus();
     }
   };
 
@@ -82,7 +95,7 @@ function DualTimeline({
               ? isLight ? 'text-slate-700' : 'text-slate-300'
               : isLight ? 'text-purple-700' : 'text-purple-300'
           }`}>{node.title}</h3>
-          <p className={`text-sm mb-3 line-clamp-3 ${
+          <p className={`text-sm mb-3 ${
             isBaseline
               ? isLight ? 'text-slate-600' : 'text-slate-300'
               : isLight ? 'text-slate-700' : 'text-slate-300'
@@ -238,180 +251,168 @@ function DualTimeline({
             </div>
           ) : draftNode && (
             <>
-              {!isEditing ? (
-                <>
-                  <div className="flex items-start justify-between mb-2">
-                    <h3 className={`text-base font-semibold ${
-                      isLight ? 'text-purple-700' : 'text-purple-300'
-                    }`}>{draftNode.title}</h3>
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${
-                      isLight ? 'bg-purple-200 text-purple-700' : 'bg-purple-500/30 text-purple-400'
-                    }`}>DRAFT</span>
-                  </div>
+              <div className="flex items-start justify-between mb-2">
+                <h3 className={`text-base font-semibold ${
+                  isLight ? 'text-purple-700' : 'text-purple-300'
+                }`}>{draftNode.title}</h3>
+                <span className={`text-xs px-2 py-0.5 rounded-full ${
+                  isLight ? 'bg-purple-200 text-purple-700' : 'bg-purple-500/30 text-purple-400'
+                }`}>DRAFT</span>
+              </div>
 
-                  <p className={`text-sm mb-3 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                    {draftNode.narrative}
-                  </p>
+              <p className={`text-sm mb-3 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+                {draftNode.narrative}
+              </p>
 
-                  {/* Metrics with Deltas */}
-                  <div className="space-y-2 mb-4">
-                    <div>
-                      <div className="flex justify-between text-xs mb-1">
-                        <span className={isLight ? 'text-slate-600' : 'text-slate-400'}>Wealth</span>
-                        <div className="flex items-center gap-2">
-                          <span className={`font-semibold ${isLight ? 'text-emerald-700' : 'text-emerald-400'}`}>
-                            {draftNode.metrics.wealth}%
-                          </span>
-                          {baselineNode && (
-                            <span className={`text-xs font-bold ${
-                              calculateDelta(draftNode.metrics.wealth, baselineNode.metrics.wealth).delta > 0
-                                ? 'text-emerald-500'
-                                : 'text-red-400'
-                            }`}>
-                              {calculateDelta(draftNode.metrics.wealth, baselineNode.metrics.wealth).text}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <div className={`w-full rounded-full h-1.5 overflow-hidden ${
-                        isLight ? 'bg-slate-200' : 'bg-slate-700'
-                      }`}>
-                        <div
-                          className="bg-gradient-to-r from-emerald-500 to-emerald-400 h-full rounded-full"
-                          style={{ width: `${draftNode.metrics.wealth}%` }}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between text-xs mb-1">
-                        <span className={isLight ? 'text-slate-600' : 'text-slate-400'}>Satisfaction</span>
-                        <div className="flex items-center gap-2">
-                          <span className={`font-semibold ${isLight ? 'text-sky-700' : 'text-sky-400'}`}>
-                            {draftNode.metrics.satisfaction}%
-                          </span>
-                          {baselineNode && (
-                            <span className={`text-xs font-bold ${
-                              calculateDelta(draftNode.metrics.satisfaction, baselineNode.metrics.satisfaction).delta > 0
-                                ? 'text-emerald-500'
-                                : 'text-red-400'
-                            }`}>
-                              {calculateDelta(draftNode.metrics.satisfaction, baselineNode.metrics.satisfaction).text}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <div className={`w-full rounded-full h-1.5 overflow-hidden ${
-                        isLight ? 'bg-slate-200' : 'bg-slate-700'
-                      }`}>
-                        <div
-                          className="bg-gradient-to-r from-sky-500 to-sky-400 h-full rounded-full"
-                          style={{ width: `${draftNode.metrics.satisfaction}%` }}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between text-xs mb-1">
-                        <span className={isLight ? 'text-slate-600' : 'text-slate-400'}>Happiness</span>
-                        <div className="flex items-center gap-2">
-                          <span className={`font-semibold ${isLight ? 'text-purple-700' : 'text-purple-400'}`}>
-                            {draftNode.metrics.happiness}%
-                          </span>
-                          {baselineNode && (
-                            <span className={`text-xs font-bold ${
-                              calculateDelta(draftNode.metrics.happiness, baselineNode.metrics.happiness).delta > 0
-                                ? 'text-emerald-500'
-                                : 'text-red-400'
-                            }`}>
-                              {calculateDelta(draftNode.metrics.happiness, baselineNode.metrics.happiness).text}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <div className={`w-full rounded-full h-1.5 overflow-hidden ${
-                        isLight ? 'bg-slate-200' : 'bg-slate-700'
-                      }`}>
-                        <div
-                          className="bg-gradient-to-r from-purple-500 to-purple-400 h-full rounded-full"
-                          style={{ width: `${draftNode.metrics.happiness}%` }}
-                        />
-                      </div>
+              {/* Metrics with Deltas */}
+              <div className="space-y-2 mb-4">
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className={isLight ? 'text-slate-600' : 'text-slate-400'}>Wealth</span>
+                    <div className="flex items-center gap-2">
+                      <span className={`font-semibold ${isLight ? 'text-emerald-700' : 'text-emerald-400'}`}>
+                        {draftNode.metrics.wealth}%
+                      </span>
+                      {baselineNode && (
+                        <span className={`text-xs font-bold ${
+                          calculateDelta(draftNode.metrics.wealth, baselineNode.metrics.wealth).delta > 0
+                            ? 'text-emerald-500'
+                            : 'text-red-400'
+                        }`}>
+                          {calculateDelta(draftNode.metrics.wealth, baselineNode.metrics.wealth).text}
+                        </span>
+                      )}
                     </div>
                   </div>
+                  <div className={`w-full rounded-full h-1.5 overflow-hidden ${
+                    isLight ? 'bg-slate-200' : 'bg-slate-700'
+                  }`}>
+                    <div
+                      className="bg-gradient-to-r from-emerald-500 to-emerald-400 h-full rounded-full"
+                      style={{ width: `${draftNode.metrics.wealth}%` }}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className={isLight ? 'text-slate-600' : 'text-slate-400'}>Satisfaction</span>
+                    <div className="flex items-center gap-2">
+                      <span className={`font-semibold ${isLight ? 'text-sky-700' : 'text-sky-400'}`}>
+                        {draftNode.metrics.satisfaction}%
+                      </span>
+                      {baselineNode && (
+                        <span className={`text-xs font-bold ${
+                          calculateDelta(draftNode.metrics.satisfaction, baselineNode.metrics.satisfaction).delta > 0
+                            ? 'text-emerald-500'
+                            : 'text-red-400'
+                        }`}>
+                          {calculateDelta(draftNode.metrics.satisfaction, baselineNode.metrics.satisfaction).text}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className={`w-full rounded-full h-1.5 overflow-hidden ${
+                    isLight ? 'bg-slate-200' : 'bg-slate-700'
+                  }`}>
+                    <div
+                      className="bg-gradient-to-r from-sky-500 to-sky-400 h-full rounded-full"
+                      style={{ width: `${draftNode.metrics.satisfaction}%` }}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className={isLight ? 'text-slate-600' : 'text-slate-400'}>Happiness</span>
+                    <div className="flex items-center gap-2">
+                      <span className={`font-semibold ${isLight ? 'text-purple-700' : 'text-purple-400'}`}>
+                        {draftNode.metrics.happiness}%
+                      </span>
+                      {baselineNode && (
+                        <span className={`text-xs font-bold ${
+                          calculateDelta(draftNode.metrics.happiness, baselineNode.metrics.happiness).delta > 0
+                            ? 'text-emerald-500'
+                            : 'text-red-400'
+                        }`}>
+                          {calculateDelta(draftNode.metrics.happiness, baselineNode.metrics.happiness).text}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className={`w-full rounded-full h-1.5 overflow-hidden ${
+                    isLight ? 'bg-slate-200' : 'bg-slate-700'
+                  }`}>
+                    <div
+                      className="bg-gradient-to-r from-purple-500 to-purple-400 h-full rounded-full"
+                      style={{ width: `${draftNode.metrics.happiness}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex gap-2">
-                    <button
-                      onClick={onAccept}
-                      className={`flex-1 flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-300 ${
+              {/* Next Decision Input (AI Suggestion as editable field) */}
+              <div className={`mb-4 p-3 rounded-lg border ${
+                isLight
+                  ? 'bg-sky-50/80 border-sky-300'
+                  : 'bg-sky-900/10 border-sky-700/50'
+              }`}>
+                <div className="flex items-start gap-2">
+                  <Wand2 className={`flex-shrink-0 mt-2 ${
+                    isLight ? 'text-sky-600' : 'text-sky-400'
+                  }`} size={16} />
+                  <div className="flex-1">
+                    <p className={`text-xs font-semibold mb-2 ${
+                      isLight ? 'text-sky-700' : 'text-sky-300'
+                    }`}>
+                      Next Step Decision
+                    </p>
+                    <input
+                      ref={decisionInputRef}
+                      type="text"
+                      value={customDecision}
+                      onChange={(e) => setCustomDecision(e.target.value)}
+                      className={`w-full border rounded-md px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/50 ${
                         isLight
-                          ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-md'
-                          : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]'
+                          ? 'bg-white border-sky-300 text-slate-900 placeholder-slate-400'
+                          : 'bg-slate-900/50 border-sky-700 text-slate-200 placeholder-slate-500'
                       }`}
-                    >
-                      <Check size={14} />
-                      Accept
-                    </button>
-                    <button
-                      onClick={onDiverge}
-                      className={`flex-1 flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-300 ${
-                        isLight
-                          ? 'bg-sky-600 hover:bg-sky-500 text-white shadow-md'
-                          : 'bg-sky-600 hover:bg-sky-500 text-white shadow-[0_0_15px_rgba(14,165,233,0.3)]'
-                      }`}
-                    >
-                      <RefreshCw size={14} />
-                      Diverge
-                    </button>
-                    <button
-                      onClick={() => setIsEditing(true)}
-                      className={`px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-300 ${
-                        isLight
-                          ? 'bg-purple-600 hover:bg-purple-500 text-white shadow-md'
-                          : 'bg-purple-600 hover:bg-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.3)]'
-                      }`}
-                      title="Manual Override"
-                    >
-                      <Edit3 size={14} />
-                    </button>
+                      placeholder="What if I..."
+                    />
+                    {draftNode.nextPrompt && (
+                      <p className={`text-xs mt-2 italic ${
+                        isLight ? 'text-slate-600' : 'text-slate-400'
+                      }`}>
+                        {draftNode.nextPrompt}
+                      </p>
+                    )}
                   </div>
-                </>
-              ) : (
-                <>
-                  <p className={`text-xs mb-2 ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-                    Write your own narrative:
-                  </p>
-                  <textarea
-                    value={manualInput}
-                    onChange={(e) => setManualInput(e.target.value)}
-                    className={`w-full border rounded-lg px-3 py-2 mb-3 text-sm focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 resize-none ${
-                      isLight ? 'bg-white border-slate-300 text-slate-900' : 'bg-slate-950 border-slate-700 text-slate-200'
-                    }`}
-                    rows="3"
-                    placeholder="Describe what happens..."
-                    autoFocus
-                  />
-                  <div className="flex gap-2">
-                    <button
-                      onClick={handleManualSubmit}
-                      className="flex-1 flex items-center justify-center gap-1 bg-purple-600 hover:bg-purple-500 text-white px-3 py-2 rounded-lg text-sm font-semibold transition-all"
-                    >
-                      <Save size={14} />
-                      Save
-                    </button>
-                    <button
-                      onClick={() => {
-                        setIsEditing(false);
-                        setManualInput('');
-                      }}
-                      className={`px-3 py-2 rounded-lg text-sm transition-colors ${
-                        isLight ? 'bg-slate-200 hover:bg-slate-300 text-slate-700' : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
-                      }`}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </>
-              )}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-2">
+                <button
+                  onClick={handleAcceptClick}
+                  className={`flex-1 flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-300 ${
+                    isLight
+                      ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-500/50 hover:shadow-emerald-500/70'
+                      : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.6)] hover:shadow-[0_0_25px_rgba(16,185,129,0.8)] ring-2 ring-emerald-400/30'
+                  }`}
+                >
+                  <Check size={14} />
+                  Accept & Continue
+                </button>
+                <button
+                  onClick={handleDivergeClick}
+                  className={`flex-1 flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-300 ${
+                    isLight
+                      ? 'bg-slate-600 hover:bg-slate-500 text-white shadow-md'
+                      : 'bg-slate-700 hover:bg-slate-600 text-white shadow-[0_0_10px_rgba(100,116,139,0.3)]'
+                  }`}
+                >
+                  <RefreshCw size={14} />
+                  Clear & Rewrite
+                </button>
+              </div>
             </>
           )}
         </div>
