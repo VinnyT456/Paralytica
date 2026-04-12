@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, Zap, ArrowRight, GitBranch, Loader2 } from 'lucide-react';
-import ParalyticaLogo from '../assets/NewLogo1Transparent2.png';
+import ParalyticaLogo from '../assets/NewLogo1Transparent3.png';
 
 function Home({ bgTheme }) {
   const navigate = useNavigate();

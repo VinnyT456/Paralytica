@@ -162,7 +162,8 @@ function Step1MapTimeline({ onNext, bgTheme }) {
     onNext(sortedPoints, true); // Always include social dynamics (hardcoded to true)
   };
 
-  const whyOptions = [
+  // Education why options (with "Workload")
+  const educationWhyOptions = [
     { value: 'culture', label: 'Culture' },
     { value: 'people', label: 'People' },
     { value: 'leadership', label: 'Leadership' },
@@ -171,15 +172,25 @@ function Step1MapTimeline({ onNext, bgTheme }) {
     { value: 'balance', label: 'Balance' }
   ];
 
+  // Career why options (with "Work")
+  const careerWhyOptions = [
+    { value: 'culture', label: 'Culture' },
+    { value: 'people', label: 'People' },
+    { value: 'leadership', label: 'Leadership' },
+    { value: 'growth', label: 'Growth' },
+    { value: 'work', label: 'Work' },
+    { value: 'balance', label: 'Balance' }
+  ];
+
   return (
     <div className="min-h-screen flex items-center justify-center p-6 py-24">
       <div className="w-full max-w-4xl">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-sky-400 to-emerald-400 bg-clip-text text-transparent">
-            Life Events
+            Your Education & Career Timeline
           </h1>
           <p className={`text-lg ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
-            Map your education and career journey
+            Add your education and work experience to build your timeline
           </p>
         </div>
 
@@ -200,7 +211,7 @@ function Step1MapTimeline({ onNext, bgTheme }) {
                 isLight ? 'text-purple-700' : 'text-purple-400'
               }`}>
                 <GraduationCap size={28} />
-                Education
+                Education History
               </h2>
 
               {educationList.map((education, eduIndex) => (
@@ -223,7 +234,7 @@ function Step1MapTimeline({ onNext, bgTheme }) {
                     {/* Graduation Year */}
                     <div>
                       <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                        Graduation Year <span className="text-red-500">*</span>
+                        Graduation Year (or Expected) <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="number"
@@ -242,7 +253,7 @@ function Step1MapTimeline({ onNext, bgTheme }) {
                     {/* Institution */}
                     <div>
                       <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                        Institution <span className="text-red-500">*</span>
+                        School / University Name <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -261,7 +272,7 @@ function Step1MapTimeline({ onNext, bgTheme }) {
                     {/* Institution Location */}
                     <div>
                       <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                        Institution Location <span className="text-slate-400 text-xs">(optional)</span>
+                        School Location <span className="text-slate-400 text-xs">(Optional)</span>
                       </label>
                       <input
                         type="text"
@@ -290,7 +301,7 @@ function Step1MapTimeline({ onNext, bgTheme }) {
                             ? 'bg-white border-slate-300 text-slate-900'
                             : 'bg-slate-900 border-slate-700 text-slate-200'
                         }`}
-                        placeholder="B.S. Computer Science"
+                        placeholder="Bachelor of Science"
                         required
                       />
                     </div>
@@ -298,7 +309,7 @@ function Step1MapTimeline({ onNext, bgTheme }) {
                     {/* Major Studied */}
                     <div className="md:col-span-2">
                       <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                        Major Studied <span className="text-red-500">*</span>
+                        Major / Field of Study <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -317,12 +328,16 @@ function Step1MapTimeline({ onNext, bgTheme }) {
                     {/* Did you enjoy it */}
                     <div className="md:col-span-2">
                       <label className={`block text-sm font-medium mb-3 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                        Did you enjoy it? <span className="text-red-500">*</span>
+                        Did you enjoy this experience? <span className="text-red-500">*</span>
                       </label>
                       <div className="flex gap-4">
                         <button
                           type="button"
-                          onClick={() => updateEducation(education.id, 'enjoyed', true)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            updateEducation(education.id, 'enjoyed', true);
+                          }}
                           className={`flex-1 px-6 py-3 rounded-lg font-semibold transition-all ${
                             education.enjoyed === true
                               ? 'bg-green-600 text-white shadow-lg shadow-green-500/30'
@@ -335,7 +350,11 @@ function Step1MapTimeline({ onNext, bgTheme }) {
                         </button>
                         <button
                           type="button"
-                          onClick={() => updateEducation(education.id, 'enjoyed', false)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            updateEducation(education.id, 'enjoyed', false);
+                          }}
                           className={`flex-1 px-6 py-3 rounded-lg font-semibold transition-all ${
                             education.enjoyed === false
                               ? 'bg-red-600 text-white shadow-lg shadow-red-500/30'
@@ -356,11 +375,15 @@ function Step1MapTimeline({ onNext, bgTheme }) {
                           {education.enjoyed ? 'Why?' : 'Why not?'} <span className="text-slate-400 text-xs">(select all that apply)</span>
                         </label>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                          {whyOptions.map(option => (
+                          {educationWhyOptions.map(option => (
                             <button
                               key={option.value}
                               type="button"
-                              onClick={() => toggleEducationWhyReason(education.id, option.value)}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                toggleEducationWhyReason(education.id, option.value);
+                              }}
                               className={`px-4 py-2.5 rounded-lg font-medium transition-all ${
                                 education.whyReasons.includes(option.value)
                                   ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30'
@@ -390,7 +413,7 @@ function Step1MapTimeline({ onNext, bgTheme }) {
                 isLight ? 'text-sky-700' : 'text-sky-400'
               }`}>
                 <Briefcase size={28} />
-                Career
+                Work Experience
               </h2>
 
               {careerList.map((career, carIndex) => (
@@ -432,7 +455,7 @@ function Step1MapTimeline({ onNext, bgTheme }) {
 
                       <div>
                         <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                          End Year {!career.isCurrentlyWorking && <span className="text-red-500">*</span>}
+                          End Year (or Present) {!career.isCurrentlyWorking && <span className="text-red-500">*</span>}
                         </label>
                         <input
                           type="number"
@@ -467,7 +490,7 @@ function Step1MapTimeline({ onNext, bgTheme }) {
                             className="w-5 h-5 text-sky-600 border-slate-300 rounded focus:ring-sky-500"
                           />
                           <span className={`text-sm font-medium ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                            Currently Working
+                            I currently work here
                           </span>
                         </label>
                       </div>
@@ -476,7 +499,7 @@ function Step1MapTimeline({ onNext, bgTheme }) {
                     {/* Position */}
                     <div>
                       <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                        Position <span className="text-red-500">*</span>
+                        Job Title <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -495,7 +518,7 @@ function Step1MapTimeline({ onNext, bgTheme }) {
                     {/* Company */}
                     <div>
                       <label className={`block text-sm font-medium mb-2 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                        Company <span className="text-red-500">*</span>
+                        Company Name <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -514,7 +537,7 @@ function Step1MapTimeline({ onNext, bgTheme }) {
                     {/* Did you enjoy it */}
                     <div>
                       <label className={`block text-sm font-medium mb-3 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                        Did you enjoy it? <span className="text-red-500">*</span>
+                        Did you enjoy this role? <span className="text-red-500">*</span>
                       </label>
                       <div className="flex gap-4">
                         <button
@@ -553,7 +576,7 @@ function Step1MapTimeline({ onNext, bgTheme }) {
                           {career.enjoyed ? 'Why?' : 'Why not?'} <span className="text-slate-400 text-xs">(select all that apply)</span>
                         </label>
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                          {whyOptions.map(option => (
+                          {careerWhyOptions.map(option => (
                             <button
                               key={option.value}
                               type="button"
@@ -602,7 +625,7 @@ function Step1MapTimeline({ onNext, bgTheme }) {
                 }`}
               >
                 <Plus size={20} />
-                Add Career
+                Add Work Experience
               </button>
             </div>
 

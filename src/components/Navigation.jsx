@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Home as HomeIcon, Info, Zap, Clock, Sun, Moon, Users } from 'lucide-react';
-import ParalyticaLogo from '../assets/NewLogo1Transparent2.png';
+import ParalyticaLogo from '../assets/NewLogo1Transparent3.png';
 
 function Navigation({ bgTheme, setBgTheme }) {
   const location = useLocation();

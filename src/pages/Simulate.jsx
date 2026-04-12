@@ -12,6 +12,7 @@ import BackButton from '../components/BackButton';
 function Simulate({ bgTheme }) {
   const location = useLocation();
   const { heuristicProfile, demoPersona } = useAppContext();
+  const activeDemoPersona = location.state?.demoPersona || demoPersona;
   const [step, setStep] = useState(1);
   const [lifePoints, setLifePoints] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState(null);
@@ -32,7 +33,7 @@ function Simulate({ bgTheme }) {
 
   // Check if we're loading a demo persona and pre-populate timeline
   useEffect(() => {
-    const personaData = location.state?.demoPersona || demoPersona;
+    const personaData = activeDemoPersona;
 
     if (personaData && personaData.careerMilestones && personaData.careerMilestones.length > 0) {
       // Pre-load the timeline with demo persona's career milestones
@@ -132,7 +133,7 @@ function Simulate({ bgTheme }) {
       const baselineNode = baseline[projectedTimeline.length] || null;
 
       // Get demo persona data (from context or location state)
-      const personaData = location.state?.demoPersona || demoPersona;
+      const personaData = activeDemoPersona;
 
       console.log('🚀 Generating draft node...');
       const node = await generateNextNode(
@@ -197,7 +198,7 @@ function Simulate({ bgTheme }) {
         const baselineNode = baselineTimeline[updatedProjectedTimeline.length] || null;
 
         // Get demo persona data (from context or location state)
-        const personaData = location.state?.demoPersona || demoPersona;
+        const personaData = activeDemoPersona;
 
         console.log('🚀 Generating next node after accept...');
         const node = await generateNextNode(
@@ -261,7 +262,14 @@ function Simulate({ bgTheme }) {
     <div className="pt-20">
       {step === 1 && <BackButton to="/questionnaire" bgTheme={bgTheme} />}
       {step === 1 && <Step1MapTimeline onNext={handleStep1Complete} bgTheme={bgTheme} />}
-      {step === 2 && <Step2PrimaryTimeline lifePoints={lifePoints} onBranch={handleBranchClick} bgTheme={bgTheme} />}
+      {step === 2 && (
+        <Step2PrimaryTimeline
+          lifePoints={lifePoints}
+          onBranch={handleBranchClick}
+          bgTheme={bgTheme}
+          subjectName={activeDemoPersona?.name}
+        />
+      )}
       {step === 3 && isGenerating && baselineTimeline.length === 0 && <Step3Loading bgTheme={bgTheme} />}
       {step === 3 && baselineTimeline.length > 0 && (
         <DualTimeline
@@ -276,7 +284,7 @@ function Simulate({ bgTheme }) {
           onManualOverride={handleManualOverride}
           onReset={handleReset}
           bgTheme={bgTheme}
-          isDemoPersona={!!(location.state?.demoPersona || demoPersona)}
+          isDemoPersona={!!activeDemoPersona}
         />
       )}
 

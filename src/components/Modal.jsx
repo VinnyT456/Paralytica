@@ -5,6 +5,11 @@ function Modal({ branchPoint, onClose, onSubmit, bgTheme }) {
   const isLight = bgTheme === 'light';
   const [decision, setDecision] = useState('');
 
+  const roleAndPlace =
+    branchPoint.role && branchPoint.company
+      ? `${branchPoint.role} at ${branchPoint.company}`
+      : branchPoint.role || branchPoint.company || '';
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (decision.trim()) {
@@ -22,11 +27,16 @@ function Modal({ branchPoint, onClose, onSubmit, bgTheme }) {
         <div className="flex items-start justify-between mb-6">
           <div>
             <h2 className="text-3xl font-bold text-transparent bg-gradient-to-r from-purple-400 to-sky-400 bg-clip-text mb-2">
-              Branching Point Detected
+              Alternative Path
             </h2>
             <p className={isLight ? 'text-slate-700' : 'text-slate-400'}>
-              <span className={`font-semibold ${isLight ? 'text-sky-600' : 'text-sky-400'}`}>{branchPoint.year}</span> — {branchPoint.role}
-              {branchPoint.company && <span className={isLight ? 'text-slate-600' : 'text-slate-500'}> at {branchPoint.company}</span>}
+              <span className={`font-semibold ${isLight ? 'text-sky-600' : 'text-sky-400'}`}>{branchPoint.year}</span>
+              {roleAndPlace ? (
+                <>
+                  {' — '}
+                  <span>{roleAndPlace}</span>
+                </>
+              ) : null}
             </p>
           </div>
           <button
@@ -44,8 +54,7 @@ function Modal({ branchPoint, onClose, onSubmit, bgTheme }) {
             <span className={`text-lg flex items-center gap-2 mb-3 ${
               isLight ? 'text-slate-800' : 'text-slate-300'
             }`}>
-              <GitBranch className={isLight ? 'text-emerald-600' : 'text-emerald-400'} size={22} />
-              What if, instead, I decided to...
+              What If I...
             </span>
             <textarea
               value={decision}
@@ -55,8 +64,11 @@ function Modal({ branchPoint, onClose, onSubmit, bgTheme }) {
                   ? 'bg-white border-slate-300 text-slate-900'
                   : 'bg-slate-950 border-slate-700 text-slate-200'
               }`}
-              rows="5"
-              placeholder="Describe your radical alternate decision... (e.g., 'quit my job and travel the world', 'start my own company', 'pursue art instead')"
+              rows={7}
+              placeholder={`Example inputs:
+• majored in theater
+• started a business
+• took a gap year abroad`}
               required
               autoFocus
             />
@@ -72,13 +84,13 @@ function Modal({ branchPoint, onClose, onSubmit, bgTheme }) {
                   : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
               }`}
             >
-              Cancel
+              Back
             </button>
             <button
               type="submit"
               className="flex-1 bg-gradient-to-r from-emerald-600 to-sky-600 hover:from-emerald-500 hover:to-sky-500 text-white font-semibold py-3 rounded-lg transition-all duration-300 shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] flex items-center justify-center gap-2"
             >
-              Simulate Multiverse
+              See What Happens 
               <ArrowRight size={18} />
             </button>
           </div>

@@ -1,16 +1,24 @@
 import { GitBranch } from 'lucide-react';
 
-function Step2PrimaryTimeline({ lifePoints, onBranch, bgTheme }) {
+function Step2PrimaryTimeline({ lifePoints, onBranch, bgTheme, subjectName }) {
   const isLight = bgTheme === 'light';
+  const firstName = subjectName?.trim()?.split(/\s+/)?.[0];
+  const title = firstName ? `${firstName}'s Life Timeline` : 'Your Life Timeline';
+  const subtitle = firstName
+    ? `Select “Explore Alternative Path” to see other possible directions for ${firstName}.`
+    : 'Select “Explore Alternative Path” to see other possible directions';
+  const branchCta = firstName
+    ? `Explore ${firstName}'s Alternative Path`
+    : 'Explore Alternative Path';
 
   return (
     <div className="min-h-screen p-6 md:p-12">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-3 bg-gradient-to-r from-purple-400 to-sky-400 bg-clip-text text-transparent">
-            Your Primary Timeline
+            {title}
           </h1>
-          <p className={isLight ? 'text-slate-600' : 'text-slate-400'}>Click "Branch Here" to explore an alternate reality</p>
+          <p className={isLight ? 'text-slate-600' : 'text-slate-400'}>{subtitle}</p>
         </div>
 
         <div className="relative">
@@ -42,7 +50,7 @@ function Step2PrimaryTimeline({ lifePoints, onBranch, bgTheme }) {
                     {point.location && <span className={isLight ? 'text-slate-600' : 'text-slate-500'}>{point.location}</span>}
                   </p>
                   <div className="flex items-center gap-2 mb-4">
-                    <span className="text-xs text-slate-500">Happiness:</span>
+                    <span className="text-xs text-slate-500">Satisfaction:</span>
                     <div className="flex gap-1">
                       {[...Array(10)].map((_, i) => (
                         <div
@@ -59,7 +67,7 @@ function Step2PrimaryTimeline({ lifePoints, onBranch, bgTheme }) {
                     className="inline-flex items-center gap-2 bg-gradient-to-r from-sky-600 to-emerald-600 hover:from-sky-500 hover:to-emerald-500 text-white px-4 py-2 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(14,165,233,0.3)] hover:shadow-[0_0_25px_rgba(14,165,233,0.5)]"
                   >
                     <GitBranch size={18} />
-                    Branch Here
+                    {branchCta}
                   </button>
                 </div>
               </div>
