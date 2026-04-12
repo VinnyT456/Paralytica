@@ -1,5 +1,4 @@
 import { FaLinkedin } from 'react-icons/fa';
-import linkedInPng from '../assets/LinkedIn_Icon.png';
 
 const TEAM = [
   {
