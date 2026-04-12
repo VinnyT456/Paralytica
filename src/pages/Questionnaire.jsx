@@ -632,7 +632,7 @@ function Questionnaire({ bgTheme }) {
                   className="flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-sky-600 to-purple-600 hover:from-sky-500 hover:to-purple-500 text-white font-bold transition-all duration-300 shadow-[0_0_20px_rgba(14,165,233,0.4)] hover:shadow-[0_0_30px_rgba(14,165,233,0.6)] hover:scale-105 min-w-[100px]"
                 >
                   <Sparkles size={20} />
-                  INITIALIZE ENGINE
+                  See Your Results
                 </button>
               ) : (
                 <button
