@@ -84,9 +84,16 @@ function DualTimeline({
     return { delta, sign, text: `${sign}${delta}%` };
   };
 
+  /** Deltas on the alternate path: vs branch milestone first, then vs previous projected card (so % + Δ matches the next card). */
+  const getProjectedDeltaReference = (projectedLocalIndex) => {
+    if (projectedLocalIndex === 0) {
+      return baselineTimeline[branchIndex] ?? null;
+    }
+    return projectedTimeline[projectedLocalIndex - 1] ?? null;
+  };
+
   const renderNode = (node, index, isBaseline = false) => {
-    const projectedNode = projectedTimeline[index];
-    const baselineNode = baselineTimeline[index];
+    const deltaReference = !isBaseline ? getProjectedDeltaReference(index) : null;
 
     return (
       <div key={index} className="relative flex gap-4 items-start" style={{ minHeight: '280px' }}>
@@ -150,13 +157,13 @@ function DualTimeline({
                   }`}>
                     {node.metrics.wealth}%
                   </span>
-                  {!isBaseline && baselineNode && (
+                  {!isBaseline && deltaReference && (
                     <span className={`text-xs font-bold ${
-                      calculateDelta(node.metrics.wealth, baselineNode.metrics.wealth).delta > 0
+                      calculateDelta(node.metrics.wealth, deltaReference.metrics.wealth).delta > 0
                         ? 'text-emerald-500'
                         : 'text-red-400'
                     }`}>
-                      {calculateDelta(node.metrics.wealth, baselineNode.metrics.wealth).text}
+                      {calculateDelta(node.metrics.wealth, deltaReference.metrics.wealth).text}
                     </span>
                   )}
                 </div>
@@ -184,13 +191,13 @@ function DualTimeline({
                   }`}>
                     {node.metrics.satisfaction}%
                   </span>
-                  {!isBaseline && baselineNode && (
+                  {!isBaseline && deltaReference && (
                     <span className={`text-xs font-bold ${
-                      calculateDelta(node.metrics.satisfaction, baselineNode.metrics.satisfaction).delta > 0
+                      calculateDelta(node.metrics.satisfaction, deltaReference.metrics.satisfaction).delta > 0
                         ? 'text-emerald-500'
                         : 'text-red-400'
                     }`}>
-                      {calculateDelta(node.metrics.satisfaction, baselineNode.metrics.satisfaction).text}
+                      {calculateDelta(node.metrics.satisfaction, deltaReference.metrics.satisfaction).text}
                     </span>
                   )}
                 </div>
@@ -218,13 +225,13 @@ function DualTimeline({
                   }`}>
                     {node.metrics.happiness}%
                   </span>
-                  {!isBaseline && baselineNode && (
+                  {!isBaseline && deltaReference && (
                     <span className={`text-xs font-bold ${
-                      calculateDelta(node.metrics.happiness, baselineNode.metrics.happiness).delta > 0
+                      calculateDelta(node.metrics.happiness, deltaReference.metrics.happiness).delta > 0
                         ? 'text-emerald-500'
                         : 'text-red-400'
                     }`}>
-                      {calculateDelta(node.metrics.happiness, baselineNode.metrics.happiness).text}
+                      {calculateDelta(node.metrics.happiness, deltaReference.metrics.happiness).text}
                     </span>
                   )}
                 </div>
@@ -245,7 +252,10 @@ function DualTimeline({
   };
 
   const renderDraftNode = () => {
-    const baselineNode = baselineTimeline[projectedTimeline.length];
+    const draftDeltaReference =
+      projectedTimeline.length > 0
+        ? projectedTimeline[projectedTimeline.length - 1]
+        : baselineTimeline[branchIndex] ?? null;
 
     return (
       <div className="relative flex gap-4 items-start">
@@ -304,13 +314,13 @@ function DualTimeline({
                       <span className={`font-semibold ${isLight ? 'text-emerald-700' : 'text-emerald-400'}`}>
                         {draftNode.metrics.wealth}%
                       </span>
-                      {baselineNode && (
+                      {draftDeltaReference && (
                         <span className={`text-xs font-bold ${
-                          calculateDelta(draftNode.metrics.wealth, baselineNode.metrics.wealth).delta > 0
+                          calculateDelta(draftNode.metrics.wealth, draftDeltaReference.metrics.wealth).delta > 0
                             ? 'text-emerald-500'
                             : 'text-red-400'
                         }`}>
-                          {calculateDelta(draftNode.metrics.wealth, baselineNode.metrics.wealth).text}
+                          {calculateDelta(draftNode.metrics.wealth, draftDeltaReference.metrics.wealth).text}
                         </span>
                       )}
                     </div>
@@ -331,13 +341,13 @@ function DualTimeline({
                       <span className={`font-semibold ${isLight ? 'text-sky-700' : 'text-sky-400'}`}>
                         {draftNode.metrics.satisfaction}%
                       </span>
-                      {baselineNode && (
+                      {draftDeltaReference && (
                         <span className={`text-xs font-bold ${
-                          calculateDelta(draftNode.metrics.satisfaction, baselineNode.metrics.satisfaction).delta > 0
+                          calculateDelta(draftNode.metrics.satisfaction, draftDeltaReference.metrics.satisfaction).delta > 0
                             ? 'text-emerald-500'
                             : 'text-red-400'
                         }`}>
-                          {calculateDelta(draftNode.metrics.satisfaction, baselineNode.metrics.satisfaction).text}
+                          {calculateDelta(draftNode.metrics.satisfaction, draftDeltaReference.metrics.satisfaction).text}
                         </span>
                       )}
                     </div>
@@ -358,13 +368,13 @@ function DualTimeline({
                       <span className={`font-semibold ${isLight ? 'text-purple-700' : 'text-purple-400'}`}>
                         {draftNode.metrics.happiness}%
                       </span>
-                      {baselineNode && (
+                      {draftDeltaReference && (
                         <span className={`text-xs font-bold ${
-                          calculateDelta(draftNode.metrics.happiness, baselineNode.metrics.happiness).delta > 0
+                          calculateDelta(draftNode.metrics.happiness, draftDeltaReference.metrics.happiness).delta > 0
                             ? 'text-emerald-500'
                             : 'text-red-400'
                         }`}>
-                          {calculateDelta(draftNode.metrics.happiness, baselineNode.metrics.happiness).text}
+                          {calculateDelta(draftNode.metrics.happiness, draftDeltaReference.metrics.happiness).text}
                         </span>
                       )}
                     </div>

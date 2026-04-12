@@ -45,7 +45,8 @@ function Simulate({ bgTheme }) {
         role: milestone.role,
         company: milestone.company,
         location: milestone.location,
-        happiness: milestone.happiness
+        happiness: milestone.happiness,
+        metrics: milestone.metrics ?? null
       }));
 
       setLifePoints(preloadedPoints);
@@ -79,10 +80,10 @@ function Simulate({ bgTheme }) {
         year: Number(point.year),
         title: point.role,
         narrative: `${point.company ? `At ${point.company}` : 'Working'} ${point.location ? `in ${point.location}` : ''}`.trim(),
-        metrics: {
-          wealth: point.happiness * 8, // Estimate based on happiness
-          satisfaction: point.happiness * 9,
-          happiness: point.happiness * 10
+        metrics: point.metrics ?? {
+          wealth: Math.round(Number(point.happiness) * 8),
+          satisfaction: Math.round(Number(point.happiness) * 9),
+          happiness: Math.round(Number(point.happiness) * 10)
         },
         isUserMilestone: true
       }));
@@ -132,8 +133,9 @@ function Simulate({ bgTheme }) {
     setLastRequestTime(now);
 
     try {
-      // Get corresponding baseline node (may be undefined if projected extends beyond baseline)
-      const baselineNode = baseline[projectedTimeline.length] || null;
+      // Align with the branch point: projected segment i corresponds to baseline milestone (branchIndex + i)
+      const branchIdx = selectedBranch?.branchIndex ?? 0;
+      const baselineNode = baseline[branchIdx + projectedTimeline.length] ?? null;
 
       // Get demo persona data (from context or location state)
       const personaData = activeDemoPersona;
@@ -197,8 +199,8 @@ function Simulate({ bgTheme }) {
       setLastRequestTime(now);
 
       try {
-        // Get corresponding baseline node (may be undefined if projected extends beyond baseline)
-        const baselineNode = baselineTimeline[updatedProjectedTimeline.length] || null;
+        const branchIdx = selectedBranch?.branchIndex ?? 0;
+        const baselineNode = baselineTimeline[branchIdx + updatedProjectedTimeline.length] ?? null;
 
         // Get demo persona data (from context or location state)
         const personaData = activeDemoPersona;
