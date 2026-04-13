@@ -4,14 +4,17 @@ import WildHacksLogo from '../assets/wildhacks_logo.png';
 const TEAM = [
   {
     name: 'Vincent Tang',
+    role: 'Software Engineer & Tech Lead',
     linkedin: 'https://www.linkedin.com/in/vincent-tang-40368b356/',
   },
   {
     name: 'Kevin Mei',
+    role: 'Product Manager & UX Designer',
     linkedin: 'https://www.linkedin.com/in/kmeixyz/',
   },
   {
     name: 'Abby Hou',
+    role: 'Brand Designer & Creative Lead',
     linkedin: 'https://www.linkedin.com/in/abigail-hou/',
   },
 ];
@@ -185,34 +188,53 @@ function About({ bgTheme }) {
             Our Team
           </h2>
           <ul className="grid grid-cols-1 sm:grid-cols-3 gap-6 list-none p-0 m-0">
-            {TEAM.map(({ name, linkedin }) => (
+            {TEAM.map(({ name, role, linkedin }) => (
               <li
                 key={name}
-                className={`flex flex-col items-center text-center gap-3 rounded-lg p-4 border ${
+                className={`group relative flex flex-col items-center text-center gap-4 rounded-2xl p-5 border transition-all duration-300 hover:-translate-y-0.5 ${
                   isLight
-                    ? 'border-slate-200 bg-slate-50/80'
-                    : 'border-slate-700/80 bg-slate-800/40'
-                }`}
+                    ? 'border-slate-200/80 bg-white/70 hover:bg-white/85 hover:border-sky-300 shadow-sm hover:shadow-md'
+                    : 'border-slate-700/80 bg-slate-900/35 hover:bg-slate-900/55 hover:border-sky-500/40 shadow-sm shadow-black/10 hover:shadow-lg hover:shadow-black/20'
+                } focus-within:ring-2 focus-within:ring-sky-400/70`}
               >
-                <span
-                  className={`text-lg font-semibold ${
-                    isLight ? 'text-slate-800' : 'text-slate-100'
+                {/* Decorative gradient glow */}
+                <div
+                  aria-hidden
+                  className={`pointer-events-none absolute inset-0 rounded-2xl opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-100 ${
+                    isLight
+                      ? 'bg-gradient-to-br from-sky-200/70 via-purple-200/40 to-emerald-200/50'
+                      : 'bg-gradient-to-br from-sky-500/20 via-purple-500/10 to-emerald-500/15'
                   }`}
-                >
-                  {name}
-                </span>
+                />
+
+                <div className="relative flex flex-col items-center gap-2">
+                  <span
+                    className={`text-lg font-semibold tracking-tight ${
+                      isLight ? 'text-slate-900' : 'text-slate-50'
+                    }`}
+                  >
+                    {name}
+                  </span>
+                  <span
+                    className={`text-sm font-medium ${
+                      isLight ? 'text-slate-600' : 'text-slate-300/80'
+                    }`}
+                  >
+                    {role}
+                  </span>
+                </div>
                 <a
                   href={linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`inline-flex items-center justify-center rounded-lg p-2 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 ${
+                  className={`relative inline-flex items-center justify-center rounded-xl p-2.5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-offset-2 ${
                     isLight
-                      ? 'text-[#0A66C2] hover:bg-sky-100'
-                      : 'text-[#0A66C2] hover:bg-slate-700/80'
+                      ? 'text-[#0A66C2] hover:bg-sky-100/80'
+                      : 'text-[#0A66C2] hover:bg-slate-700/70'
                   } ${isLight ? 'focus-visible:ring-offset-white' : 'focus-visible:ring-offset-slate-900'}`}
                   aria-label={`${name} on LinkedIn`}
                 >
-                  <LinkedInMark className="h-8 w-8" />
+                  <LinkedInMark className="h-8 w-8 transition-transform duration-300 group-hover:scale-110" />
                 </a>
               </li>
             ))}
