@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
 import Navigation from './components/Navigation';
-import SiteFooter from './components/SiteFooter';
 import Home from './pages/Home';
 import About from './pages/About';
 import Questionnaire from './pages/Questionnaire';
@@ -46,7 +45,6 @@ function Layout({ bgTheme, setBgTheme }) {
           <Route path="/demo" element={<Demo bgTheme={bgTheme} />} />
         </Routes>
       </main>
-      <SiteFooter bgTheme={bgTheme} />
     </div>
   );
 }
