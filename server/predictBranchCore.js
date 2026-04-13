@@ -17,10 +17,8 @@ function geminiUrl() {
 export async function runPredictBranch(body) {
   const { userProfile, milestoneHistory, branchDecision, includeSocial, branchYear, baselineNode } = body;
 
-  // ... [Your existing validation logic stays exactly the same] ...
-
   const profile = userProfile || {};
-  const history = Array.isArray(milestoneHistory) ? milestoneHistory : [];
+  const history = (Array.isArray(milestoneHistory) ? milestoneHistory : []).filter(m => Number(m.year) <= Number(branchYear));
 
   const lastMilestone = history[history.length - 1] || {
     year: Number(branchYear) || new Date().getFullYear(),
