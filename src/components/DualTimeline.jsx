@@ -576,7 +576,8 @@ function DualTimeline({
                 <div className="space-y-3 max-w-md w-full relative z-10">
                   {baselineTimeline.slice(0, branchIndex).map((node, index) => (
                     <div key={index}>
-                      {renderNode(node, index, false)}
+                      {/* Baseline styling, no deltas: shared history must not depend on branch point */}
+                      {renderNode(node, index, true)}
                     </div>
                   ))}
                 </div>
