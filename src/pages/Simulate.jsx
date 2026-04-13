@@ -148,7 +148,7 @@ function Simulate({ bgTheme }) {
         selectedBranch.year,
         baselineNode, // Pass as counter-context (null if beyond baseline)
         heuristicProfile, // Pass user profile for AI predictions
-        personaData // Pass demo persona for hardcoded outcomes
+        null // Always use AI predictions (even for demos)
       );
       setDraftNode(node);
       console.log('✅ Draft node generated successfully');
@@ -213,7 +213,7 @@ function Simulate({ bgTheme }) {
           selectedBranch.year,
           baselineNode,
           heuristicProfile,
-          personaData // Pass demo persona for hardcoded outcomes
+          null // Always use AI predictions (even for demos)
         );
         setDraftNode(node);
         console.log('✅ Next node generated successfully');
@@ -290,7 +290,7 @@ function Simulate({ bgTheme }) {
           onReset={handleReset}
           bgTheme={bgTheme}
           isDemoPersona={!!activeDemoPersona}
-          demoTimelineLength={activeDemoPersona?.branchOutcomes?.default?.timeline?.length ?? null}
+            demoTimelineLength={null}
         />
       )}
 
