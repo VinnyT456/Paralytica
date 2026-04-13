@@ -1,15 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
 import { Sparkles, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 function Questionnaire({ bgTheme }) {
   const navigate = useNavigate();
-  const { setHeuristicProfile } = useAppContext();
+  const { setHeuristicProfile, setDemoPersonaId } = useAppContext();
   const isLight = bgTheme === 'light';
   const [isLoading, setIsLoading] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [fadeIn, setFadeIn] = useState(true);
+
+  // Entering the questionnaire should always start a non-demo run.
+  // Otherwise, the last viewed demo persona can "stick" and override the user's run in `/simulate`.
+  useEffect(() => {
+    setDemoPersonaId(null);
+    setHeuristicProfile(null);
+  }, [setDemoPersonaId, setHeuristicProfile]);
 
   // Form state
   const [formData, setFormData] = useState({
