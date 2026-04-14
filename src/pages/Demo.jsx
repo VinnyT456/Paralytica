@@ -5,7 +5,7 @@ import { MAYA_CHEN, JORDAN_REYES, getDemoPersonaById } from '../data/personas';
 function Demo({ bgTheme }) {
   const isLight = bgTheme === 'light';
   const navigate = useNavigate();
-  const { setHeuristicProfile, setDemoPersonaId } = useAppContext();
+  const { setHeuristicProfile, setDemoPersonaId, setTimeline, setMilestoneHistory } = useAppContext();
 
   const personas = [
     {
@@ -27,6 +27,13 @@ function Demo({ bgTheme }) {
   ];
 
   const handleExploreTimeline = (persona) => {
+    try {
+      localStorage.removeItem('nexus_vault');
+    } catch {
+      // ignore
+    }
+    setTimeline([]);
+    setMilestoneHistory([]);
     const id = persona.data.id;
     const resolved = getDemoPersonaById(id);
     if (!resolved) return;

@@ -12,12 +12,20 @@ import { getDemoPersonaById } from '../data/personas';
 
 function Simulate({ bgTheme }) {
   const location = useLocation();
-  const { heuristicProfile, demoPersonaId } = useAppContext();
+  const {
+    heuristicProfile,
+    demoPersonaId,
+    timeline,
+    setTimeline,
+    milestoneHistory,
+    setMilestoneHistory,
+    hasHydrated
+  } = useAppContext();
   const stateId = location.state?.demoPersonaId;
   const resolvedId = typeof stateId === 'string' ? stateId : demoPersonaId;
   const activeDemoPersona = resolvedId ? getDemoPersonaById(resolvedId) : null;
   const [step, setStep] = useState(1);
-  const [lifePoints, setLifePoints] = useState([]);
+  const [lifePoints, setLifePoints] = useState(() => (Array.isArray(timeline) ? timeline : []));
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [branchDecision, setBranchDecision] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -25,9 +33,12 @@ function Simulate({ bgTheme }) {
 
   // Dual Timeline State
   const [baselineTimeline, setBaselineTimeline] = useState([]);
-  const [projectedTimeline, setProjectedTimeline] = useState([]);
+  const [projectedTimeline, setProjectedTimeline] = useState(() =>
+    Array.isArray(milestoneHistory) ? milestoneHistory : []
+  );
   const [draftNode, setDraftNode] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const hasInitializedFromStorageRef = useRef(false);
 
   // API Cooldown State (prevent multiple simultaneous requests)
   const [lastRequestTime, setLastRequestTime] = useState(0);
@@ -50,12 +61,58 @@ function Simulate({ bgTheme }) {
       }));
 
       setLifePoints(preloadedPoints);
+      setTimeline(preloadedPoints);
+      hasInitializedFromStorageRef.current = true;
       setIncludeSocial(true); // Default to including social dynamics for demos
       setStep(2); // Skip Step 1 (Map Timeline) and go directly to Step 2 (Primary Timeline)
     }
   }, [location.state, demoPersonaId, activeDemoPersona]);
 
+  // On refresh, AppContext hydrates asynchronously. Sync local state once hydrated data arrives.
+  useEffect(() => {
+    if (!hasHydrated) return;
+    if (
+      !hasInitializedFromStorageRef.current &&
+      Array.isArray(timeline) &&
+      timeline.length > 0 &&
+      lifePoints.length === 0
+    ) {
+      setLifePoints(timeline);
+      // If we have a timeline, we can safely resume at least Step 2 (primary timeline).
+      setStep(2);
+      hasInitializedFromStorageRef.current = true;
+    }
+  }, [hasHydrated, timeline, lifePoints.length]);
+
+  useEffect(() => {
+    if (!hasHydrated) return;
+    if (
+      !hasInitializedFromStorageRef.current &&
+      Array.isArray(milestoneHistory) &&
+      milestoneHistory.length > 0 &&
+      projectedTimeline.length === 0
+    ) {
+      setProjectedTimeline(milestoneHistory);
+      hasInitializedFromStorageRef.current = true;
+    }
+  }, [hasHydrated, milestoneHistory, projectedTimeline.length]);
+
+  // Keep localStorage-backed context in sync with current run
+  useEffect(() => {
+    if (!hasHydrated) return;
+    // Critical: don't push empty initial state back into context before we've initialized from storage.
+    if (!hasInitializedFromStorageRef.current && lifePoints.length === 0) return;
+    setTimeline(lifePoints);
+  }, [hasHydrated, lifePoints, setTimeline]);
+
+  useEffect(() => {
+    if (!hasHydrated) return;
+    if (!hasInitializedFromStorageRef.current && projectedTimeline.length === 0) return;
+    setMilestoneHistory(projectedTimeline);
+  }, [hasHydrated, projectedTimeline, setMilestoneHistory]);
+
   const handleStep1Complete = (points, socialDynamics) => {
+    hasInitializedFromStorageRef.current = true;
     setLifePoints(points);
     setIncludeSocial(socialDynamics);
     setStep(2);
@@ -261,6 +318,8 @@ function Simulate({ bgTheme }) {
     setDraftNode(null);
     setIsGenerating(false);
     setIncludeSocial(true);
+    setTimeline([]);
+    setMilestoneHistory([]);
   };
 
   return (

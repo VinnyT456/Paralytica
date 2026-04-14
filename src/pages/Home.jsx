@@ -1,10 +1,30 @@
 import { useNavigate } from 'react-router-dom';
+import { useAppContext } from '../context/AppContext';
 import { Sparkles, Zap, ArrowRight, GitBranch, Loader2 } from 'lucide-react';
 import ParalyticaLogo from '../assets/NewLogo1Transparent3.png';
 
 function Home({ bgTheme }) {
   const navigate = useNavigate();
   const isLight = bgTheme === 'light';
+  const {
+    setHeuristicProfile,
+    setDemoPersonaId,
+    setTimeline,
+    setMilestoneHistory
+  } = useAppContext();
+
+  const clearVaultAndStart = () => {
+    try {
+      localStorage.removeItem('nexus_vault');
+    } catch {
+      // ignore
+    }
+    setHeuristicProfile(null);
+    setDemoPersonaId(null);
+    setTimeline([]);
+    setMilestoneHistory([]);
+    navigate('/questionnaire');
+  };
 
   return (
     <div className="min-h-screen flex flex-col px-4 py-6 pt-20 sm:p-6 sm:pt-24 pb-12">
@@ -101,7 +121,7 @@ function Home({ bgTheme }) {
         {/* SECTION C: Main Call-to-Action - BOTTOM */}
         <div className="text-center mt-auto pt-8">
           <button
-            onClick={() => navigate('/questionnaire')}
+            onClick={clearVaultAndStart}
             className="group relative inline-flex items-center justify-center gap-2 sm:gap-4 bg-gradient-to-r from-purple-600 via-sky-600 to-emerald-600 hover:from-purple-500 hover:via-sky-500 hover:to-emerald-500 text-white text-base sm:text-xl md:text-2xl font-bold px-6 py-4 sm:px-12 sm:py-6 md:px-20 md:py-8 rounded-xl sm:rounded-2xl transition-all duration-500 shadow-[0_0_60px_rgba(168,85,247,0.6)] hover:shadow-[0_0_100px_rgba(168,85,247,0.8)] hover:scale-[1.02] sm:hover:scale-105 max-w-full w-full sm:w-auto"
           >
             <Zap className="group-hover:rotate-12 transition-transform shrink-0 w-6 h-6 sm:w-9 sm:h-9" strokeWidth={2} />
